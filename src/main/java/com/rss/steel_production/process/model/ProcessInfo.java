@@ -180,8 +180,9 @@ public class ProcessInfo {
     private Date slabTundishBigTime;
     private Float slabTundishGasPress;
     private Integer slabCount;
-    private String slabCrystalNo1;
-    private String slabCrystalNo2;
+//    private String slabCrystalNo1;
+//    private String slabCrystalNo2;
+    private String slabCrystalNo;
     private Float slabTundishPouring;
     private Float slabProcessTossing;
     private Float slabHeadTrimAmt;
@@ -283,6 +284,14 @@ public class ProcessInfo {
 
     public void setChargeNo(String chargeNo) {
         this.chargeNo = chargeNo;
+    }
+
+    public String getIronStationNo() {
+        return ironStationNo;
+    }
+
+    public void setIronStationNo(String ironStationNo) {
+        this.ironStationNo = ironStationNo;
     }
 
     public String getSteelGrade() {
@@ -1597,20 +1606,29 @@ public class ProcessInfo {
         this.slabCount = slabCount;
     }
 
-    public String getSlabCrystalNo1() {
-        return slabCrystalNo1;
+//    public String getSlabCrystalNo1() {
+//        return slabCrystalNo1;
+//    }
+//
+//    public void setSlabCrystalNo1(String slabCrystalNo1) {
+//        this.slabCrystalNo1 = slabCrystalNo1;
+//    }
+//
+//    public String getSlabCrystalNo2() {
+//        return slabCrystalNo2;
+//    }
+//
+//    public void setSlabCrystalNo2(String slabCrystalNo2) {
+//        this.slabCrystalNo2 = slabCrystalNo2;
+//    }
+
+
+    public String getSlabCrystalNo() {
+        return slabCrystalNo;
     }
 
-    public void setSlabCrystalNo1(String slabCrystalNo1) {
-        this.slabCrystalNo1 = slabCrystalNo1;
-    }
-
-    public String getSlabCrystalNo2() {
-        return slabCrystalNo2;
-    }
-
-    public void setSlabCrystalNo2(String slabCrystalNo2) {
-        this.slabCrystalNo2 = slabCrystalNo2;
+    public void setSlabCrystalNo(String slabCrystalNo) {
+        this.slabCrystalNo = slabCrystalNo;
     }
 
     public Float getSlabTundishPouring() {

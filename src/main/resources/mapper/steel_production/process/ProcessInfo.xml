@@ -169,8 +169,9 @@
     <result column="slabTundishBigTime" jdbcType="TIMESTAMP" property="slabTundishBigTime" />
     <result column="slabTundishGasPress" jdbcType="FLOAT" property="slabTundishGasPress" />
     <result column="slabCount" jdbcType="INTEGER" property="slabCount" />
-    <result column="slabCrystalNo1" jdbcType="VARCHAR" property="slabCrystalNo1" />
-    <result column="slabCrystalNo2" jdbcType="VARCHAR" property="slabCrystalNo2" />
+<!--    <result column="slabCrystalNo1" jdbcType="VARCHAR" property="slabCrystalNo1" />-->
+<!--    <result column="slabCrystalNo2" jdbcType="VARCHAR" property="slabCrystalNo2" />-->
+    <result column="slabCrystalNo" jdbcType="VARCHAR" property="slabCrystalNo" />
     <result column="slabTundishPouring" jdbcType="FLOAT" property="slabTundishPouring" />
     <result column="slabProcessTossing" jdbcType="FLOAT" property="slabProcessTossing" />
     <result column="slabHeadTrimAmt" jdbcType="FLOAT" property="slabHeadTrimAmt" />

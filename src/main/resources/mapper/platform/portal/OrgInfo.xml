@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.platform.portal.dao.OrgInfoDao">
+	<resultMap id="BaseResultMap" type="com.rss.platform.portal.model.OrgInfo">
+		<id column="org_infoUID" jdbcType="VARCHAR" property="org_infoUID"/>
+		<result column="orgCode" jdbcType="VARCHAR" property="orgCode"/>
+		<result column="orgName" jdbcType="VARCHAR" property="orgName"/>
+		<result column="orgType" jdbcType="VARCHAR" property="orgType"/>
+		<result column="adminArea" jdbcType="VARCHAR" property="adminArea"/>
+		<result column="orgAddress" jdbcType="VARCHAR" property="orgAddress"/>
+		<result column="orgDesc" jdbcType="VARCHAR" property="orgDesc"/>
+		<result column="staffCount" jdbcType="INTEGER" property="staffCount"/>
+		<result column="contactDetail" jdbcType="VARCHAR" property="contactDetail"/>
+		<result column="registerStaff" jdbcType="VARCHAR" property="registerStaff"/>
+		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
+	</resultMap>
+</mapper>

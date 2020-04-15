@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.schedule.dao.SteelScheduleDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.SteelSchedule">
+		<id column="steel_scheduleUID" jdbcType="VARCHAR" property="steel_scheduleUID"/>
+		<result column="chargeNo" property="chargeno" jdbcType="VARCHAR" />
+		<result column="castNo" property="castno" jdbcType="VARCHAR" />
+		<result column="castSeq" property="castseq" jdbcType="VARCHAR" />
+		<result column="stationName" property="stationname" jdbcType="VARCHAR" />
+		<result column="planEnter" property="planenter" jdbcType="TIMESTAMP" />
+		<result column="planExit" property="planexit" jdbcType="TIMESTAMP" />
+		<result column="actualEnter" property="actualenter" jdbcType="TIMESTAMP" />
+		<result column="actualExit" property="actualexit" jdbcType="TIMESTAMP" />
+		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="ironNo" property="ironno" jdbcType="VARCHAR" />
+		<result column="ironSeq" property="ironseq" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+<!--	<sql id="Example_Where_Clause" >-->
+<!--		<where >-->
+<!--			<foreach collection="oredCriteria" item="criteria" separator="or" >-->
+<!--				<if test="criteria.valid" >-->
+<!--					<trim prefix="(" suffix=")" prefixOverrides="and" >-->
+<!--						<foreach collection="criteria.criteria" item="criterion" >-->
+<!--							<choose >-->
+<!--								<when test="criterion.noValue" >-->
+<!--									and ${criterion.condition}-->
+<!--								</when>-->
+<!--								<when test="criterion.singleValue" >-->
+<!--									and ${criterion.condition} #{criterion.value}-->
+<!--								</when>-->
+<!--								<when test="criterion.betweenValue" >-->
+<!--									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
+<!--								</when>-->
+<!--								<when test="criterion.listValue" >-->
+<!--									and ${criterion.condition}-->
+<!--									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >-->
+<!--										#{listItem}-->
+<!--									</foreach>-->
+<!--								</when>-->
+<!--							</choose>-->
+<!--						</foreach>-->
+<!--					</trim>-->
+<!--				</if>-->
+<!--			</foreach>-->
+<!--		</where>-->
+<!--	</sql>-->
+<!--	<sql id="Update_By_Example_Where_Clause" >-->
+<!--		<where >-->
+<!--			<foreach collection="example.oredCriteria" item="criteria" separator="or" >-->
+<!--				<if test="criteria.valid" >-->
+<!--					<trim prefix="(" suffix=")" prefixOverrides="and" >-->
+<!--						<foreach collection="criteria.criteria" item="criterion" >-->
+<!--							<choose >-->
+<!--								<when test="criterion.noValue" >-->
+<!--									and ${criterion.condition}-->
+<!--								</when>-->
+<!--								<when test="criterion.singleValue" >-->
+<!--									and ${criterion.condition} #{criterion.value}-->
+<!--								</when>-->
+<!--								<when test="criterion.betweenValue" >-->
+<!--									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
+<!--								</when>-->
+<!--								<when test="criterion.listValue" >-->
+<!--									and ${criterion.condition}-->
+<!--									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >-->
+<!--										#{listItem}-->
+<!--									</foreach>-->
+<!--								</when>-->
+<!--							</choose>-->
+<!--						</foreach>-->
+<!--					</trim>-->
+<!--				</if>-->
+<!--			</foreach>-->
+<!--		</where>-->
+<!--	</sql>-->
+<!--	<sql id="Base_Column_List" >-->
+<!--    steel_scheduleUID, chargeNo, castNo, castSeq, stationName, planEnter, planExit, actualEnter,-->
+<!--    actualExit, planStatus, lastModifyUser, lastModifyDate-->
+<!--  </sql>-->
+<!--	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.schedule.model.SteelScheduleExample" >-->
+<!--		select-->
+<!--		<if test="distinct" >-->
+<!--			distinct-->
+<!--		</if>-->
+<!--		<include refid="Base_Column_List" />-->
+<!--		from steel_schedule-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--		<if test="orderByClause != null" >-->
+<!--			order by ${orderByClause}-->
+<!--		</if>-->
+<!--	</select>-->
+<!--	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >-->
+<!--		select-->
+<!--		<include refid="Base_Column_List" />-->
+<!--		from steel_schedule-->
+<!--		where steel_scheduleUID = #{steelScheduleuid,jdbcType=VARCHAR}-->
+<!--	</select>-->
+<!--	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >-->
+<!--    delete from steel_schedule-->
+<!--    where steel_scheduleUID = #{steelScheduleuid,jdbcType=VARCHAR}-->
+<!--  </delete>-->
+<!--	<delete id="deleteByExample" parameterType="com.rss.steel_production.schedule.model.SteelScheduleExample" >-->
+<!--		delete from steel_schedule-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</delete>-->
+<!--	<insert id="insert" parameterType="com.rss.steel_production.schedule.model.SteelSchedule" >-->
+<!--    insert into steel_schedule (steel_scheduleUID, chargeNo, castNo,-->
+<!--      castSeq, stationName, planEnter,-->
+<!--      planExit, actualEnter, actualExit,-->
+<!--      planStatus, lastModifyUser, lastModifyDate-->
+<!--      )-->
+<!--    values (#{steelScheduleuid,jdbcType=VARCHAR}, #{chargeno,jdbcType=VARCHAR}, #{castno,jdbcType=VARCHAR},-->
+<!--      #{castseq,jdbcType=VARCHAR}, #{stationname,jdbcType=VARCHAR}, #{planenter,jdbcType=TIMESTAMP},-->
+<!--      #{planexit,jdbcType=TIMESTAMP}, #{actualenter,jdbcType=TIMESTAMP}, #{actualexit,jdbcType=TIMESTAMP},-->
+<!--      #{planstatus,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR}, #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--      )-->
+<!--  </insert>-->
+<!--	<insert id="insertSelective" parameterType="com.rss.steel_production.schedule.model.SteelSchedule" >-->
+<!--		insert into steel_schedule-->
+<!--		<trim prefix="(" suffix=")" suffixOverrides="," >-->
+<!--			<if test="steelScheduleuid != null" >-->
+<!--				steel_scheduleUID,-->
+<!--			</if>-->
+<!--			<if test="chargeno != null" >-->
+<!--				chargeNo,-->
+<!--			</if>-->
+<!--			<if test="castno != null" >-->
+<!--				castNo,-->
+<!--			</if>-->
+<!--			<if test="castseq != null" >-->
+<!--				castSeq,-->
+<!--			</if>-->
+<!--			<if test="stationname != null" >-->
+<!--				stationName,-->
+<!--			</if>-->
+<!--			<if test="planenter != null" >-->
+<!--				planEnter,-->
+<!--			</if>-->
+<!--			<if test="planexit != null" >-->
+<!--				planExit,-->
+<!--			</if>-->
+<!--			<if test="actualenter != null" >-->
+<!--				actualEnter,-->
+<!--			</if>-->
+<!--			<if test="actualexit != null" >-->
+<!--				actualExit,-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus,-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser,-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate,-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--		<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+<!--			<if test="steelScheduleuid != null" >-->
+<!--				#{steelScheduleuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="chargeno != null" >-->
+<!--				#{chargeno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="castno != null" >-->
+<!--				#{castno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="castseq != null" >-->
+<!--				#{castseq,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="stationname != null" >-->
+<!--				#{stationname,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="planenter != null" >-->
+<!--				#{planenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planexit != null" >-->
+<!--				#{planexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="actualenter != null" >-->
+<!--				#{actualenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="actualexit != null" >-->
+<!--				#{actualexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				#{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				#{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				#{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--	</insert>-->
+<!--	<select id="countByExample" parameterType="com.rss.steel_production.schedule.model.SteelScheduleExample" resultType="java.lang.Integer" >-->
+<!--		select count(*) from steel_schedule-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</select>-->
+<!--	<update id="updateByExampleSelective" parameterType="map" >-->
+<!--		update steel_schedule-->
+<!--		<set >-->
+<!--			<if test="record.steelScheduleuid != null" >-->
+<!--				steel_scheduleUID = #{record.steelScheduleuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.chargeno != null" >-->
+<!--				chargeNo = #{record.chargeno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.castno != null" >-->
+<!--				castNo = #{record.castno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.castseq != null" >-->
+<!--				castSeq = #{record.castseq,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.stationname != null" >-->
+<!--				stationName = #{record.stationname,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.planenter != null" >-->
+<!--				planEnter = #{record.planenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="record.planexit != null" >-->
+<!--				planExit = #{record.planexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="record.actualenter != null" >-->
+<!--				actualEnter = #{record.actualenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="record.actualexit != null" >-->
+<!--				actualExit = #{record.actualexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="record.planstatus != null" >-->
+<!--				planStatus = #{record.planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.lastmodifydate != null" >-->
+<!--				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Update_By_Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</update>-->
+<!--	<update id="updateByExample" parameterType="map" >-->
+<!--		update steel_schedule-->
+<!--		set steel_scheduleUID = #{record.steelScheduleuid,jdbcType=VARCHAR},-->
+<!--		chargeNo = #{record.chargeno,jdbcType=VARCHAR},-->
+<!--		castNo = #{record.castno,jdbcType=VARCHAR},-->
+<!--		castSeq = #{record.castseq,jdbcType=VARCHAR},-->
+<!--		stationName = #{record.stationname,jdbcType=VARCHAR},-->
+<!--		planEnter = #{record.planenter,jdbcType=TIMESTAMP},-->
+<!--		planExit = #{record.planexit,jdbcType=TIMESTAMP},-->
+<!--		actualEnter = #{record.actualenter,jdbcType=TIMESTAMP},-->
+<!--		actualExit = #{record.actualexit,jdbcType=TIMESTAMP},-->
+<!--		planStatus = #{record.planstatus,jdbcType=VARCHAR},-->
+<!--		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},-->
+<!--		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Update_By_Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.schedule.model.SteelSchedule" >-->
+<!--		update steel_schedule-->
+<!--		<set >-->
+<!--			<if test="chargeno != null" >-->
+<!--				chargeNo = #{chargeno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="castno != null" >-->
+<!--				castNo = #{castno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="castseq != null" >-->
+<!--				castSeq = #{castseq,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="stationname != null" >-->
+<!--				stationName = #{stationname,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="planenter != null" >-->
+<!--				planEnter = #{planenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planexit != null" >-->
+<!--				planExit = #{planexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="actualenter != null" >-->
+<!--				actualEnter = #{actualenter,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="actualexit != null" >-->
+<!--				actualExit = #{actualexit,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		where steel_scheduleUID = #{steelScheduleuid,jdbcType=VARCHAR}-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.schedule.model.SteelSchedule" >-->
+<!--    update steel_schedule-->
+<!--    set chargeNo = #{chargeno,jdbcType=VARCHAR},-->
+<!--      castNo = #{castno,jdbcType=VARCHAR},-->
+<!--      castSeq = #{castseq,jdbcType=VARCHAR},-->
+<!--      stationName = #{stationname,jdbcType=VARCHAR},-->
+<!--      planEnter = #{planenter,jdbcType=TIMESTAMP},-->
+<!--      planExit = #{planexit,jdbcType=TIMESTAMP},-->
+<!--      actualEnter = #{actualenter,jdbcType=TIMESTAMP},-->
+<!--      actualExit = #{actualexit,jdbcType=TIMESTAMP},-->
+<!--      planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--    where steel_scheduleUID = #{steelScheduleuid,jdbcType=VARCHAR}-->
+<!--  </update>-->
+</mapper>

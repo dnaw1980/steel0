@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+  <!-- 配置数据库相关参数properties的属性：${url} -->
+  <context:property-placeholder location="classpath:jdbc.properties"/>
+
+  <!-- 数据库连接池 -->
+  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <property name="driverClass" value="${jdbc.driver}"/>
+    <property name="jdbcUrl" value="${jdbc.url}"/>
+    <property name="user" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="maxPoolSize" value="${c3p0.maxPoolSize}"/>
+    <property name="minPoolSize" value="${c3p0.minPoolSize}"/>
+    <property name="autoCommitOnClose" value="${c3p0.autoCommitOnClose}"/>
+    <property name="checkoutTimeout" value="${c3p0.checkoutTimeout}"/>
+    <property name="acquireRetryAttempts" value="${c3p0.acquireRetryAttempts}"/>
+  </bean>
+
+  <!-- 配置SqlSessionFactory对象 -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <!-- 注入数据库连接池 -->
+    <property name="dataSource" ref="dataSource"/>
+    <!-- 扫描entity包 使用别名 -->
+    <property name="typeAliasesPackage" value="com.rss.steel_production.schedule.model;com.rss.steel_production.process.model;com.rss.steel_production.foundation.model;com.rss.platform.portal.model"/>
+    <!-- 扫描sql配置文件:mapper需要的xml文件 -->
+<!--    <property name="mapperLocations" value="classpath:dosing/platform/portal/*.xml"/>-->
+    <property name="mapperLocations">
+      <array>
+        <value>classpath:mapper/steel_production/schedule/*.xml</value>
+        <value>classpath:mapper/steel_production/process/*.xml</value>
+        <value>classpath:mapper/steel_production/foundation/*.xml</value>
+        <value>classpath:mapper/platform/portal/*.xml</value>
+      </array>
+    </property>
+    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    <!-- 传入PageHelper 分页插件 -->
+    <property name="plugins">
+      <array>
+        <!-- 传入插件的对象 -->
+        <bean class="com.github.pagehelper.PageInterceptor">
+          <property name="properties">
+            <props>
+              <!--数据库类型-->
+              <prop key="helperDialect">mysql</prop>
+              <!--页码超出范围自动修正-->
+              <prop key="reasonable">true</prop>
+            </props>
+          </property>
+        </bean>
+      </array>
+    </property>
+
+  </bean>
+
+  <!-- 配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+  <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+    <!-- 给出需要扫描Dao接口包 -->
+    <property name="basePackage" value="com.rss.steel_production.schedule.dao;com.rss.steel_production.process.dao;com.rss.steel_production.foundation.dao;com.rss.platform.portal.dao"/>
+    <property name="properties">
+      <value>
+          mappers=com.rss.framework.iMapper
+          style=normal
+          notEmpty=true
+      </value>
+    </property>
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+
+  </bean>
+
+  <context:component-scan base-package="com.rss.steel_production.schedule.dao;com.rss.steel_production.process.dao;com.rss.steel_production.foundation.dao;com.rss.platform.portal.dao"/>
+
+  <!-- 扫描service包下所有使用注解的类型 -->
+<!--  <context:component-scan base-package="com.rss.platforml.service"/>-->
+  <context:component-scan base-package="com.rss.steel_production.schedule.impl;com.rss.steel_production.process.impl;com.rss.steel_production.foundation.impl;com.rss.platform.portal.impl"/>
+
+  <!-- 配置事务管理器 -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <!-- 注入数据库连接池 -->
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <!-- 配置基于注解的声明式事务 -->
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+  <bean id="connectIP" class="com.rss.framework.ConnectIP">
+    <property name="IP" value="localhost"  />
+    <!--    <property name="IP" value="172.27.201.251"  />-->
+    <property name="port" value="12306" />
+  </bean>
+
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+</beans>

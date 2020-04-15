@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.schedule.dao.QualityInfoDao">
+    <resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.QualityInfo">
+        <id column="quality_infoUID" jdbcType="VARCHAR" property="quality_infoUID"/>
+        <result column="stationNo" property="stationNo" jdbcType="VARCHAR" />
+        <result column="sampleTime" property="sampleTime" jdbcType="TIMESTAMP" />
+        <result column="chargeNo" property="chargeNo" jdbcType="VARCHAR" />
+        <result column="Fe" property="Fe" jdbcType="FLOAT" />
+        <result column="C" property="C" jdbcType="FLOAT" />
+        <result column="Si" property="Si" jdbcType="FLOAT" />
+        <result column="Mn" property="Mn" jdbcType="FLOAT" />
+        <result column="P" property="P" jdbcType="FLOAT" />
+        <result column="S" property="S" jdbcType="FLOAT" />
+        <result column="Ni" property="Ni" jdbcType="FLOAT" />
+        <result column="Cr" property="Cr" jdbcType="FLOAT" />
+        <result column="V" property="V" jdbcType="FLOAT" />
+        <result column="Al" property="Al" jdbcType="FLOAT" />
+        <result column="Ca" property="Ca" jdbcType="FLOAT" />
+        <result column="Cu" property="Cu" jdbcType="FLOAT" />
+        <result column="Ti" property="Ti" jdbcType="FLOAT" />
+        <result column="Ceq" property="Ceq" jdbcType="FLOAT" />
+    </resultMap>
+</mapper>

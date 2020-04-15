@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.CompositionStandardDao">
+    <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.CompositionStandard">
+        <id column="steel_composition_standardUID" jdbcType="VARCHAR" property="steel_composition_standardUID"/>
+        <result column="itemID" property="itemID" jdbcType="VARCHAR" />
+        <result column="sampleType" property="sampleType" jdbcType="VARCHAR" />
+        <result column="lowerLimit" property="lowerLimit" jdbcType="FLOAT" />
+        <result column="upperLimit" property="upperLimit" jdbcType="FLOAT" />
+    </resultMap>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.ProductQualityDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.ProductQuality">
+		<id column="process_qualityUID" jdbcType="VARCHAR" property="process_qualityUID"/>
+		<result column="sampleCode" jdbcType="VARCHAR" property="sampleCode"/>
+		<result column="sampleName" jdbcType="VARCHAR" property="sampleName"/>
+		<result column="sampleType" jdbcType="VARCHAR" property="sampleType"/>
+		<result column="sampleTime" jdbcType="TIMESTAMP" property="sampleTime"/>
+		<result column="sampleCode" jdbcType="VARCHAR" property="sampleCode"/>
+		<result column="stationName" jdbcType="VARCHAR" property="stationName"/>
+		<result column="productionNo" jdbcType="VARCHAR" property="productionNo"/>
+		<result column="evaluResult" jdbcType="VARCHAR" property="evaluResult"/>
+		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
+	</resultMap>
+</mapper>

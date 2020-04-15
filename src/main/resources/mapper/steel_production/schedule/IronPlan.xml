@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.schedule.dao.IronPlanDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.IronPlan">
+		<id column="iron_planUID" jdbcType="VARCHAR" property="iron_planUID"/>
+		<result column="ironNo" property="ironno" jdbcType="VARCHAR" />
+		<result column="ladleCount" property="ladlecount" jdbcType="INTEGER" />
+		<result column="tappingStart" property="tappingstart" jdbcType="TIMESTAMP" />
+		<result column="tappingEnd" property="tappingend" jdbcType="TIMESTAMP" />
+		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
+		<result column="stationName" property="stationname" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+<!--	<sql id="Example_Where_Clause" >-->
+<!--		<where >-->
+<!--			<foreach collection="oredCriteria" item="criteria" separator="or" >-->
+<!--				<if test="criteria.valid" >-->
+<!--					<trim prefix="(" suffix=")" prefixOverrides="and" >-->
+<!--						<foreach collection="criteria.criteria" item="criterion" >-->
+<!--							<choose >-->
+<!--								<when test="criterion.noValue" >-->
+<!--									and ${criterion.condition}-->
+<!--								</when>-->
+<!--								<when test="criterion.singleValue" >-->
+<!--									and ${criterion.condition} #{criterion.value}-->
+<!--								</when>-->
+<!--								<when test="criterion.betweenValue" >-->
+<!--									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
+<!--								</when>-->
+<!--								<when test="criterion.listValue" >-->
+<!--									and ${criterion.condition}-->
+<!--									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >-->
+<!--										#{listItem}-->
+<!--									</foreach>-->
+<!--								</when>-->
+<!--							</choose>-->
+<!--						</foreach>-->
+<!--					</trim>-->
+<!--				</if>-->
+<!--			</foreach>-->
+<!--		</where>-->
+<!--	</sql>-->
+<!--	<sql id="Update_By_Example_Where_Clause" >-->
+<!--		<where >-->
+<!--			<foreach collection="example.oredCriteria" item="criteria" separator="or" >-->
+<!--				<if test="criteria.valid" >-->
+<!--					<trim prefix="(" suffix=")" prefixOverrides="and" >-->
+<!--						<foreach collection="criteria.criteria" item="criterion" >-->
+<!--							<choose >-->
+<!--								<when test="criterion.noValue" >-->
+<!--									and ${criterion.condition}-->
+<!--								</when>-->
+<!--								<when test="criterion.singleValue" >-->
+<!--									and ${criterion.condition} #{criterion.value}-->
+<!--								</when>-->
+<!--								<when test="criterion.betweenValue" >-->
+<!--									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
+<!--								</when>-->
+<!--								<when test="criterion.listValue" >-->
+<!--									and ${criterion.condition}-->
+<!--									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >-->
+<!--										#{listItem}-->
+<!--									</foreach>-->
+<!--								</when>-->
+<!--							</choose>-->
+<!--						</foreach>-->
+<!--					</trim>-->
+<!--				</if>-->
+<!--			</foreach>-->
+<!--		</where>-->
+<!--	</sql>-->
+<!--	<sql id="Base_Column_List" >-->
+<!--    iron_planUID, ironNo, seqNo, tappingTime, planStatus, ironDirection, remarks, lastModifyUser,-->
+<!--    lastModifyDate-->
+<!--  </sql>-->
+<!--	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.schedule.model.IronPlanExample" >-->
+<!--		select-->
+<!--		<if test="distinct" >-->
+<!--			distinct-->
+<!--		</if>-->
+<!--		<include refid="Base_Column_List" />-->
+<!--		from iron_plan-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--		<if test="orderByClause != null" >-->
+<!--			order by ${orderByClause}-->
+<!--		</if>-->
+<!--	</select>-->
+<!--	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >-->
+<!--		select-->
+<!--		<include refid="Base_Column_List" />-->
+<!--		from iron_plan-->
+<!--		where iron_planUID = #{ironPlanuid,jdbcType=VARCHAR}-->
+<!--	</select>-->
+<!--	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >-->
+<!--    delete from iron_plan-->
+<!--    where iron_planUID = #{ironPlanuid,jdbcType=VARCHAR}-->
+<!--  </delete>-->
+<!--	<delete id="deleteByExample" parameterType="com.rss.steel_production.schedule.model.IronPlanExample" >-->
+<!--		delete from iron_plan-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</delete>-->
+<!--	<insert id="insert" parameterType="com.rss.steel_production.schedule.model.IronPlan" >-->
+<!--    insert into iron_plan (iron_planUID, ironNo, seqNo,-->
+<!--      tappingTime, planStatus, ironDirection,-->
+<!--      remarks, lastModifyUser, lastModifyDate-->
+<!--      )-->
+<!--    values (#{ironPlanuid,jdbcType=VARCHAR}, #{ironno,jdbcType=VARCHAR}, #{seqno,jdbcType=VARCHAR},-->
+<!--      #{tappingtime,jdbcType=TIMESTAMP}, #{planstatus,jdbcType=VARCHAR}, #{irondirection,jdbcType=VARCHAR},-->
+<!--      #{remarks,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR}, #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--      )-->
+<!--  </insert>-->
+<!--	<insert id="insertSelective" parameterType="com.rss.steel_production.schedule.model.IronPlan" >-->
+<!--		insert into iron_plan-->
+<!--		<trim prefix="(" suffix=")" suffixOverrides="," >-->
+<!--			<if test="ironPlanuid != null" >-->
+<!--				iron_planUID,-->
+<!--			</if>-->
+<!--			<if test="ironno != null" >-->
+<!--				ironNo,-->
+<!--			</if>-->
+<!--			<if test="seqno != null" >-->
+<!--				seqNo,-->
+<!--			</if>-->
+<!--			<if test="tappingtime != null" >-->
+<!--				tappingTime,-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus,-->
+<!--			</if>-->
+<!--			<if test="irondirection != null" >-->
+<!--				ironDirection,-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				remarks,-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser,-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate,-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--		<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+<!--			<if test="ironPlanuid != null" >-->
+<!--				#{ironPlanuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="ironno != null" >-->
+<!--				#{ironno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="seqno != null" >-->
+<!--				#{seqno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="tappingtime != null" >-->
+<!--				#{tappingtime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				#{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="irondirection != null" >-->
+<!--				#{irondirection,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				#{remarks,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				#{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				#{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--	</insert>-->
+<!--	<select id="countByExample" parameterType="com.rss.steel_production.schedule.model.IronPlanExample" resultType="java.lang.Integer" >-->
+<!--		select count(*) from iron_plan-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</select>-->
+<!--	<update id="updateByExampleSelective" parameterType="map" >-->
+<!--		update iron_plan-->
+<!--		<set >-->
+<!--			<if test="record.ironPlanuid != null" >-->
+<!--				iron_planUID = #{record.ironPlanuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.ironno != null" >-->
+<!--				ironNo = #{record.ironno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.seqno != null" >-->
+<!--				seqNo = #{record.seqno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.tappingtime != null" >-->
+<!--				tappingTime = #{record.tappingtime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="record.planstatus != null" >-->
+<!--				planStatus = #{record.planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.irondirection != null" >-->
+<!--				ironDirection = #{record.irondirection,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.remarks != null" >-->
+<!--				remarks = #{record.remarks,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="record.lastmodifydate != null" >-->
+<!--				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Update_By_Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</update>-->
+<!--	<update id="updateByExample" parameterType="map" >-->
+<!--		update iron_plan-->
+<!--		set iron_planUID = #{record.ironPlanuid,jdbcType=VARCHAR},-->
+<!--		ironNo = #{record.ironno,jdbcType=VARCHAR},-->
+<!--		seqNo = #{record.seqno,jdbcType=VARCHAR},-->
+<!--		tappingTime = #{record.tappingtime,jdbcType=TIMESTAMP},-->
+<!--		planStatus = #{record.planstatus,jdbcType=VARCHAR},-->
+<!--		ironDirection = #{record.irondirection,jdbcType=VARCHAR},-->
+<!--		remarks = #{record.remarks,jdbcType=VARCHAR},-->
+<!--		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},-->
+<!--		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--		<if test="_parameter != null" >-->
+<!--			<include refid="Update_By_Example_Where_Clause" />-->
+<!--		</if>-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.schedule.model.IronPlan" >-->
+<!--		update iron_plan-->
+<!--		<set >-->
+<!--			<if test="ironno != null" >-->
+<!--				ironNo = #{ironno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="seqno != null" >-->
+<!--				seqNo = #{seqno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="tappingtime != null" >-->
+<!--				tappingTime = #{tappingtime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="irondirection != null" >-->
+<!--				ironDirection = #{irondirection,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				remarks = #{remarks,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		where iron_planUID = #{ironPlanuid,jdbcType=VARCHAR}-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.schedule.model.IronPlan" >-->
+<!--    update iron_plan-->
+<!--    set ironNo = #{ironno,jdbcType=VARCHAR},-->
+<!--      seqNo = #{seqno,jdbcType=VARCHAR},-->
+<!--      tappingTime = #{tappingtime,jdbcType=TIMESTAMP},-->
+<!--      planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--      ironDirection = #{irondirection,jdbcType=VARCHAR},-->
+<!--      remarks = #{remarks,jdbcType=VARCHAR},-->
+<!--      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--    where iron_planUID = #{ironPlanuid,jdbcType=VARCHAR}-->
+<!--  </update>-->
+</mapper>

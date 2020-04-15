@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.foundation.dao.ProcessStandardDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.foundation.model.ProcessStandard">
+		<id column="process_standardeUID" jdbcType="VARCHAR" property="process_standardeUID"/>
+		<result column="standardUID" property="standarduid" jdbcType="VARCHAR" />
+		<result column="itemID" property="itemid" jdbcType="VARCHAR" />
+		<result column="itemName" property="itemname" jdbcType="VARCHAR" />
+		<result column="itemType" property="itemtype" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
+		<result column="productSpec" jdbcType="VARCHAR" property="productSpec"/>
+		<result column="measureUnit" property="measureunit" jdbcType="VARCHAR" />
+		<result column="standardValue" property="standardvalue" jdbcType="DOUBLE" />
+		<result column="lowerLimit" property="lowerlimit" jdbcType="DOUBLE" />
+		<result column="upperLimit" property="upperlimit" jdbcType="DOUBLE" />
+		<result column="validPeriod" property="validperiod" jdbcType="VARCHAR" />
+		<result column="standardStatus" property="standardstatus" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause" >
+		<where >
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause" >
+		<where >
+			<foreach collection="example.oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List" >
+    process_standardUID, standardUID, itemID, itemName, itemType, steelGrade, productSpec, measureUnit,
+    standardValue, lowerLimit, upperLimit, validPeriod, standardStatus, lastModifyUser,
+    lastModifyDate
+  </sql>
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.foundation.model.ProcessStandardExample" >
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from process_standard
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from process_standard
+		where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from process_standard
+    where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
+  </delete>
+	<delete id="deleteByExample" parameterType="com.rss.steel_production.foundation.model.ProcessStandardExample" >
+		delete from process_standard
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.rss.steel_production.foundation.model.ProcessStandard" >
+    insert into process_standard (process_standardUID, standardUID,
+      itemID, itemName, itemType,
+      steelGrade, productSpec, measureUnit, standardValue,
+      lowerLimit, upperLimit, validPeriod,
+      standardStatus, lastModifyUser, lastModifyDate
+      )
+    values (#{processStandarduid,jdbcType=VARCHAR}, #{standarduid,jdbcType=VARCHAR},
+      #{itemid,jdbcType=VARCHAR}, #{itemname,jdbcType=VARCHAR}, #{itemtype,jdbcType=VARCHAR},
+      #{steelgrade,jdbcType=VARCHAR}, #{measureunit,jdbcType=VARCHAR}, #{standardvalue,jdbcType=DOUBLE},
+      #{lowerlimit,jdbcType=DOUBLE}, #{upperlimit,jdbcType=DOUBLE}, #{validperiod,jdbcType=VARCHAR},
+      #{standardstatus,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR}, #{lastmodifydate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+	<insert id="insertSelective" parameterType="com.rss.steel_production.foundation.model.ProcessStandard" >
+		insert into process_standard
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="processStandarduid != null" >
+				process_standardUID,
+			</if>
+			<if test="standarduid != null" >
+				standardUID,
+			</if>
+			<if test="itemid != null" >
+				itemID,
+			</if>
+			<if test="itemname != null" >
+				itemName,
+			</if>
+			<if test="itemtype != null" >
+				itemType,
+			</if>
+			<if test="steelgrade != null" >
+				steelGrade,
+			</if>
+			<if test="productspec != null" >
+				productSpec,
+			</if>
+			<if test="measureunit != null" >
+				measureUnit,
+			</if>
+			<if test="standardvalue != null" >
+				standardValue,
+			</if>
+			<if test="lowerlimit != null" >
+				lowerLimit,
+			</if>
+			<if test="upperlimit != null" >
+				upperLimit,
+			</if>
+			<if test="validperiod != null" >
+				validPeriod,
+			</if>
+			<if test="standardstatus != null" >
+				standardStatus,
+			</if>
+			<if test="lastmodifyuser != null" >
+				lastModifyUser,
+			</if>
+			<if test="lastmodifydate != null" >
+				lastModifyDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="processStandarduid != null" >
+				#{processStandarduid,jdbcType=VARCHAR},
+			</if>
+			<if test="standarduid != null" >
+				#{standarduid,jdbcType=VARCHAR},
+			</if>
+			<if test="itemid != null" >
+				#{itemid,jdbcType=VARCHAR},
+			</if>
+			<if test="itemname != null" >
+				#{itemname,jdbcType=VARCHAR},
+			</if>
+			<if test="itemtype != null" >
+				#{itemtype,jdbcType=VARCHAR},
+			</if>
+			<if test="steelgrade != null" >
+				#{steelgrade,jdbcType=VARCHAR},
+			</if>
+			<if test="measureunit != null" >
+				#{measureunit,jdbcType=VARCHAR},
+			</if>
+			<if test="standardvalue != null" >
+				#{standardvalue,jdbcType=DOUBLE},
+			</if>
+			<if test="lowerlimit != null" >
+				#{lowerlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="upperlimit != null" >
+				#{upperlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="validperiod != null" >
+				#{validperiod,jdbcType=VARCHAR},
+			</if>
+			<if test="standardstatus != null" >
+				#{standardstatus,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifyuser != null" >
+				#{lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifydate != null" >
+				#{lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.rss.steel_production.foundation.model.ProcessStandardExample" resultType="java.lang.Integer" >
+		select count(*) from process_standard
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map" >
+		update process_standard
+		<set >
+			<if test="record.processStandarduid != null" >
+				process_standardUID = #{record.processStandarduid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.standarduid != null" >
+				standardUID = #{record.standarduid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.itemid != null" >
+				itemID = #{record.itemid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.itemname != null" >
+				itemName = #{record.itemname,jdbcType=VARCHAR},
+			</if>
+			<if test="record.itemtype != null" >
+				itemType = #{record.itemtype,jdbcType=VARCHAR},
+			</if>
+			<if test="record.steelgrade != null" >
+				steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productspec != null" >
+				productSpec = #{record.productspec,jdbcType=VARCHAR},
+			</if>
+			<if test="record.measureunit != null" >
+				measureUnit = #{record.measureunit,jdbcType=VARCHAR},
+			</if>
+			<if test="record.standardvalue != null" >
+				standardValue = #{record.standardvalue,jdbcType=DOUBLE},
+			</if>
+			<if test="record.lowerlimit != null" >
+				lowerLimit = #{record.lowerlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="record.upperlimit != null" >
+				upperLimit = #{record.upperlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="record.validperiod != null" >
+				validPeriod = #{record.validperiod,jdbcType=VARCHAR},
+			</if>
+			<if test="record.standardstatus != null" >
+				standardStatus = #{record.standardstatus,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifyuser != null" >
+				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifydate != null" >
+				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map" >
+		update process_standard
+		set process_standardUID = #{record.processStandarduid,jdbcType=VARCHAR},
+		standardUID = #{record.standarduid,jdbcType=VARCHAR},
+		itemID = #{record.itemid,jdbcType=VARCHAR},
+		itemName = #{record.itemname,jdbcType=VARCHAR},
+		itemType = #{record.itemtype,jdbcType=VARCHAR},
+		steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+		productSpec = #{record.productspec,jdbcType=VARCHAR},
+		measureUnit = #{record.measureunit,jdbcType=VARCHAR},
+		standardValue = #{record.standardvalue,jdbcType=DOUBLE},
+		lowerLimit = #{record.lowerlimit,jdbcType=DOUBLE},
+		upperLimit = #{record.upperlimit,jdbcType=DOUBLE},
+		validPeriod = #{record.validperiod,jdbcType=VARCHAR},
+		standardStatus = #{record.standardstatus,jdbcType=VARCHAR},
+		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP}
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.foundation.model.ProcessStandard" >
+		update process_standard
+		<set >
+			<if test="standarduid != null" >
+				standardUID = #{standarduid,jdbcType=VARCHAR},
+			</if>
+			<if test="itemid != null" >
+				itemID = #{itemid,jdbcType=VARCHAR},
+			</if>
+			<if test="itemname != null" >
+				itemName = #{itemname,jdbcType=VARCHAR},
+			</if>
+			<if test="itemtype != null" >
+				itemType = #{itemtype,jdbcType=VARCHAR},
+			</if>
+			<if test="steelgrade != null" >
+				steelGrade = #{steelgrade,jdbcType=VARCHAR},
+			</if>
+			<if test="productspec != null" >
+				productSpec = #{productspec,jdbcType=VARCHAR},
+			</if>
+			<if test="measureunit != null" >
+				measureUnit = #{measureunit,jdbcType=VARCHAR},
+			</if>
+			<if test="standardvalue != null" >
+				standardValue = #{standardvalue,jdbcType=DOUBLE},
+			</if>
+			<if test="lowerlimit != null" >
+				lowerLimit = #{lowerlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="upperlimit != null" >
+				upperLimit = #{upperlimit,jdbcType=DOUBLE},
+			</if>
+			<if test="validperiod != null" >
+				validPeriod = #{validperiod,jdbcType=VARCHAR},
+			</if>
+			<if test="standardstatus != null" >
+				standardStatus = #{standardstatus,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifyuser != null" >
+				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifydate != null" >
+				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.foundation.model.ProcessStandard" >
+    update process_standard
+    set standardUID = #{standarduid,jdbcType=VARCHAR},
+      itemID = #{itemid,jdbcType=VARCHAR},
+      itemName = #{itemname,jdbcType=VARCHAR},
+      itemType = #{itemtype,jdbcType=VARCHAR},
+      steelGrade = #{steelgrade,jdbcType=VARCHAR},
+      productSpec = #{productspec,jdbcType=VARCHAR},
+      measureUnit = #{measureunit,jdbcType=VARCHAR},
+      standardValue = #{standardvalue,jdbcType=DOUBLE},
+      lowerLimit = #{lowerlimit,jdbcType=DOUBLE},
+      upperLimit = #{upperlimit,jdbcType=DOUBLE},
+      validPeriod = #{validperiod,jdbcType=VARCHAR},
+      standardStatus = #{standardstatus,jdbcType=VARCHAR},
+      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},
+      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}
+    where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
+  </update>
+</mapper>

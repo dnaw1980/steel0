@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.platform.portal.dao.UserInfoDao">
+	<resultMap id="BaseResultMap" type="com.rss.platform.portal.model.UserInfo">
+		<id column="userinfoUID" jdbcType="VARCHAR" property="userinfoUID"/>
+		<result column="userID" jdbcType="VARCHAR" property="userID"/>
+		<result column="userName" jdbcType="VARCHAR" property="userName"/>
+		<result column="staffCode" jdbcType="VARCHAR" property="staffCode"/>
+		<result column="roleSet" jdbcType="VARCHAR" property="roleSet"/>
+		<result column="roleID" jdbcType="VARCHAR" property="roleID"/>
+		<result column="roleName" jdbcType="VARCHAR" property="roleName"/>
+		<result column="orgName" jdbcType="VARCHAR" property="orgName"/>
+		<result column="password" jdbcType="VARCHAR" property="password"/>
+		<result column="userStatus" jdbcType="VARCHAR" property="userStatus"/>
+		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
+	</resultMap>
+</mapper>

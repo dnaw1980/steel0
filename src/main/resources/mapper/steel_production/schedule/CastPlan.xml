@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.schedule.dao.CastPlanDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.CastPlan">
+		<id column="cast_planUID" jdbcType="VARCHAR" property="cast_planUID"/>
+		<result column="castNo" property="castno" jdbcType="VARCHAR" />
+		<result column="planTime" property="plantime" jdbcType="TIMESTAMP" />
+		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
+		<result column="chargeList" property="chargelist" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
+		<result column="productSpec" property="productspec" jdbcType="VARCHAR" />
+		<result column="chargeNum" property="chargeNum" jdbcType="INTEGER" />
+		<result column="continueTime" property="continueTime" jdbcType="INTEGER" />
+		<result column="productLevel" property="productlevel" jdbcType="VARCHAR" />
+		<result column="technicalStandard" property="technicalstandard" jdbcType="VARCHAR" />
+		<result column="billetLength" property="billetlength" jdbcType="VARCHAR" />
+		<result column="billetWidth" property="billetwidth" jdbcType="VARCHAR" />
+		<result column="billetThick" property="billetthick" jdbcType="VARCHAR" />
+		<result column="targetWeight" property="targetweight" jdbcType="DOUBLE" />
+		<result column="targetQuantity" property="targetquantity" jdbcType="DOUBLE" />
+		<result column="targetTime" property="targettime" jdbcType="VARCHAR" />
+		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause" >
+		<where >
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause" >
+		<where >
+			<foreach collection="example.oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List" >
+    cast_planUID, castNo, planTime, prepareTime, prepareStaff, approveTime, approveStaff,
+    chargeList, steelGrade, productSpec, productLevel, technicalStandard, billetLength, billetWidth,
+    billetThick, targetWeight, targetQuantity, targetTime, planStatus, remarks, lastModifyUser,
+    lastModifyDate
+  </sql>
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.schedule.model.CastPlanExample" >
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from cast_plan
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from cast_plan
+		where cast_planUID = #{castPlanuid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cast_plan
+    where cast_planUID = #{castPlanuid,jdbcType=VARCHAR}
+  </delete>
+	<delete id="deleteByExample" parameterType="com.rss.steel_production.schedule.model.CastPlanExample" >
+		delete from cast_plan
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+<!--	<insert id="insert" parameterType="com.rss.steel_production.schedule.model.CastPlan" >-->
+<!--    insert into cast_plan (cast_planUID, castNo, planTime,-->
+<!--      prepareTime, prepareStaff, approveTime,-->
+<!--      approveStaff, chargeList, steelGrade,-->
+<!--      productLevel, technicalStandard, billetLength,-->
+<!--      billetWidth, billetThick, targetWeight,-->
+<!--      targetQuantity, targetTime, planStatus,-->
+<!--      remarks, lastModifyUser, lastModifyDate-->
+<!--      )-->
+<!--    values (#{castPlanuid,jdbcType=VARCHAR}, #{castno,jdbcType=VARCHAR}, #{plantime,jdbcType=TIMESTAMP},-->
+<!--      #{preparetime,jdbcType=TIMESTAMP}, #{preparestaff,jdbcType=VARCHAR}, #{approvetime,jdbcType=TIMESTAMP},-->
+<!--      #{approvestaff,jdbcType=VARCHAR}, #{chargelist,jdbcType=VARCHAR}, #{steelgrade,jdbcType=VARCHAR},-->
+<!--      #{productlevel,jdbcType=VARCHAR}, #{technicalstandard,jdbcType=VARCHAR}, #{billetlength,jdbcType=VARCHAR},-->
+<!--      #{billetwidth,jdbcType=VARCHAR}, #{billetthick,jdbcType=VARCHAR}, #{targetweight,jdbcType=DOUBLE},-->
+<!--      #{targetquantity,jdbcType=DOUBLE}, #{targettime,jdbcType=VARCHAR}, #{planstatus,jdbcType=VARCHAR},-->
+<!--      #{remarks,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR}, #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--      )-->
+<!--  </insert>-->
+<!--	<insert id="insertSelective" parameterType="com.rss.steel_production.schedule.model.CastPlan" >-->
+<!--		insert into cast_plan-->
+<!--		<trim prefix="(" suffix=")" suffixOverrides="," >-->
+<!--			<if test="castPlanuid != null" >-->
+<!--				cast_planUID,-->
+<!--			</if>-->
+<!--			<if test="castno != null" >-->
+<!--				castNo,-->
+<!--			</if>-->
+<!--			<if test="plantime != null" >-->
+<!--				planTime,-->
+<!--			</if>-->
+<!--			<if test="preparetime != null" >-->
+<!--				prepareTime,-->
+<!--			</if>-->
+<!--			<if test="preparestaff != null" >-->
+<!--				prepareStaff,-->
+<!--			</if>-->
+<!--			<if test="approvetime != null" >-->
+<!--				approveTime,-->
+<!--			</if>-->
+<!--			<if test="approvestaff != null" >-->
+<!--				approveStaff,-->
+<!--			</if>-->
+<!--			<if test="chargelist != null" >-->
+<!--				chargeList,-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				steelGrade,-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				productLevel,-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				technicalStandard,-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				billetLength,-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				billetWidth,-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				billetThick,-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				targetWeight,-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				targetQuantity,-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				targetTime,-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus,-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				remarks,-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser,-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate,-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--		<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+<!--			<if test="castPlanuid != null" >-->
+<!--				#{castPlanuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="castno != null" >-->
+<!--				#{castno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="plantime != null" >-->
+<!--				#{plantime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparetime != null" >-->
+<!--				#{preparetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparestaff != null" >-->
+<!--				#{preparestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="approvetime != null" >-->
+<!--				#{approvetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="approvestaff != null" >-->
+<!--				#{approvestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="chargelist != null" >-->
+<!--				#{chargelist,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				#{steelgrade,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				#{productlevel,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				#{technicalstandard,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				#{billetlength,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				#{billetwidth,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				#{billetthick,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				#{targetweight,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				#{targetquantity,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				#{targettime,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				#{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				#{remarks,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				#{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				#{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--	</insert>-->
+	<select id="countByExample" parameterType="com.rss.steel_production.schedule.model.CastPlanExample" resultType="java.lang.Integer" >
+		select count(*) from cast_plan
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map" >
+		update cast_plan
+		<set >
+			<if test="record.castPlanuid != null" >
+				cast_planUID = #{record.castPlanuid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.castno != null" >
+				castNo = #{record.castno,jdbcType=VARCHAR},
+			</if>
+			<if test="record.plantime != null" >
+				planTime = #{record.plantime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.preparetime != null" >
+				prepareTime = #{record.preparetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.preparestaff != null" >
+				prepareStaff = #{record.preparestaff,jdbcType=VARCHAR},
+			</if>
+			<if test="record.approvetime != null" >
+				approveTime = #{record.approvetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.approvestaff != null" >
+				approveStaff = #{record.approvestaff,jdbcType=VARCHAR},
+			</if>
+			<if test="record.chargelist != null" >
+				chargeList = #{record.chargelist,jdbcType=VARCHAR},
+			</if>
+			<if test="record.steelgrade != null" >
+				steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productspec != null" >
+				productSpec = #{record.productspec,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productlevel != null" >
+				productLevel = #{record.productlevel,jdbcType=VARCHAR},
+			</if>
+			<if test="record.technicalstandard != null" >
+				technicalStandard = #{record.technicalstandard,jdbcType=VARCHAR},
+			</if>
+			<if test="record.billetlength != null" >
+				billetLength = #{record.billetlength,jdbcType=VARCHAR},
+			</if>
+			<if test="record.billetwidth != null" >
+				billetWidth = #{record.billetwidth,jdbcType=VARCHAR},
+			</if>
+			<if test="record.billetthick != null" >
+				billetThick = #{record.billetthick,jdbcType=VARCHAR},
+			</if>
+			<if test="record.targetweight != null" >
+				targetWeight = #{record.targetweight,jdbcType=DOUBLE},
+			</if>
+			<if test="record.targetquantity != null" >
+				targetQuantity = #{record.targetquantity,jdbcType=DOUBLE},
+			</if>
+			<if test="record.targettime != null" >
+				targetTime = #{record.targettime,jdbcType=VARCHAR},
+			</if>
+			<if test="record.planstatus != null" >
+				planStatus = #{record.planstatus,jdbcType=VARCHAR},
+			</if>
+			<if test="record.remarks != null" >
+				remarks = #{record.remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifyuser != null" >
+				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifydate != null" >
+				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map" >
+		update cast_plan
+		set cast_planUID = #{record.castPlanuid,jdbcType=VARCHAR},
+		castNo = #{record.castno,jdbcType=VARCHAR},
+		planTime = #{record.plantime,jdbcType=TIMESTAMP},
+		prepareTime = #{record.preparetime,jdbcType=TIMESTAMP},
+		prepareStaff = #{record.preparestaff,jdbcType=VARCHAR},
+		approveTime = #{record.approvetime,jdbcType=TIMESTAMP},
+		approveStaff = #{record.approvestaff,jdbcType=VARCHAR},
+		chargeList = #{record.chargelist,jdbcType=VARCHAR},
+		steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+		productSpec = #{record.productspec,jdbcType=VARCHAR},
+		productLevel = #{record.productlevel,jdbcType=VARCHAR},
+		technicalStandard = #{record.technicalstandard,jdbcType=VARCHAR},
+		billetLength = #{record.billetlength,jdbcType=VARCHAR},
+		billetWidth = #{record.billetwidth,jdbcType=VARCHAR},
+		billetThick = #{record.billetthick,jdbcType=VARCHAR},
+		targetWeight = #{record.targetweight,jdbcType=DOUBLE},
+		targetQuantity = #{record.targetquantity,jdbcType=DOUBLE},
+		targetTime = #{record.targettime,jdbcType=VARCHAR},
+		planStatus = #{record.planstatus,jdbcType=VARCHAR},
+		remarks = #{record.remarks,jdbcType=VARCHAR},
+		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP}
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+<!--	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.schedule.model.CastPlan" >-->
+<!--		update cast_plan-->
+<!--		<set >-->
+<!--			<if test="castno != null" >-->
+<!--				castNo = #{castno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="plantime != null" >-->
+<!--				planTime = #{plantime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparetime != null" >-->
+<!--				prepareTime = #{preparetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparestaff != null" >-->
+<!--				prepareStaff = #{preparestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="approvetime != null" >-->
+<!--				approveTime = #{approvetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="approvestaff != null" >-->
+<!--				approveStaff = #{approvestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="chargelist != null" >-->
+<!--				chargeList = #{chargelist,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				steelGrade = #{steelgrade,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				productLevel = #{productlevel,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				technicalStandard = #{technicalstandard,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				billetLength = #{billetlength,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				billetWidth = #{billetwidth,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				billetThick = #{billetthick,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				targetWeight = #{targetweight,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				targetQuantity = #{targetquantity,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				targetTime = #{targettime,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="planstatus != null" >-->
+<!--				planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="remarks != null" >-->
+<!--				remarks = #{remarks,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		where cast_planUID = #{castPlanuid,jdbcType=VARCHAR}-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.schedule.model.CastPlan" >-->
+<!--    update cast_plan-->
+<!--    set castNo = #{castno,jdbcType=VARCHAR},-->
+<!--      planTime = #{plantime,jdbcType=TIMESTAMP},-->
+<!--      prepareTime = #{preparetime,jdbcType=TIMESTAMP},-->
+<!--      prepareStaff = #{preparestaff,jdbcType=VARCHAR},-->
+<!--      approveTime = #{approvetime,jdbcType=TIMESTAMP},-->
+<!--      approveStaff = #{approvestaff,jdbcType=VARCHAR},-->
+<!--      chargeList = #{chargelist,jdbcType=VARCHAR},-->
+<!--      steelGrade = #{steelgrade,jdbcType=VARCHAR},-->
+<!--      productLevel = #{productlevel,jdbcType=VARCHAR},-->
+<!--      technicalStandard = #{technicalstandard,jdbcType=VARCHAR},-->
+<!--      billetLength = #{billetlength,jdbcType=VARCHAR},-->
+<!--      billetWidth = #{billetwidth,jdbcType=VARCHAR},-->
+<!--      billetThick = #{billetthick,jdbcType=VARCHAR},-->
+<!--      targetWeight = #{targetweight,jdbcType=DOUBLE},-->
+<!--      targetQuantity = #{targetquantity,jdbcType=DOUBLE},-->
+<!--      targetTime = #{targettime,jdbcType=VARCHAR},-->
+<!--      planStatus = #{planstatus,jdbcType=VARCHAR},-->
+<!--      remarks = #{remarks,jdbcType=VARCHAR},-->
+<!--      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--    where cast_planUID = #{castPlanuid,jdbcType=VARCHAR}-->
+<!--  </update>-->
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.platform.portal.dao.TermInfoDao">
+	<resultMap id="BaseResultMap" type="com.rss.platform.portal.model.TermInfo">
+		<id column="system_paramUID" jdbcType="VARCHAR" property="system_paramUID"/>
+		<result column="paramType" jdbcType="VARCHAR" property="paramType"/>
+		<result column="paramName" jdbcType="VARCHAR" property="paramName"/>
+		<result column="appName" jdbcType="VARCHAR" property="appName"/>
+		<result column="paramValues" jdbcType="VARCHAR" property="paramValues"/>
+		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
+	</resultMap>
+</mapper>

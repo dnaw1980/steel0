@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.foundation.dao.SteelDeviceDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.foundation.model.SteelDevice">
+		<id column="steel_deviceUID" jdbcType="VARCHAR" property="steel_deviceUID"/>
+		<result column="deviceNo" property="deviceno" jdbcType="VARCHAR" />
+		<result column="deviceName" property="devicename" jdbcType="VARCHAR" />
+		<result column="deviceType" property="devicetype" jdbcType="VARCHAR" />
+		<result column="stationName" property="stationname" jdbcType="VARCHAR" />
+		<result column="processCapacity" property="processcapacity" jdbcType="VARCHAR" />
+		<result column="deviceStatus" property="devicestatus" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="enterTime" property="entertime" jdbcType="TIMESTAMP" />
+		<result column="exitTime" property="exittime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause" >
+		<where >
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause" >
+		<where >
+			<foreach collection="example.oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List" >
+    steel_deviceUID, deviceNo, deviceName, deviceType, stationName, processCapacity,
+    deviceStatus, remarks, lastModifyUser, lastModifyDate, enterTime, exitTime
+  </sql>
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.foundation.model.SteelDeviceExample" >
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from steel_device
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from steel_device
+		where steel_deviceUID = #{steelDeviceuid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from steel_device
+    where steel_deviceUID = #{steelDeviceuid,jdbcType=VARCHAR}
+  </delete>
+	<delete id="deleteByExample" parameterType="com.rss.steel_production.foundation.model.SteelDeviceExample" >
+		delete from steel_device
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.rss.steel_production.foundation.model.SteelDevice" >
+    insert into steel_device (steel_deviceUID, deviceNo, deviceName,
+      deviceType, stationName, processCapacity,
+      deviceStatus, remarks, lastModifyUser,
+      lastModifyDate, enterTime,
+      exitTime)
+    values (#{steelDeviceuid,jdbcType=VARCHAR}, #{deviceno,jdbcType=VARCHAR}, #{devicename,jdbcType=VARCHAR},
+      #{devicetype,jdbcType=VARCHAR}, #{stationname,jdbcType=VARCHAR}, #{processcapacity,jdbcType=VARCHAR},
+      #{devicestatus,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR},
+      #{lastmodifydate,jdbcType=TIMESTAMP}, #{entertime,jdbcType=TIMESTAMP},
+      #{exittime,jdbcType=TIMESTAMP}
+  </insert>
+	<insert id="insertSelective" parameterType="com.rss.steel_production.foundation.model.SteelDevice" >
+		insert into steel_device
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="steelDeviceuid != null" >
+				steel_deviceUID,
+			</if>
+			<if test="deviceno != null" >
+				deviceNo,
+			</if>
+			<if test="devicename != null" >
+				deviceName,
+			</if>
+			<if test="devicetype != null" >
+				deviceType,
+			</if>
+			<if test="stationname != null" >
+				stationName,
+			</if>
+			<if test="processcapacity != null" >
+				processCapacity,
+			</if>
+			<if test="devicestatus != null" >
+				deviceStatus,
+			</if>
+			<if test="remarks != null" >
+				remarks,
+			</if>
+			<if test="lastmodifyuser != null" >
+				lastModifyUser,
+			</if>
+			<if test="lastmodifydate != null" >
+				lastModifyDate,
+			</if>
+			<if test="entertime != null" >
+				enterTime,
+			</if>
+			<if test="exittime != null" >
+				exitTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="steelDeviceuid != null" >
+				#{steelDeviceuid,jdbcType=VARCHAR},
+			</if>
+			<if test="deviceno != null" >
+				#{deviceno,jdbcType=VARCHAR},
+			</if>
+			<if test="devicename != null" >
+				#{devicename,jdbcType=VARCHAR},
+			</if>
+			<if test="devicetype != null" >
+				#{devicetype,jdbcType=VARCHAR},
+			</if>
+			<if test="stationname != null" >
+				#{stationname,jdbcType=VARCHAR},
+			</if>
+			<if test="processcapacity != null" >
+				#{processcapacity,jdbcType=VARCHAR},
+			</if>
+			<if test="devicestatus != null" >
+				#{devicestatus,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null" >
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifyuser != null" >
+				#{lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifydate != null" >
+				#{lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="entertime != null" >
+				#{entertime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="exittime != null" >
+				#{exittime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.rss.steel_production.foundation.model.SteelDeviceExample" resultType="java.lang.Integer" >
+		select count(*) from steel_device
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map" >
+		update steel_device
+		<set >
+			<if test="record.steelDeviceuid != null" >
+				steel_deviceUID = #{record.steelDeviceuid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.deviceno != null" >
+				deviceNo = #{record.deviceno,jdbcType=VARCHAR},
+			</if>
+			<if test="record.devicename != null" >
+				deviceName = #{record.devicename,jdbcType=VARCHAR},
+			</if>
+			<if test="record.devicetype != null" >
+				deviceType = #{record.devicetype,jdbcType=VARCHAR},
+			</if>
+			<if test="record.stationname != null" >
+				stationName = #{record.stationname,jdbcType=VARCHAR},
+			</if>
+			<if test="record.processcapacity != null" >
+				processCapacity = #{record.processcapacity,jdbcType=VARCHAR},
+			</if>
+			<if test="record.devicestatus != null" >
+				deviceStatus = #{record.devicestatus,jdbcType=VARCHAR},
+			</if>
+			<if test="record.remarks != null" >
+				remarks = #{record.remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifyuser != null" >
+				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifydate != null" >
+				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.entertime != null" >
+				enterTime = #{record.entertime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.exittime != null" >
+				exitTime = #{record.exittime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map" >
+		update steel_device
+		set steel_deviceUID = #{record.steelDeviceuid,jdbcType=VARCHAR},
+		deviceNo = #{record.deviceno,jdbcType=VARCHAR},
+		deviceName = #{record.devicename,jdbcType=VARCHAR},
+		deviceType = #{record.devicetype,jdbcType=VARCHAR},
+		stationName = #{record.stationname,jdbcType=VARCHAR},
+		processCapacity = #{record.processcapacity,jdbcType=VARCHAR},
+		deviceStatus = #{record.devicestatus,jdbcType=VARCHAR},
+		remarks = #{record.remarks,jdbcType=VARCHAR},
+		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},
+		enterTime = #{record.entertime,jdbcType=TIMESTAMP},
+		exitTime = #{record.exittime,jdbcType=TIMESTAMP},
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.foundation.model.SteelDevice" >
+		update steel_device
+		<set >
+			<if test="deviceno != null" >
+				deviceNo = #{deviceno,jdbcType=VARCHAR},
+			</if>
+			<if test="devicename != null" >
+				deviceName = #{devicename,jdbcType=VARCHAR},
+			</if>
+			<if test="devicetype != null" >
+				deviceType = #{devicetype,jdbcType=VARCHAR},
+			</if>
+			<if test="stationname != null" >
+				stationName = #{stationname,jdbcType=VARCHAR},
+			</if>
+			<if test="processcapacity != null" >
+				processCapacity = #{processcapacity,jdbcType=VARCHAR},
+			</if>
+			<if test="devicestatus != null" >
+				deviceStatus = #{devicestatus,jdbcType=VARCHAR},
+			</if>
+			<if test="remarks != null" >
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifyuser != null" >
+				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="lastmodifydate != null" >
+				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="entertime != null" >
+				enterTime = #{entertime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="exittime != null" >
+				exitTime = #{exittime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where steel_deviceUID = #{steelDeviceuid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.foundation.model.SteelDevice" >
+    update steel_device
+    set deviceNo = #{deviceno,jdbcType=VARCHAR},
+      deviceName = #{devicename,jdbcType=VARCHAR},
+      deviceType = #{devicetype,jdbcType=VARCHAR},
+      stationName = #{stationname,jdbcType=VARCHAR},
+      processCapacity = #{processcapacity,jdbcType=VARCHAR},
+      deviceStatus = #{devicestatus,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},
+      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},
+      enterTime = #{entertime,jdbcType=TIMESTAMP},
+      exitTime = #{exittime,jdbcType=TIMESTAMP},
+    where steel_deviceUID = #{steelDeviceuid,jdbcType=VARCHAR}
+  </update>
+</mapper>

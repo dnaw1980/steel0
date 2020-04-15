@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.foundation.dao.SteelProductDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.foundation.model.SteelProduct">
+		<id column="steel_productUID" jdbcType="VARCHAR" property="steel_productUID"/>
+		<result column="productCode" jdbcType="VARCHAR" property="productCode"/>
+		<result column="productName" jdbcType="VARCHAR" property="productName"/>
+		<result column="productType" jdbcType="VARCHAR" property="productType"/>
+		<result column="productDesc" jdbcType="VARCHAR" property="productDesc"/>
+		<result column="productSpec" jdbcType="VARCHAR" property="productSpec"/>
+		<result column="processPurpose" jdbcType="VARCHAR" property="processPurpose"/>
+		<result column="deliverState" jdbcType="VARCHAR" property="deliverState"/>
+		<result column="techCondiiton" jdbcType="VARCHAR" property="techCondiiton"/>
+		<result column="interControl" jdbcType="VARCHAR" property="interControl"/>
+		<result column="materialState" jdbcType="VARCHAR" property="materialState"/>
+		<result column="productProperty" jdbcType="VARCHAR" property="productProperty"/>
+		<result column="techStandard" jdbcType="VARCHAR" property="techStandard"/>
+		<result column="steelGrade" jdbcType="VARCHAR" property="steelGrade"/>
+		<result column="gradeType" jdbcType="VARCHAR" property="gradeType"/>
+		<result column="processType" jdbcType="VARCHAR" property="processType"/>
+		<result column="smeltMethod" jdbcType="VARCHAR" property="smeltMethod"/>
+		<result column="techTerm" jdbcType="VARCHAR" property="techTerm"/>
+		<result column="processAttach" jdbcType="VARCHAR" property="processAttach"/>
+		<result column="processRoute" jdbcType="VARCHAR" property="processRoute"/>
+		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
+	</resultMap>
+</mapper>

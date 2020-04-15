@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.CompositionInfoDAO">
+    <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.CompositionInfo">
+        <id column="steel_compositionUID" jdbcType="VARCHAR" property="steel_compositionUID"/>
+        <result column="sampleCode" property="sampleCode" jdbcType="VARCHAR" />
+        <result column="chargeNo" property="chargeNo" jdbcType="VARCHAR" />
+        <result column="blastNo" property="blastNo" jdbcType="VARCHAR" />
+        <result column="sampleType" property="sampleType" jdbcType="VARCHAR" />
+        <result column="sampleTime" property="sampleTime" jdbcType="TIMESTAMP" />
+        <result column="ratioFe" property="ratioFe" jdbcType="FLOAT" />
+        <result column="ratioC" property="ratioC" jdbcType="FLOAT" />
+        <result column="ratioSi" property="ratioSi" jdbcType="FLOAT" />
+        <result column="ratioMn" property="ratioMn" jdbcType="FLOAT" />
+        <result column="ratioP" property="ratioP" jdbcType="FLOAT" />
+        <result column="ratioS" property="ratioS" jdbcType="FLOAT" />
+        <result column="ratioNi" property="ratioNi" jdbcType="FLOAT" />
+        <result column="ratioCr" property="ratioCr" jdbcType="FLOAT" />
+        <result column="ratioV" property="ratioV" jdbcType="FLOAT" />
+        <result column="ratioAl" property="ratioAl" jdbcType="FLOAT" />
+        <result column="ratioSol" property="ratioAl_Sol" jdbcType="FLOAT" />
+        <result column="ratioCa" property="ratioCa" jdbcType="FLOAT" />
+        <result column="ratioCu" property="ratioCu" jdbcType="FLOAT" />
+        <result column="ratioTi" property="ratioTi" jdbcType="FLOAT" />
+        <result column="ratioCeq" property="ratioCeq" jdbcType="FLOAT" />
+        <result column="acquisitionTime" property="acquisitionTime" jdbcType="VARCHAR" />
+        <result column="acquireTime" property="acquireTime" jdbcType="VARCHAR" />
+    </resultMap>
+</mapper>

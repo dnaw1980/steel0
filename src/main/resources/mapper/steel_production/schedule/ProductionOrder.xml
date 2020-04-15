@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.schedule.dao.ProductionOrderDao">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.ProductionOrder">
+		<id column="product_orderUID" jdbcType="VARCHAR" property="product_orderUID"/>
+		<result column="orderNo" property="orderno" jdbcType="VARCHAR" />
+		<result column="orderDate" property="orderdate" jdbcType="DATE" />
+		<result column="productCode" property="productcode" jdbcType="VARCHAR" />
+		<result column="productName" property="productname" jdbcType="VARCHAR" />
+		<result column="productType" property="producttype" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
+		<result column="productSpec" property="productspec" jdbcType="VARCHAR" />
+		<result column="productLevel" property="productlevel" jdbcType="VARCHAR" />
+		<result column="technicalStandard" property="technicalstandard" jdbcType="VARCHAR" />
+		<result column="billetLength" property="billetlength" jdbcType="DOUBLE" />
+		<result column="billetWidth" property="billetwidth" jdbcType="DOUBLE" />
+		<result column="billetThick" property="billetthick" jdbcType="DOUBLE" />
+		<result column="targetWeight" property="targetweight" jdbcType="DOUBLE" />
+		<result column="targetQuantity" property="targetquantity" jdbcType="DOUBLE" />
+		<result column="targetTime" property="targettime" jdbcType="TIMESTAMP" />
+		<result column="preparedStaff" property="preparedstaff" jdbcType="VARCHAR" />
+		<result column="preparedTime" property="preparedtime" jdbcType="TIMESTAMP" />
+		<result column="technicalLeader" property="technicalleader" jdbcType="VARCHAR" />
+		<result column="technicalTime" property="technicaltime" jdbcType="TIMESTAMP" />
+		<result column="productLeader" property="productleader" jdbcType="VARCHAR" />
+		<result column="productionTime" property="productiontime" jdbcType="TIMESTAMP" />
+		<result column="releaseStaff" property="releasestaff" jdbcType="VARCHAR" />
+		<result column="releaseTime" property="releasetime" jdbcType="TIMESTAMP" />
+		<result column="processRoute" property="processroute" jdbcType="VARCHAR" />
+		<result column="orderStatus" property="orderstatus" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Example_Where_Clause" >
+		<where >
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause" >
+		<where >
+			<foreach collection="example.oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List" >
+    product_orderUID, orderNo, orderDate, productCode, productName, productType, steelGrade, productSpec,
+    productLevel, technicalStandard, billetLength, billetWidth, billetThick, targetWeight,
+    targetQuantity, targetTime, preparedStaff, preparedTime, technicalLeader, technicalTime,
+    productLeader, productionTime, releaseStaff, releaseTime, processRoute, orderStatus,
+    lastModifyUser, lastModifyDate
+  </sql>
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.schedule.model.ProductionOrderExample" >
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from product_order
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		<include refid="Base_Column_List" />
+		from product_order
+		where product_orderUID = #{productOrderuid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from product_order
+    where product_orderUID = #{productOrderuid,jdbcType=VARCHAR}
+  </delete>
+	<delete id="deleteByExample" parameterType="com.rss.steel_production.schedule.model.ProductionOrderExample" >
+		delete from product_order
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+<!--	<insert id="insert" parameterType="com.rss.steel_production.schedule.model.ProductionOrder" >-->
+<!--    insert into product_order (product_orderUID, orderNo, orderDate,-->
+<!--      productCode, productName, productType,-->
+<!--      steelGrade, productLevel, technicalStandard,-->
+<!--      billetLength, billetWidth, billetThick,-->
+<!--      targetWeight, targetQuantity, targetTime,-->
+<!--      preparedStaff, preparedTime, technicalLeader,-->
+<!--      technicalTime, productLeader, productionTime,-->
+<!--      releaseStaff, releaseTime, processRoute,-->
+<!--      orderStatus, lastModifyUser, lastModifyDate-->
+<!--      )-->
+<!--    values (#{productOrderuid,jdbcType=VARCHAR}, #{orderno,jdbcType=VARCHAR}, #{orderdate,jdbcType=DATE},-->
+<!--      #{productcode,jdbcType=VARCHAR}, #{productname,jdbcType=VARCHAR}, #{producttype,jdbcType=VARCHAR},-->
+<!--      #{steelgrade,jdbcType=VARCHAR}, #{productlevel,jdbcType=VARCHAR}, #{technicalstandard,jdbcType=VARCHAR},-->
+<!--      #{billetlength,jdbcType=DOUBLE}, #{billetwidth,jdbcType=DOUBLE}, #{billetthick,jdbcType=DOUBLE},-->
+<!--      #{targetweight,jdbcType=DOUBLE}, #{targetquantity,jdbcType=DOUBLE}, #{targettime,jdbcType=TIMESTAMP},-->
+<!--      #{preparedstaff,jdbcType=VARCHAR}, #{preparedtime,jdbcType=TIMESTAMP}, #{technicalleader,jdbcType=VARCHAR},-->
+<!--      #{technicaltime,jdbcType=TIMESTAMP}, #{productleader,jdbcType=VARCHAR}, #{productiontime,jdbcType=TIMESTAMP},-->
+<!--      #{releasestaff,jdbcType=VARCHAR}, #{releasetime,jdbcType=TIMESTAMP}, #{processroute,jdbcType=VARCHAR},-->
+<!--      #{orderstatus,jdbcType=VARCHAR}, #{lastmodifyuser,jdbcType=VARCHAR}, #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--      )-->
+<!--  </insert>-->
+<!--	<insert id="insertSelective" parameterType="com.rss.steel_production.schedule.model.ProductionOrder" >-->
+<!--		insert into product_order-->
+<!--		<trim prefix="(" suffix=")" suffixOverrides="," >-->
+<!--			<if test="productOrderuid != null" >-->
+<!--				product_orderUID,-->
+<!--			</if>-->
+<!--			<if test="orderno != null" >-->
+<!--				orderNo,-->
+<!--			</if>-->
+<!--			<if test="orderdate != null" >-->
+<!--				orderDate,-->
+<!--			</if>-->
+<!--			<if test="productcode != null" >-->
+<!--				productCode,-->
+<!--			</if>-->
+<!--			<if test="productname != null" >-->
+<!--				productName,-->
+<!--			</if>-->
+<!--			<if test="producttype != null" >-->
+<!--				productType,-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				steelGrade,-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				productLevel,-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				technicalStandard,-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				billetLength,-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				billetWidth,-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				billetThick,-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				targetWeight,-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				targetQuantity,-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				targetTime,-->
+<!--			</if>-->
+<!--			<if test="preparedstaff != null" >-->
+<!--				preparedStaff,-->
+<!--			</if>-->
+<!--			<if test="preparedtime != null" >-->
+<!--				preparedTime,-->
+<!--			</if>-->
+<!--			<if test="technicalleader != null" >-->
+<!--				technicalLeader,-->
+<!--			</if>-->
+<!--			<if test="technicaltime != null" >-->
+<!--				technicalTime,-->
+<!--			</if>-->
+<!--			<if test="productleader != null" >-->
+<!--				productLeader,-->
+<!--			</if>-->
+<!--			<if test="productiontime != null" >-->
+<!--				productionTime,-->
+<!--			</if>-->
+<!--			<if test="releasestaff != null" >-->
+<!--				releaseStaff,-->
+<!--			</if>-->
+<!--			<if test="releasetime != null" >-->
+<!--				releaseTime,-->
+<!--			</if>-->
+<!--			<if test="processroute != null" >-->
+<!--				processRoute,-->
+<!--			</if>-->
+<!--			<if test="orderstatus != null" >-->
+<!--				orderStatus,-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser,-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate,-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--		<trim prefix="values (" suffix=")" suffixOverrides="," >-->
+<!--			<if test="productOrderuid != null" >-->
+<!--				#{productOrderuid,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="orderno != null" >-->
+<!--				#{orderno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="orderdate != null" >-->
+<!--				#{orderdate,jdbcType=DATE},-->
+<!--			</if>-->
+<!--			<if test="productcode != null" >-->
+<!--				#{productcode,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productname != null" >-->
+<!--				#{productname,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="producttype != null" >-->
+<!--				#{producttype,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				#{steelgrade,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				#{productlevel,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				#{technicalstandard,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				#{billetlength,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				#{billetwidth,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				#{billetthick,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				#{targetweight,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				#{targetquantity,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				#{targettime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparedstaff != null" >-->
+<!--				#{preparedstaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="preparedtime != null" >-->
+<!--				#{preparedtime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="technicalleader != null" >-->
+<!--				#{technicalleader,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicaltime != null" >-->
+<!--				#{technicaltime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="productleader != null" >-->
+<!--				#{productleader,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productiontime != null" >-->
+<!--				#{productiontime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="releasestaff != null" >-->
+<!--				#{releasestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="releasetime != null" >-->
+<!--				#{releasetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="processroute != null" >-->
+<!--				#{processroute,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="orderstatus != null" >-->
+<!--				#{orderstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				#{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				#{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</trim>-->
+<!--	</insert>-->
+	<select id="countByExample" parameterType="com.rss.steel_production.schedule.model.ProductionOrderExample" resultType="java.lang.Integer" >
+		select count(*) from product_order
+		<if test="_parameter != null" >
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map" >
+		update product_order
+		<set >
+			<if test="record.productOrderuid != null" >
+				product_orderUID = #{record.productOrderuid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.orderno != null" >
+				orderNo = #{record.orderno,jdbcType=VARCHAR},
+			</if>
+			<if test="record.orderdate != null" >
+				orderDate = #{record.orderdate,jdbcType=DATE},
+			</if>
+			<if test="record.productcode != null" >
+				productCode = #{record.productcode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productname != null" >
+				productName = #{record.productname,jdbcType=VARCHAR},
+			</if>
+			<if test="record.producttype != null" >
+				productType = #{record.producttype,jdbcType=VARCHAR},
+			</if>
+			<if test="record.steelgrade != null" >
+				steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productspec != null" >
+				productSpec = #{record.productspec,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productlevel != null" >
+				productLevel = #{record.productlevel,jdbcType=VARCHAR},
+			</if>
+			<if test="record.technicalstandard != null" >
+				technicalStandard = #{record.technicalstandard,jdbcType=VARCHAR},
+			</if>
+			<if test="record.billetlength != null" >
+				billetLength = #{record.billetlength,jdbcType=DOUBLE},
+			</if>
+			<if test="record.billetwidth != null" >
+				billetWidth = #{record.billetwidth,jdbcType=DOUBLE},
+			</if>
+			<if test="record.billetthick != null" >
+				billetThick = #{record.billetthick,jdbcType=DOUBLE},
+			</if>
+			<if test="record.targetweight != null" >
+				targetWeight = #{record.targetweight,jdbcType=DOUBLE},
+			</if>
+			<if test="record.targetquantity != null" >
+				targetQuantity = #{record.targetquantity,jdbcType=DOUBLE},
+			</if>
+			<if test="record.targettime != null" >
+				targetTime = #{record.targettime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.preparedstaff != null" >
+				preparedStaff = #{record.preparedstaff,jdbcType=VARCHAR},
+			</if>
+			<if test="record.preparedtime != null" >
+				preparedTime = #{record.preparedtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.technicalleader != null" >
+				technicalLeader = #{record.technicalleader,jdbcType=VARCHAR},
+			</if>
+			<if test="record.technicaltime != null" >
+				technicalTime = #{record.technicaltime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.productleader != null" >
+				productLeader = #{record.productleader,jdbcType=VARCHAR},
+			</if>
+			<if test="record.productiontime != null" >
+				productionTime = #{record.productiontime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.releasestaff != null" >
+				releaseStaff = #{record.releasestaff,jdbcType=VARCHAR},
+			</if>
+			<if test="record.releasetime != null" >
+				releaseTime = #{record.releasetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.processroute != null" >
+				processRoute = #{record.processroute,jdbcType=VARCHAR},
+			</if>
+			<if test="record.orderstatus != null" >
+				orderStatus = #{record.orderstatus,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifyuser != null" >
+				lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+			</if>
+			<if test="record.lastmodifydate != null" >
+				lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map" >
+		update product_order
+		set product_orderUID = #{record.productOrderuid,jdbcType=VARCHAR},
+		orderNo = #{record.orderno,jdbcType=VARCHAR},
+		orderDate = #{record.orderdate,jdbcType=DATE},
+		productCode = #{record.productcode,jdbcType=VARCHAR},
+		productName = #{record.productname,jdbcType=VARCHAR},
+		productType = #{record.producttype,jdbcType=VARCHAR},
+		steelGrade = #{record.steelgrade,jdbcType=VARCHAR},
+		productSpec = #{record.productspec,jdbcType=VARCHAR},
+		productLevel = #{record.productlevel,jdbcType=VARCHAR},
+		technicalStandard = #{record.technicalstandard,jdbcType=VARCHAR},
+		billetLength = #{record.billetlength,jdbcType=DOUBLE},
+		billetWidth = #{record.billetwidth,jdbcType=DOUBLE},
+		billetThick = #{record.billetthick,jdbcType=DOUBLE},
+		targetWeight = #{record.targetweight,jdbcType=DOUBLE},
+		targetQuantity = #{record.targetquantity,jdbcType=DOUBLE},
+		targetTime = #{record.targettime,jdbcType=TIMESTAMP},
+		preparedStaff = #{record.preparedstaff,jdbcType=VARCHAR},
+		preparedTime = #{record.preparedtime,jdbcType=TIMESTAMP},
+		technicalLeader = #{record.technicalleader,jdbcType=VARCHAR},
+		technicalTime = #{record.technicaltime,jdbcType=TIMESTAMP},
+		productLeader = #{record.productleader,jdbcType=VARCHAR},
+		productionTime = #{record.productiontime,jdbcType=TIMESTAMP},
+		releaseStaff = #{record.releasestaff,jdbcType=VARCHAR},
+		releaseTime = #{record.releasetime,jdbcType=TIMESTAMP},
+		processRoute = #{record.processroute,jdbcType=VARCHAR},
+		orderStatus = #{record.orderstatus,jdbcType=VARCHAR},
+		lastModifyUser = #{record.lastmodifyuser,jdbcType=VARCHAR},
+		lastModifyDate = #{record.lastmodifydate,jdbcType=TIMESTAMP}
+		<if test="_parameter != null" >
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+<!--	<update id="updateByPrimaryKeySelective" parameterType="com.rss.steel_production.schedule.model.ProductionOrder" >-->
+<!--		update product_order-->
+<!--		<set >-->
+<!--			<if test="orderno != null" >-->
+<!--				orderNo = #{orderno,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="orderdate != null" >-->
+<!--				orderDate = #{orderdate,jdbcType=DATE},-->
+<!--			</if>-->
+<!--			<if test="productcode != null" >-->
+<!--				productCode = #{productcode,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productname != null" >-->
+<!--				productName = #{productname,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="producttype != null" >-->
+<!--				productType = #{producttype,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="steelgrade != null" >-->
+<!--				steelGrade = #{steelgrade,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productlevel != null" >-->
+<!--				productLevel = #{productlevel,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicalstandard != null" >-->
+<!--				technicalStandard = #{technicalstandard,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="billetlength != null" >-->
+<!--				billetLength = #{billetlength,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="billetwidth != null" >-->
+<!--				billetWidth = #{billetwidth,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="billetthick != null" >-->
+<!--				billetThick = #{billetthick,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetweight != null" >-->
+<!--				targetWeight = #{targetweight,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targetquantity != null" >-->
+<!--				targetQuantity = #{targetquantity,jdbcType=DOUBLE},-->
+<!--			</if>-->
+<!--			<if test="targettime != null" >-->
+<!--				targetTime = #{targettime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="preparedstaff != null" >-->
+<!--				preparedStaff = #{preparedstaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="preparedtime != null" >-->
+<!--				preparedTime = #{preparedtime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="technicalleader != null" >-->
+<!--				technicalLeader = #{technicalleader,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="technicaltime != null" >-->
+<!--				technicalTime = #{technicaltime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="productleader != null" >-->
+<!--				productLeader = #{productleader,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="productiontime != null" >-->
+<!--				productionTime = #{productiontime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="releasestaff != null" >-->
+<!--				releaseStaff = #{releasestaff,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="releasetime != null" >-->
+<!--				releaseTime = #{releasetime,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--			<if test="processroute != null" >-->
+<!--				processRoute = #{processroute,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="orderstatus != null" >-->
+<!--				orderStatus = #{orderstatus,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifyuser != null" >-->
+<!--				lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--			</if>-->
+<!--			<if test="lastmodifydate != null" >-->
+<!--				lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP},-->
+<!--			</if>-->
+<!--		</set>-->
+<!--		where product_orderUID = #{productOrderuid,jdbcType=VARCHAR}-->
+<!--	</update>-->
+<!--	<update id="updateByPrimaryKey" parameterType="com.rss.steel_production.schedule.model.ProductionOrder" >-->
+<!--    update product_order-->
+<!--    set orderNo = #{orderno,jdbcType=VARCHAR},-->
+<!--      orderDate = #{orderdate,jdbcType=DATE},-->
+<!--      productCode = #{productcode,jdbcType=VARCHAR},-->
+<!--      productName = #{productname,jdbcType=VARCHAR},-->
+<!--      productType = #{producttype,jdbcType=VARCHAR},-->
+<!--      steelGrade = #{steelgrade,jdbcType=VARCHAR},-->
+<!--      productLevel = #{productlevel,jdbcType=VARCHAR},-->
+<!--      technicalStandard = #{technicalstandard,jdbcType=VARCHAR},-->
+<!--      billetLength = #{billetlength,jdbcType=DOUBLE},-->
+<!--      billetWidth = #{billetwidth,jdbcType=DOUBLE},-->
+<!--      billetThick = #{billetthick,jdbcType=DOUBLE},-->
+<!--      targetWeight = #{targetweight,jdbcType=DOUBLE},-->
+<!--      targetQuantity = #{targetquantity,jdbcType=DOUBLE},-->
+<!--      targetTime = #{targettime,jdbcType=TIMESTAMP},-->
+<!--      preparedStaff = #{preparedstaff,jdbcType=VARCHAR},-->
+<!--      preparedTime = #{preparedtime,jdbcType=TIMESTAMP},-->
+<!--      technicalLeader = #{technicalleader,jdbcType=VARCHAR},-->
+<!--      technicalTime = #{technicaltime,jdbcType=TIMESTAMP},-->
+<!--      productLeader = #{productleader,jdbcType=VARCHAR},-->
+<!--      productionTime = #{productiontime,jdbcType=TIMESTAMP},-->
+<!--      releaseStaff = #{releasestaff,jdbcType=VARCHAR},-->
+<!--      releaseTime = #{releasetime,jdbcType=TIMESTAMP},-->
+<!--      processRoute = #{processroute,jdbcType=VARCHAR},-->
+<!--      orderStatus = #{orderstatus,jdbcType=VARCHAR},-->
+<!--      lastModifyUser = #{lastmodifyuser,jdbcType=VARCHAR},-->
+<!--      lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}-->
+<!--    where product_orderUID = #{productOrderuid,jdbcType=VARCHAR}-->
+<!--  </update>-->
+</mapper>

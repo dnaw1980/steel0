@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.BilletProductionDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.BilletProduction">
+    <id column="billet_productionUID" jdbcType="VARCHAR" property="billet_productionUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="enterRotating" jdbcType="TIMESTAMP" property="enterRotating" />
+    <result column="startCast" jdbcType="TIMESTAMP" property="startCast" />
+    <result column="castNo" jdbcType="VARCHAR" property="castNo" />
+    <result column="baleTemperature" jdbcType="VARCHAR" property="baleTemperature" />
+    <result column="baleWeigh1" jdbcType="VARCHAR" property="baleWeigh1" />
+    <result column="baleWeigh2" jdbcType="VARCHAR" property="baleWeigh2" />
+    <result column="tundishTemperature1" jdbcType="VARCHAR" property="tundishTemperature1" />
+    <result column="tundishContinuous1" jdbcType="VARCHAR" property="tundishContinuous1" />
+    <result column="tundishTemperature2" jdbcType="VARCHAR" property="tundishTemperature2" />
+    <result column="tundishContinuous2" jdbcType="VARCHAR" property="tundishContinuous2" />
+    <result column="drawingSpeed01" jdbcType="VARCHAR" property="drawingSpeed01" />
+    <result column="pouringState01" jdbcType="INTEGER" property="pouringState01" />
+    <result column="drawingSpeed02" jdbcType="VARCHAR" property="drawingSpeed02" />
+    <result column="pouringState02" jdbcType="INTEGER" property="pouringState02" />
+    <result column="drawingSpeed03" jdbcType="VARCHAR" property="drawingSpeed03" />
+    <result column="pouringState03" jdbcType="INTEGER" property="pouringState03" />
+    <result column="drawingSpeed04" jdbcType="VARCHAR" property="drawingSpeed04" />
+    <result column="pouringState04" jdbcType="INTEGER" property="pouringState04" />
+    <result column="drawingSpeed05" jdbcType="VARCHAR" property="drawingSpeed05" />
+    <result column="pouringState05" jdbcType="INTEGER" property="pouringState05" />
+    <result column="drawingSpeed06" jdbcType="VARCHAR" property="drawingSpeed06" />
+    <result column="pouringState06" jdbcType="INTEGER" property="pouringState06" />
+    <result column="drawingSpeed07" jdbcType="VARCHAR" property="drawingSpeed07" />
+    <result column="pouringState07" jdbcType="INTEGER" property="pouringState07" />
+    <result column="drawingSpeed08" jdbcType="VARCHAR" property="drawingSpeed08" />
+    <result column="pouringState08" jdbcType="INTEGER" property="pouringState08" />
+    <result column="drawingSpeed09" jdbcType="VARCHAR" property="drawingSpeed09" />
+    <result column="pouringState09" jdbcType="INTEGER" property="pouringState09" />
+    <result column="drawingSpeed10" jdbcType="VARCHAR" property="drawingSpeed10" />
+    <result column="pouringState10" jdbcType="INTEGER" property="pouringState10" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.IronInfoDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.IronInfo">
+    <id column="iron_infoUID" jdbcType="VARCHAR" property="iron_infoUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="blastOrder" jdbcType="VARCHAR" property="blastOrder" />
+    <result column="blastNo" jdbcType="VARCHAR" property="blastNo" />
+    <result column="ladleNumber" jdbcType="VARCHAR" property="ladleNumber" />
+    <result column="scrabNet" jdbcType="VARCHAR" property="scrabNet" />
+    <result column="netWeight" jdbcType="VARCHAR" property="netWeight" />
+    <result column="outIronTime" jdbcType="TIMESTAMP" property="outIronTime" />
+    <result column="stopTime" jdbcType="TIMESTAMP" property="stopTime" />
+    <result column="startTime" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="exitTemperature" jdbcType="VARCHAR" property="exitTemperature" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

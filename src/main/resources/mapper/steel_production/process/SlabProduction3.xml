@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.SlabProduction3DAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.SlabProduction3">
+    <id column="slab_production3UID" jdbcType="VARCHAR" property="slab_production3UID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="enterRotating" jdbcType="TIMESTAMP" property="enterRotating" />
+    <result column="startCast" jdbcType="TIMESTAMP" property="startCast" />
+    <result column="castNo" jdbcType="VARCHAR" property="castNo" />
+    <result column="baleTemperature" jdbcType="VARCHAR" property="baleTemperature" />
+    <result column="baleWeighA" jdbcType="VARCHAR" property="baleWeighA" />
+    <result column="baleWeighB" jdbcType="VARCHAR" property="baleWeighB" />
+    <result column="tundishWeigh" jdbcType="VARCHAR" property="tundishWeigh" />
+    <result column="chargeCount" jdbcType="VARCHAR" property="chargeCount" />
+    <result column="tundishQuick" jdbcType="VARCHAR" property="tundishQuick" />
+    <result column="tundishContinuous" jdbcType="VARCHAR" property="tundishContinuous" />
+    <result column="drawingActual1" jdbcType="VARCHAR" property="drawingActual1" />
+    <result column="drawingSet1" jdbcType="VARCHAR" property="drawingSet1" />
+    <result column="pouringLength1" jdbcType="VARCHAR" property="pouringLength1" />
+    <result column="drawingActual2" jdbcType="VARCHAR" property="drawingActual2" />
+    <result column="drawingSet2" jdbcType="VARCHAR" property="drawingSet2" />
+    <result column="pouringLength2" jdbcType="VARCHAR" property="pouringLength2" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

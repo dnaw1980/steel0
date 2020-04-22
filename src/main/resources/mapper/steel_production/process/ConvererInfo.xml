@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.ConvererInfoDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.ConvererInfo">
+    <id column="converer_infoUID" jdbcType="VARCHAR" property="converer_infoUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="stationNo" jdbcType="VARCHAR" property="stationNo" />
+    <result column="ironMolt" jdbcType="TIMESTAMP" property="ironMolt" />
+    <result column="blowStart" jdbcType="TIMESTAMP" property="blowStart" />
+    <result column="blowEnd" jdbcType="TIMESTAMP" property="blowEnd" />
+    <result column="softStart" jdbcType="TIMESTAMP" property="softStart" />
+    <result column="softEnd" jdbcType="TIMESTAMP" property="softEnd" />
+    <result column="smeltCycle" jdbcType="INTEGER" property="smeltCycle" />
+    <result column="slagSplash" jdbcType="TIMESTAMP" property="slagSplash" />
+    <result column="steelStart" jdbcType="TIMESTAMP" property="steelStart" />
+    <result column="materialConsumes" jdbcType="VARCHAR" property="materialConsumes" />
+    <result column="oxygenBlow" jdbcType="VARCHAR" property="oxygenBlow" />
+    <result column="nitrogenBlow" jdbcType="VARCHAR" property="nitrogenBlow" />
+    <result column="nitrogenBottom" jdbcType="VARCHAR" property="nitrogenBottom" />
+    <result column="argonBottom" jdbcType="VARCHAR" property="argonBottom" />
+    <result column="steelEnd" jdbcType="TIMESTAMP" property="steelEnd" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

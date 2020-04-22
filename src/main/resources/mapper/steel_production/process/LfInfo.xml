@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.LfInfoDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.LfInfo">
+    <id column="lf_infoUID" jdbcType="VARCHAR" property="lf_infoUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="stationNo" jdbcType="VARCHAR" property="stationNo" />
+    <result column="enterStation" jdbcType="TIMESTAMP" property="enterStation" />
+    <result column="powerConsume" jdbcType="VARCHAR" property="powerConsume" />
+    <result column="startLF" jdbcType="TIMESTAMP" property="startLF" />
+    <result column="endLF" jdbcType="TIMESTAMP" property="endLF" />
+    <result column="voltageA" jdbcType="VARCHAR" property="voltageA" />
+    <result column="voltageB" jdbcType="VARCHAR" property="voltageB" />
+    <result column="voltageC" jdbcType="VARCHAR" property="voltageC" />
+    <result column="electricityA" jdbcType="VARCHAR" property="electricityA" />
+    <result column="electricityB" jdbcType="VARCHAR" property="electricityB" />
+    <result column="electricityC" jdbcType="VARCHAR" property="electricityC" />
+    <result column="heatTime" jdbcType="INTEGER" property="heatTime" />
+    <result column="smeltTime" jdbcType="INTEGER" property="smeltTime" />
+    <result column="refine1" jdbcType="TIMESTAMP" property="refine1" />
+    <result column="refine2" jdbcType="TIMESTAMP" property="refine2" />
+    <result column="crane1" jdbcType="TIMESTAMP" property="crane1" />
+    <result column="crane2" jdbcType="TIMESTAMP" property="crane2" />
+    <result column="startArgon11" jdbcType="TIMESTAMP" property="startArgon11" />
+    <result column="startArgon12" jdbcType="TIMESTAMP" property="startArgon12" />
+    <result column="startArgon21" jdbcType="TIMESTAMP" property="startArgon21" />
+    <result column="startArgon22" jdbcType="TIMESTAMP" property="startArgon22" />
+    <result column="timeArgon11" jdbcType="INTEGER" property="timeArgon11" />
+    <result column="timeArgon12" jdbcType="INTEGER" property="timeArgon12" />
+    <result column="timeArgon21" jdbcType="INTEGER" property="timeArgon21" />
+    <result column="timeArgon22" jdbcType="INTEGER" property="timeArgon22" />
+    <result column="blowArgon11" jdbcType="VARCHAR" property="blowArgon11" />
+    <result column="blowArgon12" jdbcType="VARCHAR" property="blowArgon12" />
+    <result column="blowArgon21" jdbcType="VARCHAR" property="blowArgon21" />
+    <result column="blowArgon22" jdbcType="VARCHAR" property="blowArgon22" />
+    <result column="oxygenConsume" jdbcType="VARCHAR" property="oxygenConsume" />
+    <result column="materialConsume" jdbcType="VARCHAR" property="materialConsume" />
+    <result column="exitStation" jdbcType="TIMESTAMP" property="exitStation" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

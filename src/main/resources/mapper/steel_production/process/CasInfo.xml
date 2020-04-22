@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.CasInfoDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.CasInfo">
+    <id column="cas_infoUID" jdbcType="VARCHAR" property="cas_infoUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="stationNo" jdbcType="VARCHAR" property="stationNo" />
+    <result column="enterStation" jdbcType="TIMESTAMP" property="enterStation" />
+    <result column="oxygenTotal" jdbcType="INTEGER" property="oxygenTotal" />
+    <result column="bottomBlow" jdbcType="INTEGER" property="bottomBlow" />
+    <result column="oxygenConsume" jdbcType="VARCHAR" property="oxygenConsume" />
+    <result column="argonConsume" jdbcType="VARCHAR" property="argonConsume" />
+    <result column="materialConsume" jdbcType="VARCHAR" property="materialConsume" />
+    <result column="exitStation" jdbcType="TIMESTAMP" property="exitStation" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

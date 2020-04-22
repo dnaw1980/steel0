@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rss.steel_production.process.dao.DesulfuriInfoDAO">
+  <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.DesulfuriInfo">
+    <id column="desulfuri_infoUID" jdbcType="VARCHAR" property="desulfuri_infoUID" />
+    <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="stationNo" jdbcType="VARCHAR" property="stationNo" />
+    <result column="startProcess" jdbcType="TIMESTAMP" property="startProcess" />
+    <result column="startDesulfuri" jdbcType="TIMESTAMP" property="startDesulfuri" />
+    <result column="startStir" jdbcType="TIMESTAMP" property="startStir" />
+    <result column="starTtippler" jdbcType="TIMESTAMP" property="starTtippler" />
+    <result column="liquidMeasures" jdbcType="VARCHAR" property="liquidMeasures" />
+    <result column="nitrogenFlow" jdbcType="VARCHAR" property="nitrogenFlow" />
+    <result column="nitrogenPressure" jdbcType="VARCHAR" property="nitrogenPressure" />
+    <result column="stirHeadSpeed" jdbcType="VARCHAR" property="stirHeadSpeed" />
+    <result column="materialWeight" jdbcType="VARCHAR" property="materialWeight" />
+    <result column="startFeed" jdbcType="TIMESTAMP" property="startFeed" />
+    <result column="exitDesulfuri" jdbcType="TIMESTAMP" property="exitDesulfuri" />
+    <result column="exitStir" jdbcType="TIMESTAMP" property="exitStir" />
+    <result column="exitTtippler" jdbcType="TIMESTAMP" property="exitTtippler" />
+    <result column="exitFeed" jdbcType="TIMESTAMP" property="exitFeed" />
+    <result column="exitProcess" jdbcType="TIMESTAMP" property="exitProcess" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
+  </resultMap>
+</mapper>

@@ -36,6 +36,12 @@ public class ConvererInfoController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@PostMapping("/updateByPrimaryKeySelective")
+	public Result updateByPrimaryKeySelective(@RequestBody ConvererInfo convererInfo) {
+		convererInfoService.update(convererInfo);
+		return ResultGenerator.genSuccessResult();
+	}
+
 	@DeleteMapping
 	public Result delete(@RequestBody List<String> ids){
 		String idString=QuotesUtil.addQuotesToString(ids);
@@ -60,6 +66,7 @@ public class ConvererInfoController {
 		ConvererInfo model=convererInfoTO.getConvererInfo();
 		PageHelper.startPage(pageNo, pageSize);
 		Condition condition=new Condition(ConvererInfo.class);
+		condition.setOrderByClause("acquireTime desc");
 		Condition.Criteria criteria=condition.createCriteria();
 		if (model!=null){
 			if(model.getChargeNo()!=null){

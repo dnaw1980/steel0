@@ -36,6 +36,12 @@ public class DesulfuriInfoController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@PostMapping("/updateByPrimaryKeySelective")
+	public Result updateByPrimaryKeySelective(@RequestBody DesulfuriInfo desulfuriInfo) {
+		desulfuriInfoService.update(desulfuriInfo);
+		return ResultGenerator.genSuccessResult();
+	}
+
 	@DeleteMapping
 	public Result delete(@RequestBody List<String> ids){
 		String idString=QuotesUtil.addQuotesToString(ids);
@@ -60,6 +66,7 @@ public class DesulfuriInfoController {
 		DesulfuriInfo model=desulfuriInfoTO.getDesulfuriInfo();
 		PageHelper.startPage(pageNo, pageSize);
 		Condition condition=new Condition(DesulfuriInfo.class);
+		condition.setOrderByClause("acquireTime desc");
 		Condition.Criteria criteria=condition.createCriteria();
 		if (model!=null){
 			if(model.getChargeNo()!=null){

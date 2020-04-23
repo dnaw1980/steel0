@@ -36,10 +36,10 @@ public class CompositionInfoController {
                 criteria.andLike("sampleType", "%" + model.getSampleType() + "%");
             }
             if (model.getAcquireTime() != null) {
-                System.out.println(model.getAcquireTime());
-               // System.out.println( new SimpleDateFormat("yyyy-MM-dd").format(model.getAcquireTime()));
-              //  criteria.andLike("acquireTime", "%" + new SimpleDateFormat("yyyy-MM-dd").format(model.getAcquireTime()) + "%");
                 criteria.andLike("acquireTime", "%"+model.getAcquireTime()+"%");
+            }
+            if (model.getChargeNo() != null) {
+                criteria.andLike("chargeNo", "%"+model.getChargeNo()+"%");
             }
         }
         PageInfo pageInfo = new PageInfo(compositionInfoService.findByCondition(condition));

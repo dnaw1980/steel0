@@ -4,31 +4,42 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <properties resource="jdbc.properties" />
-
+<!--    <properties resource="jdbc.properties"/>-->
+    <classPathEntry location="C:\Users\simon\.m2\repository\mysql\mysql-connector-java\5.1.41\mysql-connector-java-5.1.41.jar" />
     <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
 
-        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
-            <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
-            <property name="caseSensitive" value="true"/>
-        </plugin>
+<!--        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">-->
+<!--            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>-->
+<!--            &lt;!&ndash; caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true &ndash;&gt;-->
+<!--            <property name="caseSensitive" value="true"/>-->
+<!--        </plugin>-->
 
-        <jdbcConnection driverClass="${jdbc.driver}"
-                        connectionURL="${jdbc.url}"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://180.76.156.143:3306/ssm?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false"
                         userId="root"
-                        password="root">
+                        password="manager">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.rss.platform.portal.model" targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\java\"/>
+        <javaModelGenerator targetPackage="com.rss.steel_production.process.model"
+                            targetProject="src/main/java/"/>
 
-        <sqlMapGenerator targetPackage="mapper"  targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\resources\"/>
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src/main/resources/mapper/steel_production/process/"/>
 
-        <javaClientGenerator targetPackage="com.rss.platform.portal.dao" targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\java\" type="XMLMAPPER" />
-
-        <table tableName="%" >
-<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
-            <property name="useActualColumnNames" value="true" />
-        </table>
+        <javaClientGenerator targetPackage="com.rss.steel_production.process.dao"
+                             targetProject="src/main/java/"
+                             type="XMLMAPPER"/>
+<!--        <table schema="ssm" tableName="iron_info" />-->
+<!--        <table schema="ssm" tableName="desulfuri_info" />-->
+<!--        <table schema="ssm" tableName="converer_info" />-->
+<!--        <table schema="ssm" tableName="cas_info" />-->
+<!--        <table schema="ssm" tableName="lf_info" />-->
+<!--        <table schema="ssm" tableName="billet_production" />-->
+<!--        <table schema="ssm" tableName="slab_production2" />-->
+<!--        <table schema="ssm" tableName="slab_production3" />-->
+        <table tableName="%">
+            <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--            <property name="useActualColumnNames" value="true"/>-->
+<!--        </table>-->
     </context>
 </generatorConfiguration>

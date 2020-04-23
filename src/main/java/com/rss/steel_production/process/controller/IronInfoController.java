@@ -60,6 +60,7 @@ public class IronInfoController {
 		IronInfo model=ironInfoTO.getIronInfo();
 		PageHelper.startPage(pageNo, pageSize);
 		Condition condition=new Condition(IronInfo.class);
+		condition.setOrderByClause("acquireTime desc");
 		Condition.Criteria criteria=condition.createCriteria();
 		if (model!=null){
 			if(model.getChargeNo()!=null){

@@ -36,6 +36,12 @@ public class CasInfoController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@PostMapping("/updateByPrimaryKeySelective")
+	public Result updateByPrimaryKeySelective(@RequestBody CasInfo casInfo) {
+		casInfoService.update(casInfo);
+		return ResultGenerator.genSuccessResult();
+	}
+
 	@DeleteMapping
 	public Result delete(@RequestBody List<String> ids){
 		String idString=QuotesUtil.addQuotesToString(ids);
@@ -60,6 +66,7 @@ public class CasInfoController {
 		CasInfo model=casInfoTO.getCasInfo();
 		PageHelper.startPage(pageNo, pageSize);
 		Condition condition=new Condition(CasInfo.class);
+		condition.setOrderByClause("acquireTime desc");
 		Condition.Criteria criteria=condition.createCriteria();
 		if (model!=null){
 			if(model.getChargeNo()!=null){

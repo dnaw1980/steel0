@@ -37,4 +37,100 @@ public class IronInfo {
     private String exitTemperature;
 
     private Date acquireTime;
+
+    public String getIron_infoUID() {
+        return iron_infoUID;
+    }
+
+    public void setIron_infoUID(String iron_infoUID) {
+        this.iron_infoUID = iron_infoUID;
+    }
+
+    public String getChargeNo() {
+        return chargeNo;
+    }
+
+    public void setChargeNo(String chargeNo) {
+        this.chargeNo = chargeNo;
+    }
+
+    public String getBlastOrder() {
+        return blastOrder;
+    }
+
+    public void setBlastOrder(String blastOrder) {
+        this.blastOrder = blastOrder;
+    }
+
+    public String getBlastNo() {
+        return blastNo;
+    }
+
+    public void setBlastNo(String blastNo) {
+        this.blastNo = blastNo;
+    }
+
+    public String getLadleNumber() {
+        return ladleNumber;
+    }
+
+    public void setLadleNumber(String ladleNumber) {
+        this.ladleNumber = ladleNumber;
+    }
+
+    public String getScrabNet() {
+        return scrabNet;
+    }
+
+    public void setScrabNet(String scrabNet) {
+        this.scrabNet = scrabNet;
+    }
+
+    public String getNetWeight() {
+        return netWeight;
+    }
+
+    public void setNetWeight(String netWeight) {
+        this.netWeight = netWeight;
+    }
+
+    public Date getOutIronTime() {
+        return outIronTime;
+    }
+
+    public void setOutIronTime(Date outIronTime) {
+        this.outIronTime = outIronTime;
+    }
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getExitTemperature() {
+        return exitTemperature;
+    }
+
+    public void setExitTemperature(String exitTemperature) {
+        this.exitTemperature = exitTemperature;
+    }
+
+    public Date getAcquireTime() {
+        return acquireTime;
+    }
+
+    public void setAcquireTime(Date acquireTime) {
+        this.acquireTime = acquireTime;
+    }
 }

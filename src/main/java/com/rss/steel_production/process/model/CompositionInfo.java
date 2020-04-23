@@ -13,7 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "steel_composition")
 public class CompositionInfo {
-
     @Id
     private String steel_compositionUID;
     private String sampleCode;

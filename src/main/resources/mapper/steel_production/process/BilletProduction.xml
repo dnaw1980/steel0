@@ -7,7 +7,9 @@
     <result column="temperature" jdbcType="VARCHAR" property="temperature" />
     <result column="weight" jdbcType="VARCHAR" property="weight" />
     <result column="enterRotating" jdbcType="TIMESTAMP" property="enterRotating" />
+    <result column="exitRotating" jdbcType="TIMESTAMP" property="exitRotating" />
     <result column="startCast" jdbcType="TIMESTAMP" property="startCast" />
+    <result column="endCast" jdbcType="TIMESTAMP" property="endCast" />
     <result column="castNo" jdbcType="VARCHAR" property="castNo" />
     <result column="baleTemperature" jdbcType="VARCHAR" property="baleTemperature" />
     <result column="baleWeigh1" jdbcType="VARCHAR" property="baleWeigh1" />

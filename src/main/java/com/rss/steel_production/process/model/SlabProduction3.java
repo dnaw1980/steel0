@@ -24,7 +24,11 @@ public class SlabProduction3 {
 
     private Date enterRotating;
 
+    private Date exitRotating;
+
     private Date startCast;
+
+    private Date endCast;
 
     private String castNo;
 
@@ -56,4 +60,187 @@ public class SlabProduction3 {
 
     private Date acquireTime;
 
+    public String getSlab_production3UID() {
+        return slab_production3UID;
+    }
+
+    public void setSlab_production3UID(String slab_production3UID) {
+        this.slab_production3UID = slab_production3UID;
+    }
+
+    public String getChargeNo() {
+        return chargeNo;
+    }
+
+    public void setChargeNo(String chargeNo) {
+        this.chargeNo = chargeNo;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public Date getEnterRotating() {
+        return enterRotating;
+    }
+
+    public void setEnterRotating(Date enterRotating) {
+        this.enterRotating = enterRotating;
+    }
+
+    public Date getExitRotating() {
+        return exitRotating;
+    }
+
+    public void setExitRotating(Date exitRotating) {
+        this.exitRotating = exitRotating;
+    }
+
+    public Date getStartCast() {
+        return startCast;
+    }
+
+    public void setStartCast(Date startCast) {
+        this.startCast = startCast;
+    }
+
+    public Date getEndCast() {
+        return endCast;
+    }
+
+    public void setEndCast(Date endCast) {
+        this.endCast = endCast;
+    }
+
+    public String getCastNo() {
+        return castNo;
+    }
+
+    public void setCastNo(String castNo) {
+        this.castNo = castNo;
+    }
+
+    public String getBaleTemperature() {
+        return baleTemperature;
+    }
+
+    public void setBaleTemperature(String baleTemperature) {
+        this.baleTemperature = baleTemperature;
+    }
+
+    public String getBaleWeighA() {
+        return baleWeighA;
+    }
+
+    public void setBaleWeighA(String baleWeighA) {
+        this.baleWeighA = baleWeighA;
+    }
+
+    public String getBaleWeighB() {
+        return baleWeighB;
+    }
+
+    public void setBaleWeighB(String baleWeighB) {
+        this.baleWeighB = baleWeighB;
+    }
+
+    public String getTundishWeigh() {
+        return tundishWeigh;
+    }
+
+    public void setTundishWeigh(String tundishWeigh) {
+        this.tundishWeigh = tundishWeigh;
+    }
+
+    public String getChargeCount() {
+        return chargeCount;
+    }
+
+    public void setChargeCount(String chargeCount) {
+        this.chargeCount = chargeCount;
+    }
+
+    public String getTundishQuick() {
+        return tundishQuick;
+    }
+
+    public void setTundishQuick(String tundishQuick) {
+        this.tundishQuick = tundishQuick;
+    }
+
+    public String getTundishContinuous() {
+        return tundishContinuous;
+    }
+
+    public void setTundishContinuous(String tundishContinuous) {
+        this.tundishContinuous = tundishContinuous;
+    }
+
+    public String getDrawingActual1() {
+        return drawingActual1;
+    }
+
+    public void setDrawingActual1(String drawingActual1) {
+        this.drawingActual1 = drawingActual1;
+    }
+
+    public String getDrawingSet1() {
+        return drawingSet1;
+    }
+
+    public void setDrawingSet1(String drawingSet1) {
+        this.drawingSet1 = drawingSet1;
+    }
+
+    public String getPouringLength1() {
+        return pouringLength1;
+    }
+
+    public void setPouringLength1(String pouringLength1) {
+        this.pouringLength1 = pouringLength1;
+    }
+
+    public String getDrawingActual2() {
+        return drawingActual2;
+    }
+
+    public void setDrawingActual2(String drawingActual2) {
+        this.drawingActual2 = drawingActual2;
+    }
+
+    public String getDrawingSet2() {
+        return drawingSet2;
+    }
+
+    public void setDrawingSet2(String drawingSet2) {
+        this.drawingSet2 = drawingSet2;
+    }
+
+    public String getPouringLength2() {
+        return pouringLength2;
+    }
+
+    public void setPouringLength2(String pouringLength2) {
+        this.pouringLength2 = pouringLength2;
+    }
+
+    public Date getAcquireTime() {
+        return acquireTime;
+    }
+
+    public void setAcquireTime(Date acquireTime) {
+        this.acquireTime = acquireTime;
+    }
 }

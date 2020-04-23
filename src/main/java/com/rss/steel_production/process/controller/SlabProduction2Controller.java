@@ -36,6 +36,12 @@ public class SlabProduction2Controller {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@PostMapping("/updateByPrimaryKeySelective")
+	public Result updateByPrimaryKeySelective(@RequestBody SlabProduction2 slabProduction2) {
+		slabProduction2Service.update(slabProduction2);
+		return ResultGenerator.genSuccessResult();
+	}
+
 	@DeleteMapping
 	public Result delete(@RequestBody List<String> ids){
 		String idString=QuotesUtil.addQuotesToString(ids);
@@ -60,6 +66,7 @@ public class SlabProduction2Controller {
 		SlabProduction2 model=slabProduction2TO.getSlabProduction2();
 		PageHelper.startPage(pageNo, pageSize);
 		Condition condition=new Condition(SlabProduction2.class);
+		condition.setOrderByClause("acquireTime desc");
 		Condition.Criteria criteria=condition.createCriteria();
 		if (model!=null){
 			if(model.getChargeNo()!=null){

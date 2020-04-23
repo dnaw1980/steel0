@@ -121,6 +121,7 @@ public class SteelScheduleController {
         SteelSchedule model = steelScheduleTO.getSteelSchedule();
         PageHelper.startPage(pageNo, pageSize);
         Condition condition = new Condition(SteelSchedule.class);
+        condition.setOrderByClause("planEnter desc");
         Condition.Criteria criteria = condition.createCriteria();
         if (model != null) {
             if (model.getChargeNo() != null) {

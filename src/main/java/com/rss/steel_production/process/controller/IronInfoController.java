@@ -36,6 +36,12 @@ public class IronInfoController {
 		return ResultGenerator.genSuccessResult();
 	}
 
+	@PostMapping("/updateByPrimaryKeySelective")
+	public Result updateByPrimaryKeySelective(@RequestBody IronInfo ironInfo) {
+		ironInfoService.update(ironInfo);
+		return ResultGenerator.genSuccessResult();
+	}
+
 	@DeleteMapping
 	public Result delete(@RequestBody List<String> ids){
 		String idString=QuotesUtil.addQuotesToString(ids);

@@ -1,12 +1,15 @@
 package com.rss.steel_production.process.model;
 
+import com.rss.steel_production.schedule.model.SteelSchedule;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -53,6 +56,50 @@ public class ConvererInfo {
     private String weight;
 
     private Date acquireTime;
+
+    @Transient
+    private List<CompositionInfo> compositionList;
+
+    @Transient
+    private List<SteelSchedule> steelScheduleList;
+
+    @Transient
+    private Integer scheduleIdx;
+
+    @Transient
+    List<CompositionStandard> composStand;
+
+    public List<CompositionStandard> getComposStand() {
+        return composStand;
+    }
+
+    public void setComposStand(List<CompositionStandard> composStand) {
+        this.composStand = composStand;
+    }
+
+    public Integer getScheduleIdx() {
+        return scheduleIdx;
+    }
+
+    public void setScheduleIdx(Integer scheduleIdx) {
+        this.scheduleIdx = scheduleIdx;
+    }
+
+    public List<CompositionInfo> getCompositionList() {
+        return compositionList;
+    }
+
+    public void setCompositionList(List<CompositionInfo> compositionList) {
+        this.compositionList = compositionList;
+    }
+
+    public List<SteelSchedule> getSteelScheduleList() {
+        return steelScheduleList;
+    }
+
+    public void setSteelScheduleList(List<SteelSchedule> steelScheduleList) {
+        this.steelScheduleList = steelScheduleList;
+    }
 
     public String getConverer_infoUID() {
         return converer_infoUID;

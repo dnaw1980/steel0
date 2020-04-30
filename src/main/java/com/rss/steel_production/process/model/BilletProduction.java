@@ -86,6 +86,38 @@ public class BilletProduction {
 
     private Integer pouringState10;
 
+    private String tundishNo;
+    private String ladleSelfOpen;
+    private String steelWaterPoure;
+    private String coverCompany;
+    private String coverAddAmount;
+    private String coverType;
+    private String powderCompany;
+    private String powderType;
+    private String powderAddAmount;
+    private Date tundishSmallTime;
+    private Date tundishMiddleTime;
+    private Date tundishBigTime;
+    private String tundishGasPress;
+    private String billetCount;
+    private String tundishPouring;
+    private String processTossing;
+    private String headTrimAmt;
+    private String tailTrimAmt;
+    private String tundishMargin;
+    private Date longReplaceTime;
+    private Date infuseReplaceTime;
+    private String casterStatus;
+    private String crystalNo1;
+    private String crystalNo2;
+    private String crystalNo3;
+    private String crystalNo4;
+    private String crystalNo5;
+    private String crystalNo6;
+    private String crystalNo7;
+    private String crystalNo8;
+    private String crystalNo9;
+    private String crystalNo10;
     private Date acquireTime;
 
     public String getBillet_productionUID() {
@@ -374,6 +406,262 @@ public class BilletProduction {
 
     public void setPouringState10(Integer pouringState10) {
         this.pouringState10 = pouringState10;
+    }
+
+    public String getTundishNo() {
+        return tundishNo;
+    }
+
+    public void setTundishNo(String tundishNo) {
+        this.tundishNo = tundishNo;
+    }
+
+    public String getLadleSelfOpen() {
+        return ladleSelfOpen;
+    }
+
+    public void setLadleSelfOpen(String ladleSelfOpen) {
+        this.ladleSelfOpen = ladleSelfOpen;
+    }
+
+    public String getSteelWaterPoure() {
+        return steelWaterPoure;
+    }
+
+    public void setSteelWaterPoure(String steelWaterPoure) {
+        this.steelWaterPoure = steelWaterPoure;
+    }
+
+    public String getCoverCompany() {
+        return coverCompany;
+    }
+
+    public void setCoverCompany(String coverCompany) {
+        this.coverCompany = coverCompany;
+    }
+
+    public String getCoverAddAmount() {
+        return coverAddAmount;
+    }
+
+    public void setCoverAddAmount(String coverAddAmount) {
+        this.coverAddAmount = coverAddAmount;
+    }
+
+    public String getCoverType() {
+        return coverType;
+    }
+
+    public void setCoverType(String coverType) {
+        this.coverType = coverType;
+    }
+
+    public String getPowderCompany() {
+        return powderCompany;
+    }
+
+    public void setPowderCompany(String powderCompany) {
+        this.powderCompany = powderCompany;
+    }
+
+    public String getPowderType() {
+        return powderType;
+    }
+
+    public void setPowderType(String powderType) {
+        this.powderType = powderType;
+    }
+
+    public String getPowderAddAmount() {
+        return powderAddAmount;
+    }
+
+    public void setPowderAddAmount(String powderAddAmount) {
+        this.powderAddAmount = powderAddAmount;
+    }
+
+    public Date getTundishSmallTime() {
+        return tundishSmallTime;
+    }
+
+    public void setTundishSmallTime(Date tundishSmallTime) {
+        this.tundishSmallTime = tundishSmallTime;
+    }
+
+    public Date getTundishMiddleTime() {
+        return tundishMiddleTime;
+    }
+
+    public void setTundishMiddleTime(Date tundishMiddleTime) {
+        this.tundishMiddleTime = tundishMiddleTime;
+    }
+
+    public Date getTundishBigTime() {
+        return tundishBigTime;
+    }
+
+    public void setTundishBigTime(Date tundishBigTime) {
+        this.tundishBigTime = tundishBigTime;
+    }
+
+    public String getTundishGasPress() {
+        return tundishGasPress;
+    }
+
+    public void setTundishGasPress(String tundishGasPress) {
+        this.tundishGasPress = tundishGasPress;
+    }
+
+    public String getBilletCount() {
+        return billetCount;
+    }
+
+    public void setBilletCount(String billetCount) {
+        this.billetCount = billetCount;
+    }
+
+    public String getTundishPouring() {
+        return tundishPouring;
+    }
+
+    public void setTundishPouring(String tundishPouring) {
+        this.tundishPouring = tundishPouring;
+    }
+
+    public String getProcessTossing() {
+        return processTossing;
+    }
+
+    public void setProcessTossing(String processTossing) {
+        this.processTossing = processTossing;
+    }
+
+    public String getHeadTrimAmt() {
+        return headTrimAmt;
+    }
+
+    public void setHeadTrimAmt(String headTrimAmt) {
+        this.headTrimAmt = headTrimAmt;
+    }
+
+    public String getTailTrimAmt() {
+        return tailTrimAmt;
+    }
+
+    public void setTailTrimAmt(String tailTrimAmt) {
+        this.tailTrimAmt = tailTrimAmt;
+    }
+
+    public String getTundishMargin() {
+        return tundishMargin;
+    }
+
+    public void setTundishMargin(String tundishMargin) {
+        this.tundishMargin = tundishMargin;
+    }
+
+    public Date getLongReplaceTime() {
+        return longReplaceTime;
+    }
+
+    public void setLongReplaceTime(Date longReplaceTime) {
+        this.longReplaceTime = longReplaceTime;
+    }
+
+    public Date getInfuseReplaceTime() {
+        return infuseReplaceTime;
+    }
+
+    public void setInfuseReplaceTime(Date infuseReplaceTime) {
+        this.infuseReplaceTime = infuseReplaceTime;
+    }
+
+    public String getCasterStatus() {
+        return casterStatus;
+    }
+
+    public void setCasterStatus(String casterStatus) {
+        this.casterStatus = casterStatus;
+    }
+
+    public String getCrystalNo1() {
+        return  crystalNo1;
+    }
+
+    public void setCrystalNo1(String crystalNo1) {
+        this. crystalNo1 =  crystalNo1;
+    }
+
+    public String getCrystalNo2() {
+        return  crystalNo2;
+    }
+
+    public void setCrystalNo2(String crystalNo2) {
+        this. crystalNo2 =  crystalNo2;
+    }
+
+    public String getCrystalNo3() {
+        return  crystalNo3;
+    }
+
+    public void setCrystalNo3(String crystalNo3) {
+        this. crystalNo3 =  crystalNo3;
+    }
+
+    public String getCrystalNo4() {
+        return  crystalNo4;
+    }
+
+    public void setCrystalNo4(String crystalNo4) {
+        this. crystalNo4 =  crystalNo4;
+    }
+
+    public String getCrystalNo5() {
+        return  crystalNo5;
+    }
+
+    public void setCrystalNo5(String crystalNo5) {
+        this. crystalNo5 =  crystalNo5;
+    }
+
+    public String getCrystalNo6() {
+        return  crystalNo6;
+    }
+
+    public void setCrystalNo6(String crystalNo6) {
+        this. crystalNo6 =  crystalNo6;
+    }
+
+    public String getCrystalNo7() {
+        return  crystalNo7;
+    }
+
+    public void setCrystalNo7(String crystalNo7) {
+        this. crystalNo7 =  crystalNo7;
+    }
+
+    public String getCrystalNo8() {
+        return  crystalNo8;
+    }
+
+    public void setCrystalNo8(String crystalNo8) {
+        this. crystalNo8 =  crystalNo8;
+    }
+
+    public String getCrystalNo9() {
+        return  crystalNo9;
+    }
+
+    public void setCrystalNo9(String crystalNo9) {
+        this. crystalNo9 =  crystalNo9;
+    }
+
+    public String getCrystalNo10() {
+        return  crystalNo10;
+    }
+
+    public void setCrystalNo10(String crystalNo10) {
+        this. crystalNo10 =  crystalNo10;
     }
 
     public Date getAcquireTime() {

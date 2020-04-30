@@ -24,6 +24,29 @@
     <result column="drawingActual2" jdbcType="VARCHAR" property="drawingActual2" />
     <result column="drawingSet2" jdbcType="VARCHAR" property="drawingSet2" />
     <result column="pouringLength2" jdbcType="VARCHAR" property="pouringLength2" />
+    <result column="tundishSmallTime" jdbcType="TIMESTAMP" property="tundishSmallTime" />
+    <result column="tundishMiddleTime" jdbcType="TIMESTAMP" property="tundishMiddleTime" />
+    <result column="tundishBigTime" jdbcType="TIMESTAMP" property="tundishBigTime" />
+    <result column="tundishNo" jdbcType="VARCHAR" property="tundishNo" />
+    <result column="casterStatus" jdbcType="VARCHAR" property="casterStatus" />
+    <result column="ladleSelfOpen" jdbcType="VARCHAR" property="ladleSelfOpen" />
+    <result column="steelWaterPoure" jdbcType="VARCHAR" property="steelWaterPoure" />
+    <result column="coverCompany" jdbcType="VARCHAR" property="coverCompany" />
+    <result column="coverType" jdbcType="VARCHAR" property="coverType" />
+    <result column="coverAddAmount" jdbcType="VARCHAR" property="coverAddAmount" />
+    <result column="powderCompany" jdbcType="VARCHAR" property="powderCompany" />
+    <result column="powderType" jdbcType="VARCHAR" property="powderType" />
+    <result column="powderAddAmount" jdbcType="VARCHAR" property="powderAddAmount" />
+    <result column="tundishGasPress" jdbcType="VARCHAR" property="tundishGasPress" />
+    <result column="billetCount" jdbcType="INTEGER" property="billetCount" />
+    <result column="tundishPouring" jdbcType="VARCHAR" property="tundishPouring" />
+    <result column="headTrimAmt" jdbcType="VARCHAR" property="headTrimAmt" />
+    <result column="tailTrimAmt" jdbcType="VARCHAR" property="tailTrimAmt" />
+    <result column="tundishMargin" jdbcType="VARCHAR" property="tundishMargin" />
+    <result column="longReplaceTime" jdbcType="TIMESTAMP" property="longReplaceTime" />
+    <result column="infuseReplaceTime" jdbcType="TIMESTAMP" property="infuseReplaceTime" />
+    <result column="crystalNo1" jdbcType="VARCHAR" property="crystalNo1" />
+    <result column="crystalNo2" jdbcType="VARCHAR" property="crystalNo2" />
     <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
   </resultMap>
 </mapper>

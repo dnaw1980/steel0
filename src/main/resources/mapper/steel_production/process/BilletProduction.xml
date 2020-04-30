@@ -38,6 +38,38 @@
     <result column="pouringState09" jdbcType="INTEGER" property="pouringState09" />
     <result column="drawingSpeed10" jdbcType="VARCHAR" property="drawingSpeed10" />
     <result column="pouringState10" jdbcType="INTEGER" property="pouringState10" />
+    <result column="tundishSmallTime" jdbcType="TIMESTAMP" property="tundishSmallTime" />
+    <result column="tundishMiddleTime" jdbcType="TIMESTAMP" property="tundishMiddleTime" />
+    <result column="tundishBigTime" jdbcType="TIMESTAMP" property="tundishBigTime" />
+    <result column="tundishNo" jdbcType="VARCHAR" property="tundishNo" />
+    <result column="casterStatus" jdbcType="VARCHAR" property="casterStatus" />
+    <result column="ladleSelfOpen" jdbcType="VARCHAR" property="ladleSelfOpen" />
+    <result column="steelWaterPoure" jdbcType="VARCHAR" property="steelWaterPoure" />
+    <result column="coverCompany" jdbcType="VARCHAR" property="coverCompany" />
+    <result column="coverType" jdbcType="VARCHAR" property="coverType" />
+    <result column="coverAddAmount" jdbcType="VARCHAR" property="coverAddAmount" />
+    <result column="powderCompany" jdbcType="VARCHAR" property="powderCompany" />
+    <result column="powderType" jdbcType="VARCHAR" property="powderType" />
+    <result column="powderAddAmount" jdbcType="VARCHAR" property="powderAddAmount" />
+    <result column="tundishGasPress" jdbcType="VARCHAR" property="tundishGasPress" />
+    <result column="billetCount" jdbcType="INTEGER" property="billetCount" />
+    <result column="tundishPouring" jdbcType="VARCHAR" property="tundishPouring" />
+    <result column="processTossing" jdbcType="VARCHAR" property="processTossing" />
+    <result column="headTrimAmt" jdbcType="VARCHAR" property="headTrimAmt" />
+    <result column="tailTrimAmt" jdbcType="VARCHAR" property="tailTrimAmt" />
+    <result column="tundishMargin" jdbcType="VARCHAR" property="tundishMargin" />
+    <result column="longReplaceTime" jdbcType="TIMESTAMP" property="longReplaceTime" />
+    <result column="infuseReplaceTime" jdbcType="TIMESTAMP" property="infuseReplaceTime" />
+    <result column="crystalNo1" jdbcType="VARCHAR" property="crystalNo1" />
+    <result column="crystalNo2" jdbcType="VARCHAR" property="crystalNo2" />
+    <result column="crystalNo3" jdbcType="VARCHAR" property="crystalNo3" />
+    <result column="crystalNo4" jdbcType="VARCHAR" property="crystalNo4" />
+    <result column="crystalNo5" jdbcType="VARCHAR" property="crystalNo5" />
+    <result column="crystalNo6" jdbcType="VARCHAR" property="crystalNo6" />
+    <result column="crystalNo7" jdbcType="VARCHAR" property="crystalNo7" />
+    <result column="crystalNo8" jdbcType="VARCHAR" property="crystalNo8" />
+    <result column="crystalNo9" jdbcType="VARCHAR" property="crystalNo9" />
+    <result column="crystalNo10" jdbcType="VARCHAR" property="crystalNo10" />
     <result column="acquireTime" jdbcType="TIMESTAMP" property="acquireTime" />
   </resultMap>
 </mapper>

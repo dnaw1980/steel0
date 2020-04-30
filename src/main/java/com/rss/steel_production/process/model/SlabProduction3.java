@@ -58,6 +58,30 @@ public class SlabProduction3 {
 
     private String pouringLength2;
 
+    private String tundishNo;
+    private String ladleSelfOpen;
+    private String steelWaterPoure;
+    private String coverCompany;
+    private String coverAddAmount;
+    private String coverType;
+    private String powderCompany;
+    private String powderType;
+    private String powderAddAmount;
+    private Date tundishSmallTime;
+    private Date tundishMiddleTime;
+    private Date tundishBigTime;
+    private String tundishGasPress;
+    private String slabCount;
+    private String tundishPouring;
+    private String headTrimAmt;
+    private String tailTrimAmt;
+    private String tundishMargin;
+    private Date longReplaceTime;
+    private Date infuseReplaceTime;
+    private String casterStatus;
+    private String crystalNo1;
+    private String crystalNo2;
+
     private Date acquireTime;
 
     public String getSlab_production3UID() {
@@ -234,6 +258,190 @@ public class SlabProduction3 {
 
     public void setPouringLength2(String pouringLength2) {
         this.pouringLength2 = pouringLength2;
+    }
+
+    public String getTundishNo() {
+        return tundishNo;
+    }
+
+    public void setTundishNo(String tundishNo) {
+        this.tundishNo = tundishNo;
+    }
+
+    public String getLadleSelfOpen() {
+        return ladleSelfOpen;
+    }
+
+    public void setLadleSelfOpen(String ladleSelfOpen) {
+        this.ladleSelfOpen = ladleSelfOpen;
+    }
+
+    public String getSteelWaterPoure() {
+        return steelWaterPoure;
+    }
+
+    public void setSteelWaterPoure(String steelWaterPoure) {
+        this.steelWaterPoure = steelWaterPoure;
+    }
+
+    public String getCoverCompany() {
+        return coverCompany;
+    }
+
+    public void setCoverCompany(String coverCompany) {
+        this.coverCompany = coverCompany;
+    }
+
+    public String getCoverAddAmount() {
+        return coverAddAmount;
+    }
+
+    public void setCoverAddAmount(String coverAddAmount) {
+        this.coverAddAmount = coverAddAmount;
+    }
+
+    public String getCoverType() {
+        return coverType;
+    }
+
+    public void setCoverType(String coverType) {
+        this.coverType = coverType;
+    }
+
+    public String getPowderCompany() {
+        return powderCompany;
+    }
+
+    public void setPowderCompany(String powderCompany) {
+        this.powderCompany = powderCompany;
+    }
+
+    public String getPowderType() {
+        return powderType;
+    }
+
+    public void setPowderType(String powderType) {
+        this.powderType = powderType;
+    }
+
+    public String getPowderAddAmount() {
+        return powderAddAmount;
+    }
+
+    public void setPowderAddAmount(String powderAddAmount) {
+        this.powderAddAmount = powderAddAmount;
+    }
+
+    public Date getTundishSmallTime() {
+        return tundishSmallTime;
+    }
+
+    public void setTundishSmallTime(Date tundishSmallTime) {
+        this.tundishSmallTime = tundishSmallTime;
+    }
+
+    public Date getTundishMiddleTime() {
+        return tundishMiddleTime;
+    }
+
+    public void setTundishMiddleTime(Date tundishMiddleTime) {
+        this.tundishMiddleTime = tundishMiddleTime;
+    }
+
+    public Date getTundishBigTime() {
+        return tundishBigTime;
+    }
+
+    public void setTundishBigTime(Date tundishBigTime) {
+        this.tundishBigTime = tundishBigTime;
+    }
+
+    public String getTundishGasPress() {
+        return tundishGasPress;
+    }
+
+    public void setTundishGasPress(String tundishGasPress) {
+        this.tundishGasPress = tundishGasPress;
+    }
+
+    public String getSlabCount() {
+        return slabCount;
+    }
+
+    public void setSlabCount(String slabCount) {
+        this.slabCount = slabCount;
+    }
+
+    public String getTundishPouring() {
+        return tundishPouring;
+    }
+
+    public void setTundishPouring(String tundishPouring) {
+        this.tundishPouring = tundishPouring;
+    }
+
+    public String getHeadTrimAmt() {
+        return headTrimAmt;
+    }
+
+    public void setHeadTrimAmt(String headTrimAmt) {
+        this.headTrimAmt = headTrimAmt;
+    }
+
+    public String getTailTrimAmt() {
+        return tailTrimAmt;
+    }
+
+    public void setTailTrimAmt(String tailTrimAmt) {
+        this.tailTrimAmt = tailTrimAmt;
+    }
+
+    public String getTundishMargin() {
+        return tundishMargin;
+    }
+
+    public void setTundishMargin(String tundishMargin) {
+        this.tundishMargin = tundishMargin;
+    }
+
+    public Date getLongReplaceTime() {
+        return longReplaceTime;
+    }
+
+    public void setLongReplaceTime(Date longReplaceTime) {
+        this.longReplaceTime = longReplaceTime;
+    }
+
+    public Date getInfuseReplaceTime() {
+        return infuseReplaceTime;
+    }
+
+    public void setInfuseReplaceTime(Date infuseReplaceTime) {
+        this.infuseReplaceTime = infuseReplaceTime;
+    }
+
+    public String getCasterStatus() {
+        return casterStatus;
+    }
+
+    public void setCasterStatus(String casterStatus) {
+        this.casterStatus = casterStatus;
+    }
+
+    public String getCrystalNo1() {
+        return crystalNo1;
+    }
+
+    public void setCrystalNo1(String crystalNo1) {
+        this.crystalNo1 = crystalNo1;
+    }
+
+    public String getCrystalNo2() {
+        return crystalNo2;
+    }
+
+    public void setCrystalNo2(String crystalNo2) {
+        this.crystalNo2 = crystalNo2;
     }
 
     public Date getAcquireTime() {

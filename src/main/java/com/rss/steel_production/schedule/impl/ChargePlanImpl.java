@@ -77,14 +77,19 @@ public class ChargePlanImpl extends AbstractService<ChargePlan> implements Charg
             ch.setSteelGrade(first.getSteelGrade());
             ch.setTechnicalStandard(first.getTechnicalStandard());
             ch.setProductLevel(first.getProductLevel() + "_" + last.getProductLevel());
+            //20/4/16 修改
+            /*
             ch.setBilletLength(first.getBilletLength() + "_" + last.getBilletLength());
             ch.setBilletWidth(first.getBilletWidth() + "_" + last.getBilletWidth());
             ch.setBilletThick(first.getBilletThick() + "_" + last.getBilletThick());
+            */
+            ch.setProductSpec(first.getProductSpec());
             ch.setTargetTime(formatter.format(first.getTargetTime()) + "_" + formatter.format(last.getTargetTime()));
             ch.setProcessRoute(first.getProcessRoute());
             ch.setProcessRoute(first.getProcessRoute());
         }
-        if (chargePlanDAO.insert(ch) == 1) {
+        int result = chargePlanDAO.insert(ch);
+        if (result == 1) {
             return ch;
         }
         return null;
@@ -275,12 +280,16 @@ public class ChargePlanImpl extends AbstractService<ChargePlan> implements Charg
                     System.out.println("first order over.");
                 } else if (assignorderList.get(0).getSteelGrade().equals(orderList.get(i).getSteelGrade())
                         && productLevel == Integer.parseInt(orderList.get(i).getProductLevel())
+                        //20/4/16 修改
+                        /*
                         && isLessThanInterval(
                         Math.abs(assignorderList.get(0).getBilletWidth() - orderList.get(i).getBilletWidth()),
                         limit.get("ChargeWidth"))
                         && isLessThanInterval(
                         Math.abs(assignorderList.get(0).getBilletThick() - orderList.get(i).getBilletThick()),
                         limit.get("ChargeThick"))
+                        */
+                        && assignorderList.get(0).getProductSpec().equals(orderList.get(i).getProductSpec())
                         && isLessThanInterval(
                         Math.abs(assignorderList.get(0).getTargetTime().getTime()
                                 - orderList.get(i).getTargetTime().getTime()) / chargeTimeUnit,
@@ -379,12 +388,15 @@ public class ChargePlanImpl extends AbstractService<ChargePlan> implements Charg
                     && isinInterval(
                     Math.abs(Integer.parseInt(po.getProductLevel()) - Integer.parseInt(aimpo.getProductLevel())),
                     limit.get("ProductLevel"))
+                    //20/4/17 修改，注释宽和高
+                    /*
                     && isinInterval(
                     Math.abs(po.getBilletWidth() - aimpo.getBilletWidth()),
                     limit.get("ChargeWidth"))
                     && isinInterval(
                     Math.abs(po.getBilletThick() - aimpo.getBilletThick()),
                     limit.get("ChargeThick"))
+                    */
                     && isinInterval(
                     Math.abs(po.getTargetTime().getTime()
                             - aimpo.getTargetTime().getTime()) / chargeTimeUnit,

@@ -15,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.rss.framework.AbstractService;
-
 import com.rss.steel_production.schedule.dao.SteelScheduleDAO;
 import com.rss.steel_production.schedule.service.SteelScheduleService;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,8 +45,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     public boolean checkIfRight(List<SteelSchedule> sslist) {
         List<CastPlan> cplist = new ArrayList<>();
         for (SteelSchedule steelSchedule : sslist) {
-            if (castPlanService.getCastByNo(steelSchedule.getCastNo()) == null
-                    || chargePlanService.getChargeByNo(steelSchedule.getChargeNo()) == null) {
+            if (castPlanService.getCastByNo(steelSchedule.getCastNo()) == null || chargePlanService.getChargeByNo(steelSchedule.getChargeNo()) == null) {
                 return false;
             }
             if (cplist.size() == 0) {
@@ -129,8 +126,8 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
                     }
                 }
             }
-            //如果有后延时间，后延
             if (dvalue != null) {
+                //如果有后延时间，后延
                 dvalue = new Date(dvalue.getTime() + delayTime * 60 * 1000L);
             }
 
@@ -138,31 +135,33 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
             for (int j = 0; j < chargeArr[i].length; j++) {
                 System.out.println("开始遍历炉次");
                 int advanceTime = 0;
-
                 String[] route = chargeArr[i][j].getProcessRoute().split("_");
                 //遍历炉次的工艺路径,计算提前时间
                 for (int r = 0; r < route.length; r++) {
                     int wait, process, trans;
                     wait = (int) limit.get(route[r] + "_waitTime")[0];
-                    process = (int) limit.get(route[r] + "_" + chargeArr[i][j].getSteelGrade() + "_processTime")[0];
+                    //20/4/17 修改，加工时间增加规格判断
+                    process = (int) limit.get(route[r] + "_" + chargeArr[i][j].getSteelGrade() + "_" + chargeArr[i][j].getProductSpec() + "_processTime")[0];
                     if (r == 0) {
-                        trans = (int) limit.get("HD" + "_" + route[r] + "_transTime")[0];
+                        trans = (int) limit.get("HD_" + route[r] + "_transTime")[0];
                     } else {
                         trans = (int) limit.get(route[r - 1] + "_" + route[r] + "_transTime")[0];
                     }
                     advanceTime += wait + process + trans;
+                    System.out.println("时间遍历中...");
                 }
-                //要求出铁时间在此first时间之前，最早不早过标准限制，即first为炉次实际从高炉出发运送开始时间
                 Date first = null;
                 if (dvalue != null) {
+                    //要求出铁时间在此first时间之前，最早不早过标准限制，即first为炉次实际从高炉出发运送开始时间
                     first = new Date(dvalue.getTime() - advanceTime * 60 * 1000L);
                 }
+                System.out.println("first:" + dateToString(first));
                 System.out.println("dvalue:" + dvalue);
                 System.out.println("advanceTime:" + advanceTime);
-                System.out.println("first:" + dateToString(first));
                 System.out.println("delay:" + delayTime);
                 if (dvalue != null) {
-                    dvalue = new Date(dvalue.getTime() + (int) limit.get("CC_" + chargeArr[i][j].getSteelGrade() + "_processTime")[0] * 60 * 1000L);
+                    //20/4/17 修改，加工时间
+                    dvalue = new Date(dvalue.getTime() + (int) limit.get("CC_" + chargeArr[i][j].getSteelGrade() + "_" + chargeArr[i][j].getProductSpec() + "_processTime")[0] * 60 * 1000L);
                 }
                 System.out.println("提前时间：" + advanceTime);
 
@@ -172,9 +171,8 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
                     //工艺route[r]的开始加工时间
                     Date next = null;
                     if (r == 0) {
-                        if (first != null) {
-                            next = new Date(first.getTime()
-                                    + (int) limit.get("HD_" + route[r] + "_transTime")[0] * 60 * 1000L
+                        if (first != null){
+                            next = new Date(first.getTime() + (int) limit.get("HD_" + route[r] + "_transTime")[0] * 60 * 1000L
                                     + (int) limit.get(route[r] + "_waitTime")[0] * 60 * 1000L);
                         }
                     } else {
@@ -194,36 +192,35 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
                     }
 
                     System.out.println("开始遍历工艺路线，进行到：" + route[r]);
-                    if (newsd != null) {
+                    if(newsd != null) {
                         System.out.println("此时，设备" + newsd.getStationName() + "的最早时间：" + dateToString(earlyMap.get(newsd.getStationName())));
                     }
                     System.out.println("该工序的开始时间：" + dateToString(next));
 
-                    if (next != null) {
-                        if (newsd != null) {
-                            if (!earlyMap.get(newsd.getStationName()).after(next)) {
-                                SteelSchedule newss = new SteelSchedule();
-                                newss.setSteel_scheduleUID(UUIDGenerator.generate());
-                                newss.setChargeNo(chargeArr[i][j].getChargeNo());
-                                newss.setCastNo(chargeArr[i][j].getAssignCast());
-                                newss.setCastSeq(chargeArr[i][j].getCastSeq());
-                                newss.setStationName(newsd.getDeviceName());
-                                newss.setPlanEnter(next);
-                                newss.setIronNo(chargeArr[i][j].getIronNo());
-                                newss.setIronSeq(chargeArr[i][j].getIronSeq());
-                                Date planexit = new Date(next.getTime() + (int) limit.get(route[r] + "_" + chargeArr[i][j].getSteelGrade() + "_processTime")[0] * 60 * 1000L);
-                                newss.setPlanExit(planexit);
-                                newss.setPlanStatus("");
-                                //actual,lastmodify未知
-                                Date newearly = new Date(planexit.getTime() + (int) limit.get(route[r] + "_waitTime")[0] * 60 * 1000L);
-                                earlyMap.put(newsd.getStationName(), newearly);
-                                sslist.add(newss);
-                            } else {
-                                delayTime += (int) (earlyMap.get(newsd.getStationName()).getTime() - next.getTime()) / (60 * 1000) + (int) limit.get(route[r] + "_waitTime")[0];
-                                System.out.println(route[r] + "设备延时，此时延时为: " + delayTime);
-                                i--;
-                                continue loop1;
-                            }
+                    if (newsd != null && next != null) {
+                        if (!earlyMap.get(newsd.getStationName()).after(next)) {
+                            SteelSchedule newss = new SteelSchedule();
+                            newss.setSteel_scheduleUID(UUIDGenerator.generate());
+                            newss.setChargeNo(chargeArr[i][j].getChargeNo());
+                            newss.setCastNo(chargeArr[i][j].getAssignCast());
+                            newss.setCastSeq(chargeArr[i][j].getCastSeq());
+                            newss.setStationName(newsd.getDeviceName());
+                            newss.setPlanEnter(next);
+                            newss.setIronNo(chargeArr[i][j].getIronNo());
+                            newss.setIronSeq(chargeArr[i][j].getIronSeq());
+                            //20/4/17 修改，加工时间
+                            Date planexit = new Date(next.getTime() + (int) limit.get(route[r] + "_" + chargeArr[i][j].getSteelGrade() + "_" + chargeArr[i][j].getProductSpec() + "_processTime")[0] * 60 * 1000L);
+                            newss.setPlanExit(planexit);
+                            newss.setPlanStatus("");
+                            //actual,lastmodify未知
+                            Date newearly = new Date(planexit.getTime() + (int) limit.get(route[r] + "_waitTime")[0] * 60 * 1000L);
+                            earlyMap.put(newsd.getStationName(), newearly);
+                            sslist.add(newss);
+                        } else {
+                            delayTime += (int) (earlyMap.get(newsd.getStationName()).getTime() - next.getTime()) / (60 * 1000) + (int) limit.get(route[r] + "_waitTime")[0];
+                            System.out.println(route[r] + "设备延时，此时延时为: " + delayTime);
+                            i--;
+                            continue loop1;
                         }
                     }
                 }
@@ -247,7 +244,6 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
             }
             //更新earlyMap
             earlyMap = getDeviceEarlyAvailableTimeMap(steelDeviceService.getDeviceList());
-
         }
         //更新device表
         for (String key : devicemap.keySet()) {
@@ -267,13 +263,13 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
         List<SteelSchedule> sslist = getScheduleListByStatus("编制");
         List<CastPlan> calist = castPlanService.getCastListByTimes(dateInterval);
         for (int i = 0; i < calist.size(); i++) {
-                for (SteelSchedule ss : sslist) {
-                    if (ss.getCastNo().equals(calist.get(i).getCastNo())) {
-                        calist.remove(calist.get(i));
-                        i--;
-                        break;
-                    }
+            for (SteelSchedule ss : sslist) {
+                if (ss.getCastNo().equals(calist.get(i).getCastNo())) {
+                    calist.remove(calist.get(i));
+                    i--;
+                    break;
                 }
+            }
         }
         chargeArr = new ChargePlan[calist.size()][];
         for (int i = 0; i < calist.size(); i++) {
@@ -285,6 +281,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
         }
         return chargeArr;
     }
+
 
     /*
      * 获得设备的最早可用时间Map,key=工序名称如：1#CC，value=最早可用时间
@@ -307,6 +304,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
         SteelScheduleExample.Criteria cc = ssExample.createCriteria();
         //起源时间初始值是一个极早的时间，如果调度表中无设备调度信息时，认为设备是新设备，默认上次出站时间为此
         Date originTime = null;
+
         cc.andStationnameEqualTo(stationNo);
         List<SteelSchedule> sslist = steelScheduleDAO.selectByExample(ssExample);
         for (SteelSchedule ss : sslist) {
@@ -349,7 +347,8 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
             } else if (temp.length == 2 && temp[1].equals("tappingTime")) {
                 double[] d = {p.getStandardValue() - p.getLowerLimit(), p.getStandardValue() + p.getUpperLimit()};
                 limit.put(p.getItemID(), d);
-            } else if (temp.length == 3) {
+                //20/4/16 修改，因加工时间改为与钢号和规格结合决定
+            } else if (temp.length >= 3) {
                 double[] d = {p.getStandardValue()};
                 limit.put(p.getItemID(), d);
             }

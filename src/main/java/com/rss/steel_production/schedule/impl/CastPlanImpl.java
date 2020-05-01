@@ -73,9 +73,13 @@ public class CastPlanImpl extends AbstractService<CastPlan> implements CastPlanS
             ca.setSteelGrade(first.getSteelGrade());
             ca.setProductLevel(first.getProductLevel().split("_")[0] + "_" + last.getProductLevel().split("_")[1]);
             ca.setTechnicalStandard(first.getTechnicalStandard());
+            //20/4/16 修改
+            /*
             ca.setBilletLength(first.getBilletLength().split("_")[0] + "_" + last.getBilletLength().split("_")[1]);
             ca.setBilletWidth(first.getBilletWidth().split("_")[0] + "_" + last.getBilletWidth().split("_")[1]);
             ca.setBilletThick(first.getBilletThick().split("_")[0] + "_" + last.getBilletThick().split("_")[1]);
+             */
+            ca.setProductSpec(first.getProductSpec());
             ca.setTargetTime(first.getTargetTime().split("_")[0] + "_" + last.getTargetTime().split("_")[1]);
         }
         ca.setPlanStatus("");
@@ -223,6 +227,8 @@ public class CastPlanImpl extends AbstractService<CastPlan> implements CastPlanS
                     i--;
                 } else if (assignChargeList.get(0).getSteelGrade().equals(chargeList.get(i).getSteelGrade())
                         && productLevel == Integer.parseInt(chargeList.get(i).getProductLevel().split("_")[0])
+                        //20/4/16 修改
+                        /*
                         && isLessThanInterval(
                         Math.abs(Integer.parseInt(assignChargeList.get(0).getBilletWidth().split("_")[0])
                                 - Integer.parseInt(chargeList.get(i).getBilletWidth().split("_")[0])),
@@ -231,6 +237,8 @@ public class CastPlanImpl extends AbstractService<CastPlan> implements CastPlanS
                         Math.abs(Integer.parseInt(assignChargeList.get(0).getBilletThick().split("_")[0])
                                 - Integer.parseInt(chargeList.get(i).getBilletThick().split("_")[0])),
                         limit.get("ChargeThick"))
+                        */
+                        && assignChargeList.get(0).getProductSpec().equals(chargeList.get(i).getProductSpec())
                         && isLessThanInterval(
                         Math.abs(stringToDate(assignChargeList.get(0).getTargetTime().split("_")[0]).getTime()
                                 - stringToDate(chargeList.get(i).getTargetTime().split("_")[0]).getTime()) / chargeTimeUnit,
@@ -334,12 +342,15 @@ public class CastPlanImpl extends AbstractService<CastPlan> implements CastPlanS
                     && isLessThanInterval(
                     Math.abs(Integer.parseInt(ch.getProductLevel().split("_")[0]) - Integer.parseInt(aimch.getProductLevel().split("_")[0])),
                     limit.get("ProductLevel"))
+                    //20/4/17 修改，注释宽和高
+                    /*
                     && isLessThanInterval(
                     Math.abs(Double.parseDouble(ch.getBilletWidth().split("_")[0]) - Double.parseDouble(aimch.getBilletWidth().split("_")[0])),
                     limit.get("ChargeWidth"))
                     && isLessThanInterval(
                     Math.abs(Double.parseDouble(ch.getBilletThick().split("_")[0]) - Double.parseDouble(aimch.getBilletThick().split("_")[0])),
                     limit.get("ChargeThick"))
+                    */
                     && isLessThanInterval(
                     Math.abs(stringToDate(ch.getTargetTime().split("_")[0]).getTime()
                             - stringToDate(aimch.getTargetTime().split("_")[0]).getTime()) / chargeTimeUnit,

@@ -26,27 +26,27 @@ public class CompositionStandardController {
     @PostMapping
     public Result add(@RequestBody CompositionStandard compositionStandard) {
         compositionStandard.setSteel_composition_standardUID(UUIDGenerator.generate());
-        Condition condition = new Condition(CompositionStandard.class);
-        Condition.Criteria criteria;
-        criteria = condition.createCriteria();
-        criteria.andEqualTo("sampleType", compositionStandard.getSampleType());
-        criteria.andEqualTo("itemID", compositionStandard.getItemID());
-        if (compositionStandardService.findByCondition(condition).size() > 0)
-            return ResultGenerator.genFailResult("元素名称和样品类型重复");
+//        Condition condition = new Condition(CompositionStandard.class);
+//        Condition.Criteria criteria;
+//        criteria = condition.createCriteria();
+//        criteria.andEqualTo("sampleType", compositionStandard.getSampleType());
+//        criteria.andEqualTo("itemID", compositionStandard.getItemID());
+//        if (compositionStandardService.findByCondition(condition).size() > 0)
+//            return ResultGenerator.genFailResult("元素名称和样品类型重复");
         compositionStandardService.insert(compositionStandard);
         return ResultGenerator.genSuccessResult();
     }
 
     @PutMapping
     public Result update(@RequestBody CompositionStandard compositionStandard) {
-        Condition condition = new Condition(CompositionStandard.class);
-        Condition.Criteria criteria;
-        criteria = condition.createCriteria();
-        criteria.andEqualTo("sampleType", compositionStandard.getSampleType());
-        criteria.andEqualTo("itemID", compositionStandard.getItemID());
-        criteria.andNotEqualTo("steel_composition_standardUID", compositionStandard.getSteel_composition_standardUID());
-        if (compositionStandardService.findByCondition(condition).size() > 0)
-            return ResultGenerator.genFailResult("元素名称和样品类型重复");
+//        Condition condition = new Condition(CompositionStandard.class);
+//        Condition.Criteria criteria;
+//        criteria = condition.createCriteria();
+//        criteria.andEqualTo("sampleType", compositionStandard.getSampleType());
+//        criteria.andEqualTo("itemID", compositionStandard.getItemID());
+//        criteria.andNotEqualTo("steel_composition_standardUID", compositionStandard.getSteel_composition_standardUID());
+//        if (compositionStandardService.findByCondition(condition).size() > 0)
+//            return ResultGenerator.genFailResult("元素名称和样品类型重复");
         compositionStandardService.updateByPrimaryKey(compositionStandard);
         return ResultGenerator.genSuccessResult();
     }
@@ -82,6 +82,9 @@ public class CompositionStandardController {
             }
             if (model.getItemID() != null) {
                 criteria.andLike("itemID", model.getItemID());
+            }
+            if (model.getStandardStatus() != null) {
+                criteria.andLike("standardStatus", model.getStandardStatus());
             }
         }
         PageInfo pageInfo = new PageInfo(compositionStandardService.findByCondition(condition));

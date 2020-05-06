@@ -7,5 +7,8 @@
         <result column="sampleType" property="sampleType" jdbcType="VARCHAR" />
         <result column="lowerLimit" property="lowerLimit" jdbcType="FLOAT" />
         <result column="upperLimit" property="upperLimit" jdbcType="FLOAT" />
+        <result column="standardStatus" jdbcType="VARCHAR" property="standardStatus"/>
+        <result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
+        <result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
     </resultMap>
 </mapper>

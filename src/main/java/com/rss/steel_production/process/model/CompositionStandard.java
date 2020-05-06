@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,9 @@ public class CompositionStandard {
     private String sampleType;
     private Float lowerLimit;
     private Float upperLimit;
+    private String standardStatus;
+    private String lastModifyUser;
+    private Date lastModifyDate;
 
     public String getSteel_composition_standardUID() {
         return steel_composition_standardUID;
@@ -57,5 +61,29 @@ public class CompositionStandard {
 
     public void setUpperLimit(Float upperLimit) {
         this.upperLimit = upperLimit;
+    }
+
+    public String getStandardStatus() {
+        return standardStatus;
+    }
+
+    public void setStandardStatus(String standardStatus) {
+        this.standardStatus = standardStatus;
+    }
+
+    public String getLastModifyUser() {
+        return lastModifyUser;
+    }
+
+    public void setLastModifyUser(String lastModifyUser) {
+        this.lastModifyUser = lastModifyUser;
+    }
+
+    public Date getLastModifyDate() {
+        return lastModifyDate;
+    }
+
+    public void setLastModifyDate(Date lastModifyDate) {
+        this.lastModifyDate = lastModifyDate;
     }
 }

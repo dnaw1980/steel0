@@ -7,6 +7,7 @@ import com.rss.framework.iMapper;
 import com.rss.steel_production.schedule.model.SteelSchedule;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SteelScheduleDAO extends iMapper<SteelSchedule> {
 //    int countByExample(SteelScheduleExample example);
@@ -30,4 +31,8 @@ public interface SteelScheduleDAO extends iMapper<SteelSchedule> {
 //    int updateByPrimaryKeySelective(SteelSchedule record);
 //
 //    int updateByPrimaryKey(SteelSchedule record);
+	
+	  public List<Map<String,Object>> getTimeLineInfoMapList(String orgName);
+	  
+	  public List<SteelSchedule> getOptionSchedules();
 }

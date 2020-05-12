@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * tomcat启动之后监听器执行方法启动echolient
- */
+
 @Component
 public class InstantiationTracingBeanPostProcessor implements ApplicationListener<ContextRefreshedEvent> {
         @Override
@@ -20,3 +20,4 @@ public class InstantiationTracingBeanPostProcessor implements ApplicationListene
             }).start();
         }
 }
+ */

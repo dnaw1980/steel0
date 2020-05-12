@@ -57,4 +57,11 @@ public interface SteelScheduleService extends Service<SteelSchedule> {
      * 返回Map<key=标准ID，value=上下限，double[0]下限[1]上限>
      */
     Map<String, double[]> getStandard();
+    
+    /**
+     * 通过工序名称获取该页面上的时间轴和上下工位相关信息
+     * @param orgName
+     * @return
+     */
+    Map<String,Object> getProcessInfo(String orgName);
 }

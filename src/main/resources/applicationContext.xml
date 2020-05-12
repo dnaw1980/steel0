@@ -68,16 +68,16 @@
   </bean>
 
   <!-- 配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
-  <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
     <!-- 给出需要扫描Dao接口包 -->
-    <property name="basePackage" value="com.rss.steel_production.schedule.dao;com.rss.steel_production.process.dao;com.rss.steel_production.foundation.dao;com.rss.platform.portal.dao"/>
-    <property name="properties">
+    <property name="basePackage" value="com.rss.**.dao;"/>
+    <!-- <property name="properties">
       <value>
           mappers=com.rss.framework.iMapper
           style=normal
           notEmpty=true
       </value>
-    </property>
+    </property> -->
     <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 
   </bean>
@@ -93,13 +93,16 @@
     <!-- 注入数据库连接池 -->
     <property name="dataSource" ref="dataSource"/>
   </bean>
-
+<!-- 获得sqlSession -->
+   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+   <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+   </bean>
   <!-- 配置基于注解的声明式事务 -->
   <tx:annotation-driven transaction-manager="transactionManager"/>
 
   <bean id="connectIP" class="com.rss.framework.ConnectIP">
-    <property name="IP" value="localhost"  />
-    <!--    <property name="IP" value="172.27.201.251"  />-->
+    <!--    <property name="IP" value="localhost"  />-->
+    <property name="IP" value="172.27.201.251"  />
     <property name="port" value="12306" />
   </bean>
 

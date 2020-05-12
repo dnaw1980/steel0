@@ -20,11 +20,11 @@
                         password="root">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.rss.platform.portal.model" targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\java\"/>
+        <javaModelGenerator targetPackage="com.rss.platform.portal.model" targetProject="F:\workshop\codes\steel\src\main\java\"/>
 
-        <sqlMapGenerator targetPackage="mapper"  targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\resources\"/>
+        <sqlMapGenerator targetPackage="mapper"  targetProject="F:\workshop\codes\steel\src\main\resources\"/>
 
-        <javaClientGenerator targetPackage="com.rss.platform.portal.dao" targetProject="C:\Users\ASUS\IdeaProjects\SteelBulkIntelligentControlSystem\src\main\java\" type="XMLMAPPER" />
+        <javaClientGenerator targetPackage="com.rss.platform.portal.dao" targetProject="F:\workshop\codes\steel\src\main\java\" type="XMLMAPPER" />
 
         <table tableName="%" >
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->

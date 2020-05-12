@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rss.steel_production.schedule.dao.SteelScheduleDao">
-	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.SteelSchedule">
+	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.SteelSchedule"> 
 		<id column="steel_scheduleUID" jdbcType="VARCHAR" property="steel_scheduleUID"/>
 		<result column="chargeNo" property="chargeno" jdbcType="VARCHAR" />
 		<result column="castNo" property="castno" jdbcType="VARCHAR" />
@@ -22,6 +22,32 @@
 		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
 		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
 	</resultMap>
+	<select id="getTimeLineInfoMapList" resultType="java.util.HashMap">
+		SELECT
+			stationName, TIMEDIFF(planExit,planEnter) as planTotal, TIMEDIFF(actualEnter,NOW()) as actualTotal, actualExit is NOT NULL AS isDone
+		FROM
+			steel_schedule 
+		WHERE
+			chargeNo IN (
+			SELECT
+				chargeNo 
+			FROM
+				steel_schedule 
+			WHERE
+				1=1 
+				<if test="orgName">
+				And	stationName = #{orgName,jdbcType=VARCHAR}
+				</if>
+				  AND ( planStatus = 2 OR planStatus = 1 ) 
+			) ORDER BY 
+				planEnter
+	</select>
+	<select id="getOptionSchedules" resultMap="BaseResultMap">
+		select * from steel_schedule
+		<where>
+			planStatus IN ( 1, 2 )
+		</where>
+	</select>
 <!--	<sql id="Example_Where_Clause" >-->
 <!--		<where >-->
 <!--			<foreach collection="oredCriteria" item="criteria" separator="or" >-->

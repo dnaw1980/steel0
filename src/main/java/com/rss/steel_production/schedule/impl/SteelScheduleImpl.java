@@ -3,14 +3,21 @@ package com.rss.steel_production.schedule.impl;
 import javax.annotation.Resource;
 
 import com.rss.framework.UUIDGenerator;
+import com.rss.framework.iMapper;
 import com.rss.steel_production.foundation.model.ProcessStandard;
 import com.rss.steel_production.foundation.model.SteelDevice;
 import com.rss.steel_production.foundation.service.ProcessStandardService;
 import com.rss.steel_production.foundation.service.SteelDeviceService;
+import com.rss.steel_production.process.model.CompositionInfo;
+import com.rss.steel_production.process.model.CompositionStandard;
+import com.rss.steel_production.process.service.CompositionInfoService;
+import com.rss.steel_production.process.service.CompositionStandardService;
 import com.rss.steel_production.schedule.model.*;
 import com.rss.steel_production.schedule.service.CastPlanService;
 import com.rss.steel_production.schedule.service.ChargePlanService;
 import com.rss.steel_production.schedule.service.IronPlanService;
+
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +25,21 @@ import com.rss.framework.AbstractService;
 import com.rss.steel_production.schedule.dao.SteelScheduleDAO;
 import com.rss.steel_production.schedule.service.SteelScheduleService;
 
+import tk.mybatis.mapper.entity.Condition;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
 @Transactional
 public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements SteelScheduleService {
-    @Resource
-    private SteelScheduleDAO steelScheduleDAO;
+	@Resource
+    SteelScheduleDAO steelScheduleDAO;
+	@Autowired
+	private SqlSessionTemplate sqlSession;
     @Autowired
     ChargePlanService chargePlanService;
     @Autowired
@@ -38,6 +52,10 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     SteelScheduleService steelScheduleService;
     @Autowired
     IronPlanService ironPlanService;
+    @Autowired
+    CompositionInfoService compositionInfoService;
+    @Autowired
+    CompositionStandardService compositionStandardService;
 
     /*
      * 检查
@@ -354,5 +372,190 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
             }
         }
         return limit;
+    }
+    
+    private List<Map<String, Object>> timeLineInfos(String orgName){
+    	List<Map<String,Object>> result = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getTimeLineInfoMapList");
+    	//List<Map<String,Object>> result = steelScheduleDAO.getTimeLineInfoMapList(orgName);
+    	return result;
+    }
+    
+    private Map<String, Object> processInfos(String orgName,String[] orderStationNames){
+    	Map<String, Object> result = new HashMap<String, Object>();
+    	
+    	List<SteelSchedule> optionsSchedules =   sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getOptionSchedules");
+    	// 每个工位上的最近计划信息
+    	Map<String,SteelSchedule> stationNameMapSechedules = new HashMap<String,SteelSchedule>();
+    	LocalDateTime now = LocalDateTime.now();
+    	for(SteelSchedule schedule : optionsSchedules) {
+    		String key = schedule.getStationName();
+    		if(stationNameMapSechedules.containsKey(key)) {
+    			SteelSchedule value = stationNameMapSechedules.get(key);
+    			
+    			LocalDateTime checkDateTime  = value.getPlanEnter().toInstant()
+    			        .atZone( ZoneId.systemDefault() )
+    			        .toLocalDateTime();
+    			LocalDateTime tempDateTime  = schedule.getPlanEnter().toInstant()
+    			        .atZone( ZoneId.systemDefault() )
+    			        .toLocalDateTime();
+    			
+    			// 比较计划时间与当前时间，取最近的那个
+    			if(Math.abs(ChronoUnit.SECONDS.between(now, checkDateTime))>Math.abs(ChronoUnit.SECONDS.between(now, tempDateTime))) {
+    				stationNameMapSechedules.put(key, schedule);
+    			}
+    		}else {
+    			stationNameMapSechedules.put(key, schedule);
+    		}
+    	}
+    	
+    	// 循环取得上下当前工位的计划信息
+    	for(int i = 0; i<orderStationNames.length ; i++) {
+    		String chargeNo = orderStationNames[i];
+    		SteelSchedule schedule = new SteelSchedule();
+    		if(chargeNo!=null && "".equals(chargeNo)) {
+    			schedule = stationNameMapSechedules.get(chargeNo);
+    		}
+    		//封装 数据
+            switch(i) {
+	            case 0:
+	            	result.put("last",schedule);
+	            	break;
+	            case 1:
+	            	result.put("current",schedule);
+	            	break;
+	            case 2:
+	            	result.put("next",schedule);
+	            	break;
+	            default:
+	            	break;
+            }
+    	}
+    	return result;
+    }
+    
+    /**
+     * 封装上、当前、下工序的标准和工艺信息
+     */
+    @SuppressWarnings("unused")
+	private Map<String, Object>  getStandardAndInfos(String[] orderStationNames) {
+    	Map<String, Object> result = new HashMap<String,Object>();
+    	
+    	// 循环工位信息，获取工艺和标准信息
+    	String sampleType = "";
+    	
+    	// 通行查询条件封装
+    	for(int i = 0; i<orderStationNames.length; i++) {
+    		// 标准信息
+    		String chargeNo = orderStationNames[i];
+    		
+    		List<CompositionStandard> compositionStandards = new ArrayList<CompositionStandard>();
+    		List<CompositionInfo>  compositionInfos = new ArrayList<CompositionInfo>();
+    		
+    		if(chargeNo!=null && "".equals(chargeNo)) {
+    			String chargeType = chargeNo.split("#")[1];
+            	switch(chargeType) {
+        	    	case "BOF":
+        	    			sampleType = "转炉";
+        	    			break;
+        	    	case "KR":
+        	    			sampleType = "脱硫";
+        	    			break;
+        	        default:
+        	        	sampleType = chargeType;
+        	        		break;
+            	}
+            	
+            	// 每个工位上的标准信息
+            	Condition condition=new Condition(CompositionInfo.class);
+            	Condition.Criteria criteria=condition.createCriteria();
+            	criteria.andLike("sampleType", "%" + sampleType + "%");
+            	compositionStandards =  compositionStandardService.findByCondition(condition);
+            	
+            	// 工艺信息
+            	condition=new Condition(CompositionInfo.class);
+            	criteria=condition.createCriteria();
+            	condition.setOrderByClause("acquireTime desc");
+                if (chargeNo != null) {
+                    criteria.andLike("chargeNo", "%"+chargeNo+"%");
+                }
+                compositionInfos = compositionInfoService.findByCondition(condition);
+    		}
+            
+            //封装 数据
+            switch(i) {
+	            case 0:
+	            	result.put("lastStand",compositionStandards);
+	            	result.put("lastInfo",compositionInfos);
+	            	break;
+	            case 1:
+	            	result.put("currentStand",compositionStandards);
+	            	result.put("currentInfo",compositionInfos);
+	            	break;
+	            case 2:
+	            	result.put("nextStand",compositionStandards);
+	            	result.put("nextInfo",compositionInfos);
+	            	break;
+	            default:
+	            	break;
+            }
+    	}
+    	
+    	return result;
+    }
+    
+    private String[] getOrderStationNames(List<Map<String, Object>> timeline, String orgName) {
+    	String[] result = new String[3];
+    	for(int i = 0; i < timeline.size(); i++) {
+    		Map<String, Object> tempLineInfo = timeline.get(i);
+    		String stationName = tempLineInfo.get("stationName").toString();
+    		if(stationName.equals(orgName)) {
+    			
+    			//当前工序
+    			result[1] = stationName;
+    			
+    			// 取上工序
+    			if(i==0) {
+    				result[0] = "";
+    			}else {
+    				tempLineInfo = timeline.get(i-1);
+    	    		stationName = tempLineInfo.get("stationName").toString();
+    	    		result[0] = stationName;
+    			}
+    			
+    			// 取下工序
+    			if(i==timeline.size()-1) {
+    				result[2] = "";
+    			}else {
+    				tempLineInfo = timeline.get(i+1);
+    	    		stationName = tempLineInfo.get("stationName").toString();
+    	    		result[2] = stationName;
+    			}
+    			
+    			break;
+    		}
+    	}
+    	return  result;
+    }
+    
+    @Override
+    public Map<String,Object> getProcessInfo(String orgName){
+    	Map<String,Object> result = new HashMap<String, Object>();
+    	
+    	//时间轴信息
+    	List<Map<String, Object>> timeline = this.timeLineInfos(orgName);
+    	result.put("timeline", timeline);
+    	
+    	// 前、当前、序的工位信息
+    	String[] orderStationNames = this.getOrderStationNames(timeline, orgName);
+    	
+    	// 上下当前工序信息
+    	Map<String, Object> processInfos = this.processInfos(orgName,orderStationNames);
+    	result.putAll(processInfos);
+    	
+    	// 上下当前工艺和标准信息
+    	Map<String, Object> standardAndInfos =  getStandardAndInfos(orderStationNames);
+    	result.putAll(standardAndInfos);
+    	
+    	return result;
     }
 }

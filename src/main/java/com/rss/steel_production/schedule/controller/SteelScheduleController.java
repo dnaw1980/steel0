@@ -159,4 +159,15 @@ public class SteelScheduleController {
         EchoClient.getInstance().cH.sendToch(message);
         return ResultGenerator.genSuccessResult();
     }
+    
+    /**
+     * 通过工序名称获取该页面上的时间轴和上下工位相关信息
+     * @param orgName
+     * @return
+     */
+    @PostMapping("/processInfo")
+    public Result getProcessInfo(@RequestParam(value = "orgName", required = true) String orgName) {
+    	Map<String,Object> result = steelScheduleService.getProcessInfo(orgName);
+    	return ResultGenerator.genSuccessResult(result);
+    }
 }

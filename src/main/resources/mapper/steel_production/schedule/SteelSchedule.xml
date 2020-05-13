@@ -3,28 +3,30 @@
 <mapper namespace="com.rss.steel_production.schedule.dao.SteelScheduleDao">
 	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.SteelSchedule"> 
 		<id column="steel_scheduleUID" jdbcType="VARCHAR" property="steel_scheduleUID"/>
-		<result column="chargeNo" property="chargeno" jdbcType="VARCHAR" />
-		<result column="castNo" property="castno" jdbcType="VARCHAR" />
-		<result column="castSeq" property="castseq" jdbcType="VARCHAR" />
-		<result column="stationName" property="stationname" jdbcType="VARCHAR" />
-		<result column="planEnter" property="planenter" jdbcType="TIMESTAMP" />
-		<result column="planExit" property="planexit" jdbcType="TIMESTAMP" />
-		<result column="actualEnter" property="actualenter" jdbcType="TIMESTAMP" />
-		<result column="actualExit" property="actualexit" jdbcType="TIMESTAMP" />
-		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
-		<result column="ironNo" property="ironno" jdbcType="VARCHAR" />
-		<result column="ironSeq" property="ironseq" jdbcType="VARCHAR" />
+		<result column="chargeNo" property="chargeNo" jdbcType="VARCHAR" />
+		<result column="castNo" property="castNo" jdbcType="VARCHAR" />
+		<result column="castSeq" property="castSeq" jdbcType="VARCHAR" />
+		<result column="stationName" property="stationName" jdbcType="VARCHAR" />
+		<result column="planEnter" property="planEnter" jdbcType="TIMESTAMP" />
+		<result column="planExit" property="planExit" jdbcType="TIMESTAMP" />
+		<result column="actualEnter" property="actualEnter" jdbcType="TIMESTAMP" />
+		<result column="actualExit" property="actualExit" jdbcType="TIMESTAMP" />
+		<result column="planStatus" property="planStatus" jdbcType="VARCHAR" />
+		<result column="ironNo" property="ironNo" jdbcType="VARCHAR" />
+		<result column="ironSeq" property="ironSeq" jdbcType="VARCHAR" />
 		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
-		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
-		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
-		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
-		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
-		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
-		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="prepareTime" property="prepareTime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="prepareStaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approveTime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approveStaff" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastModifyUser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
+		<result column="temperature" property="temperature" jdbcType="VARCHAR" />
+		<result column="weight" property="weight" jdbcType="VARCHAR" />
 	</resultMap>
 	<select id="getTimeLineInfoMapList" resultType="java.util.HashMap">
 		SELECT
-			stationName, TIMEDIFF(planExit,planEnter) as planTotal, TIMEDIFF(actualEnter,NOW()) as actualTotal, actualExit is NOT NULL AS isDone
+			stationName,chargeNo,planEnter, TIMEDIFF(planExit,planEnter) as planTotal, TIMEDIFF(actualEnter,NOW()) as actualTotal, actualExit is NOT NULL AS isDone
 		FROM
 			steel_schedule 
 		WHERE
@@ -40,7 +42,7 @@
 				</if>
 				  AND ( planStatus = 2 OR planStatus = 1 ) 
 			) ORDER BY 
-				planEnter
+				chargeNo, planEnter
 	</select>
 	<select id="getOptionSchedules" resultMap="BaseResultMap">
 		select * from steel_schedule

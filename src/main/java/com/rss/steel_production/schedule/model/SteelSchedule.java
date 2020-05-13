@@ -34,6 +34,8 @@ public class SteelSchedule {
 	private String ironNo;
 	private String ironSeq;
 	private String remarks;
+	private String weight;
+	private String temperature;
 	public String getSteel_scheduleUID() {
 		return steel_scheduleUID;
 	}
@@ -164,6 +166,18 @@ public class SteelSchedule {
 	}
 	public void setLastModifyDate(Date lastModifyDate) {
 		this.lastModifyDate = lastModifyDate;
+	}
+	public String getTemperature() {
+		return temperature;
+	}
+	public void setTemperature(String temperature) {
+		this.temperature = temperature;
+	}
+	public String getWeight() {
+		return weight;
+	}
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 	}
 

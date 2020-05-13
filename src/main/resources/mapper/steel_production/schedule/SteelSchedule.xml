@@ -26,7 +26,7 @@
 	</resultMap>
 	<select id="getTimeLineInfoMapList" resultType="java.util.HashMap">
 		SELECT
-			stationName,chargeNo,planEnter, TIMEDIFF(planExit,planEnter) as planTotal, TIMEDIFF(actualEnter,NOW()) as actualTotal, actualExit is NOT NULL AS isDone
+			stationName,chargeNo,planEnter, planExit, actualEnter, actualExit
 		FROM
 			steel_schedule 
 		WHERE

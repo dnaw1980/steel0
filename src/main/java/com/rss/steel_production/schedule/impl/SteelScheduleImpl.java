@@ -466,9 +466,12 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	String sampleType = "";
     	
     	// 通行查询条件封装
-    	for(int i = 0; i<orderStationNames.length; i++) {
+    	for(int i = 0; i<orderStationNames.length ; i++) {
     		// 标准信息
     		String stationName = orderStationNames[i].split("___")[0];
+    		if(stationName==null || "".equals(stationName)) {
+    			continue;
+    		}
     		String chargeNo = orderStationNames[i].split("___")[1];
     		List<CompositionStandard> compositionStandards = new ArrayList<CompositionStandard>();
     		List<CompositionInfo>  compositionInfos = new ArrayList<CompositionInfo>();
@@ -581,7 +584,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	}
     	
     	// 下一工序的任务流
-    	if(stationChargeNos[0]!=null && !"".equals(stationChargeNos[0])) {
+    	if(stationChargeNos[1]!=null && !"".equals(stationChargeNos[1])) {
     		String nextChargeNo = stationChargeNos[1];
     		List<String> nextStationNames  = selectList.stream().filter(( o -> nextChargeNo.equals(o.get("chargeNo").toString()))).map( value -> {
     			return value.get("stationName").toString();

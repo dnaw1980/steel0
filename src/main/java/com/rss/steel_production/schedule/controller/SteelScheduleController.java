@@ -10,6 +10,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rss.framework.netty_client.EchoClient;
 import com.rss.steel_production.foundation.service.SteelDeviceService;
+import com.rss.steel_production.schedule.controller.bean.EnterStationBean;
+import com.rss.steel_production.schedule.controller.bean.ExitStationBean;
+import com.rss.steel_production.schedule.controller.bean.TempBean;
+import com.rss.steel_production.schedule.controller.bean.WeightBean;
 import com.rss.steel_production.schedule.model.SteelScheduleReturn;
 import com.rss.steel_production.schedule.service.CastPlanService;
 import com.rss.steel_production.schedule.service.ChargePlanService;
@@ -159,15 +163,234 @@ public class SteelScheduleController {
         EchoClient.getInstance().cH.sendToch(message);
         return ResultGenerator.genSuccessResult();
     }
-    
+
     /**
      * 通过工序名称获取该页面上的时间轴和上下工位相关信息
+     *
      * @param orgName
      * @return
      */
     @PostMapping("/processInfo")
     public Result getProcessInfo(@RequestParam(value = "orgName", required = true) String orgName) {
-    	Map<String,Object> result = steelScheduleService.getProcessInfo(orgName);
-    	return ResultGenerator.genSuccessResult(result);
+        Map<String, Object> result = steelScheduleService.getProcessInfo(orgName);
+        return ResultGenerator.genSuccessResult(result);
+    }
+
+    /**
+     * 进站
+     * @param enterStationBean
+     * @return
+     */
+    @PostMapping("/enter")
+    public Result enter(@RequestBody EnterStationBean enterStationBean) {
+
+        if (enterStationBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (enterStationBean.getChargeNo() == null || "".equals(enterStationBean.getChargeNo())) {
+            return ResultGenerator.genFailResult("炉次为空");
+        }
+
+        if (enterStationBean.getStationName() == null || "".equals(enterStationBean.getStationName())) {
+            return ResultGenerator.genFailResult("工位为空");
+        }
+
+        Condition condition = new Condition(SteelSchedule.class);
+        Condition.Criteria criteria = condition.createCriteria();
+
+        criteria.andLike("chargeNo", "%" + enterStationBean.getChargeNo() + "%");
+        criteria.andLike("stationName", "%" + enterStationBean.getStationName() + "%");
+
+        List<SteelSchedule> scList = steelScheduleService.findByCondition(condition);
+
+        if (scList == null || scList.size() != 1) {
+            return ResultGenerator.genFailResult("未查到对应的调度记录，或不只一条！");
+        }
+
+        SteelSchedule steelSchedule = scList.get(0);
+
+        if (enterStationBean.getTemperature() != null && !"".equals(enterStationBean.getTemperature())) {
+            steelSchedule.setTemperature(enterStationBean.getTemperature());
+        }
+
+        if (enterStationBean.getWeight() != null && !"".equals(enterStationBean.getWeight())) {
+            steelSchedule.setWeight(enterStationBean.getWeight());
+        }
+
+        if (enterStationBean.getActualEnter() == null) {
+            return ResultGenerator.genFailResult("请输入进站时间！");
+        }
+
+        steelSchedule.setActualEnter(enterStationBean.getActualEnter());
+
+        int rs = steelScheduleService.update(steelSchedule);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("进站成功！");
+        } else {
+            return ResultGenerator.genSuccessResult("进站失败");
+        }
+
+    }
+
+
+    /**
+     * 出站
+     * @param exitStationBean
+     * @return
+     */
+    @PostMapping("/exit")
+    public Result exit(@RequestBody ExitStationBean exitStationBean) {
+
+        if (exitStationBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (exitStationBean.getChargeNo() == null || "".equals(exitStationBean.getChargeNo())) {
+            return ResultGenerator.genFailResult("炉次为空");
+        }
+
+        if (exitStationBean.getStationName() == null || "".equals(exitStationBean.getStationName())) {
+            return ResultGenerator.genFailResult("工位为空");
+        }
+
+        Condition condition = new Condition(SteelSchedule.class);
+        Condition.Criteria criteria = condition.createCriteria();
+
+        criteria.andLike("chargeNo", "%" + exitStationBean.getChargeNo() + "%");
+        criteria.andLike("stationName", "%" + exitStationBean.getStationName() + "%");
+
+        List<SteelSchedule> scList = steelScheduleService.findByCondition(condition);
+
+        if (scList == null || scList.size() != 1) {
+            return ResultGenerator.genFailResult("未查到对应的调度记录，或不只一条！");
+        }
+
+        SteelSchedule steelSchedule = scList.get(0);
+
+        if (exitStationBean.getTemperature() != null && !"".equals(exitStationBean.getTemperature())) {
+            steelSchedule.setTemperature(exitStationBean.getTemperature());
+        }
+
+        if (exitStationBean.getWeight() != null && !"".equals(exitStationBean.getWeight())) {
+            steelSchedule.setWeight(exitStationBean.getWeight());
+        }
+
+        if (exitStationBean.getActualExit() == null) {
+            return ResultGenerator.genFailResult("请输入出站时间！");
+        }
+
+        steelSchedule.setActualExit(exitStationBean.getActualExit());
+        //3表示完成
+        steelSchedule.setPlanStatus("3");
+
+        int rs = steelScheduleService.update(steelSchedule);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("出站成功！");
+        } else {
+            return ResultGenerator.genSuccessResult("出站失败");
+        }
+    }
+
+    /**
+     * 温度
+     * @param tempBean
+     * @return
+     */
+    @PostMapping("/temp")
+    public Result temp(@RequestBody TempBean tempBean) {
+
+        if (tempBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (tempBean.getChargeNo() == null || "".equals(tempBean.getChargeNo())) {
+            return ResultGenerator.genFailResult("炉次为空");
+        }
+
+        if (tempBean.getStationName() == null || "".equals(tempBean.getStationName())) {
+            return ResultGenerator.genFailResult("工位为空");
+        }
+
+        Condition condition = new Condition(SteelSchedule.class);
+        Condition.Criteria criteria = condition.createCriteria();
+
+        criteria.andLike("chargeNo", "%" + tempBean.getChargeNo() + "%");
+        criteria.andLike("stationName", "%" + tempBean.getStationName() + "%");
+
+        List<SteelSchedule> scList = steelScheduleService.findByCondition(condition);
+
+        if (scList == null || scList.size() != 1) {
+            return ResultGenerator.genFailResult("未查到对应的调度记录，或不只一条！");
+        }
+
+        SteelSchedule steelSchedule = scList.get(0);
+
+        if (tempBean.getTemperature() == null) {
+            return ResultGenerator.genFailResult("请输入温度！");
+        }
+
+        steelSchedule.setTemperature(tempBean.getTemperature());
+
+        int rs = steelScheduleService.update(steelSchedule);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("温度输入成功！");
+        } else {
+            return ResultGenerator.genSuccessResult("温度输入失败");
+        }
+
+    }
+
+    /**
+     * 重量
+     * @param weightBean
+     * @return
+     */
+    @PostMapping("/weight")
+    public Result weight(@RequestBody WeightBean weightBean) {
+
+        if (weightBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (weightBean.getChargeNo() == null || "".equals(weightBean.getChargeNo())) {
+            return ResultGenerator.genFailResult("炉次为空");
+        }
+
+        if (weightBean.getStationName() == null || "".equals(weightBean.getStationName())) {
+            return ResultGenerator.genFailResult("工位为空");
+        }
+
+        Condition condition = new Condition(SteelSchedule.class);
+        Condition.Criteria criteria = condition.createCriteria();
+
+        criteria.andLike("chargeNo", "%" + weightBean.getChargeNo() + "%");
+        criteria.andLike("stationName", "%" + weightBean.getStationName() + "%");
+
+        List<SteelSchedule> scList = steelScheduleService.findByCondition(condition);
+
+        if (scList == null || scList.size() != 1) {
+            return ResultGenerator.genFailResult("未查到对应的调度记录，或不只一条！");
+        }
+
+        SteelSchedule steelSchedule = scList.get(0);
+
+        if (weightBean.getWeight() == null) {
+            return ResultGenerator.genFailResult("请输入重量！");
+        }
+
+        steelSchedule.setWeight(weightBean.getWeight());
+
+        int rs = steelScheduleService.update(steelSchedule);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("重量输入成功！");
+        } else {
+            return ResultGenerator.genSuccessResult("重量输入失败");
+        }
+
     }
 }

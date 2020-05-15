@@ -34,5 +34,9 @@ public interface SteelScheduleDAO extends iMapper<SteelSchedule> {
 	
 	  public List<Map<String,Object>> getTimeLineInfoMapList(String orgName);
 	  
+	  public List<Map<String,Object>> getPlanedSteelSchedule();
+	  
 	  public List<SteelSchedule> getOptionSchedules();
+	  
+	  public List<Map<String,Object>> getScheduleExitGroupByStation();
 }

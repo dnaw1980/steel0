@@ -10,6 +10,8 @@ import com.rss.steel_production.foundation.model.SteelDevice;
 import java.util.List;
 
 public interface SteelDeviceDAO extends iMapper<SteelDevice> {
+	
+	List<SteelDevice> getSteelDeviceByStatus();
 //    int countByExample(SteelDeviceExample example);
 //
 //    int deleteByExample(SteelDeviceExample example);

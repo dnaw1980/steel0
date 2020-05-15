@@ -115,6 +115,12 @@
 		from charge_plan
 		where charge_planUID = #{chargePlanuid,jdbcType=VARCHAR}
 	</select>
+	<select id="selectByChargeNo" resultMap="BaseResultMap">
+		select * from charge_plan
+		<if test="chargeNo != null" >
+				where chargeNo = #{chargeNo,jdbcType=VARCHAR},
+		</if>
+	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from charge_plan
     where charge_planUID = #{chargePlanuid,jdbcType=VARCHAR}

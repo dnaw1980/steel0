@@ -19,6 +19,8 @@ public interface ProcessStandardDAO extends iMapper<ProcessStandard> {
 //    int insertSelective(ProcessStandard record);
 
     List<ProcessStandard> selectByExample(ProcessStandardExample example);
+    
+    List<ProcessStandard> getAllProcessStandard();
 
 //    ProcessStandard selectByPrimaryKey(String processStandarduid);
 

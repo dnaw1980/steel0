@@ -17,7 +17,6 @@ import com.rss.steel_production.schedule.controller.bean.WeightBean;
 import com.rss.steel_production.schedule.model.SteelScheduleReturn;
 import com.rss.steel_production.schedule.service.CastPlanService;
 import com.rss.steel_production.schedule.service.ChargePlanService;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import io.swagger.annotations.Api;

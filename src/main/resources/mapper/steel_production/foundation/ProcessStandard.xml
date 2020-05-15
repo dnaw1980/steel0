@@ -365,4 +365,7 @@
       lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}
     where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
   </update>
+  <select id="getAllProcessStandard" resultMap="BaseResultMap">
+  	select * from process_standard
+  </select>
 </mapper>

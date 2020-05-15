@@ -44,11 +44,24 @@
 			) ORDER BY 
 				chargeNo, planEnter
 	</select>
+	<select id="getPlanedSteelSchedule" resultType="java.util.HashMap">
+		SELECT
+			stationName,chargeNo,planEnter, planExit
+		FROM
+			steel_schedule 
+		WHERE
+			planStatus = 2 OR planStatus = 1 
+			 ORDER BY 
+				chargeNo, planEnter
+	</select>
 	<select id="getOptionSchedules" resultMap="BaseResultMap">
 		select * from steel_schedule
 		<where>
 			planStatus IN ( 1, 2 )
 		</where>
+	</select>
+	<select id="getScheduleExitGroupByStation" resultType="java.util.HashMap">
+		SELECT stationName, MAX(planExit) as exitTime FROM `steel_schedule` WHERE planStatus IN(1,2) GROUP BY stationName
 	</select>
 <!--	<sql id="Example_Where_Clause" >-->
 <!--		<where >-->

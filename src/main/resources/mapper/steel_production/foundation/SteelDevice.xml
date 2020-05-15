@@ -77,6 +77,13 @@
     steel_deviceUID, deviceNo, deviceName, deviceType, stationName, processCapacity,
     deviceStatus, remarks, lastModifyUser, lastModifyDate, enterTime, exitTime
   </sql>
+  <select id="getSteelDeviceByStatus" resultType="java.util.HashMap">
+  	SELECT distinct deviceName FROM `steel_device`
+  	<if test="deviceStatus!=null">
+  		WHERE deviceStatus=${deviceStatus}
+  	</if>
+  	 
+  </select>
 	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.foundation.model.SteelDeviceExample" >
 		select
 		<if test="distinct" >

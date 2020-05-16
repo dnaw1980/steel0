@@ -39,4 +39,6 @@ public interface SteelScheduleDAO extends iMapper<SteelSchedule> {
 	  public List<SteelSchedule> getOptionSchedules();
 	  
 	  public List<Map<String,Object>> getScheduleExitGroupByStation();
+	  
+	  public List<String> getMaxChargeNo();
 }

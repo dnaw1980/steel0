@@ -3,29 +3,29 @@
 <mapper namespace="com.rss.steel_production.schedule.dao.CastPlanDao">
 	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.CastPlan">
 		<id column="cast_planUID" jdbcType="VARCHAR" property="cast_planUID"/>
-		<result column="castNo" property="castno" jdbcType="VARCHAR" />
-		<result column="planTime" property="plantime" jdbcType="TIMESTAMP" />
-		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
-		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
-		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
-		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
-		<result column="chargeList" property="chargelist" jdbcType="VARCHAR" />
-		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
-		<result column="productSpec" property="productspec" jdbcType="VARCHAR" />
+		<result column="castNo" property="castNo" jdbcType="VARCHAR" />
+		<result column="planTime" property="planTime" jdbcType="TIMESTAMP" />
+		<result column="prepareTime" property="prepareTime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="prepareStaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approveTime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approveStaff" jdbcType="VARCHAR" />
+		<result column="chargeList" property="chargeList" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelGrade" jdbcType="VARCHAR" />
+		<result column="productSpec" property="productSpec" jdbcType="VARCHAR" />
 		<result column="chargeNum" property="chargeNum" jdbcType="INTEGER" />
 		<result column="continueTime" property="continueTime" jdbcType="INTEGER" />
-		<result column="productLevel" property="productlevel" jdbcType="VARCHAR" />
-		<result column="technicalStandard" property="technicalstandard" jdbcType="VARCHAR" />
-		<result column="billetLength" property="billetlength" jdbcType="VARCHAR" />
-		<result column="billetWidth" property="billetwidth" jdbcType="VARCHAR" />
-		<result column="billetThick" property="billetthick" jdbcType="VARCHAR" />
-		<result column="targetWeight" property="targetweight" jdbcType="DOUBLE" />
-		<result column="targetQuantity" property="targetquantity" jdbcType="DOUBLE" />
-		<result column="targetTime" property="targettime" jdbcType="VARCHAR" />
-		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="productLevel" property="productLevel" jdbcType="VARCHAR" />
+		<result column="technicalStandard" property="technicalStandard" jdbcType="VARCHAR" />
+		<result column="billetLength" property="billetLength" jdbcType="VARCHAR" />
+		<result column="billetWidth" property="billetWidth" jdbcType="VARCHAR" />
+		<result column="billetThick" property="billetThick" jdbcType="VARCHAR" />
+		<result column="targetWeight" property="targetWeight" jdbcType="DOUBLE" />
+		<result column="targetQuantity" property="targetQuantity" jdbcType="DOUBLE" />
+		<result column="targetTime" property="targetTime" jdbcType="VARCHAR" />
+		<result column="planStatus" property="planStatus" jdbcType="VARCHAR" />
 		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
-		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
-		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="lastModifyUser" property="lastModifyUser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Example_Where_Clause" >
 		<where >
@@ -91,6 +91,12 @@
     billetThick, targetWeight, targetQuantity, targetTime, planStatus, remarks, lastModifyUser,
     lastModifyDate
   </sql>
+  <select id="selectByChargeNo" resultMap="BaseResultMap">
+		select * from cast_plan
+		<if test="castNo != null" >
+				where castNo = #{castNo,jdbcType=VARCHAR}
+		</if>
+	</select>
 	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.schedule.model.CastPlanExample" >
 		select
 		<if test="distinct" >

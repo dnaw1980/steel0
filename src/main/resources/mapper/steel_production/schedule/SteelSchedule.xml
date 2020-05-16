@@ -60,6 +60,9 @@
 			planStatus IN ( 1, 2 )
 		</where>
 	</select>
+	<select id="getMaxChargeNo" resultType="string">
+		SELECT MAX(chargeNo) as maxChargeNo FROM `steel_schedule`
+	</select>
 	<select id="getScheduleExitGroupByStation" resultType="java.util.HashMap">
 		SELECT stationName, MAX(planExit) as exitTime FROM `steel_schedule` WHERE planStatus IN(1,2) GROUP BY stationName
 	</select>

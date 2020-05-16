@@ -3,19 +3,20 @@
 <mapper namespace="com.rss.steel_production.schedule.dao.IronPlanDao">
 	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.IronPlan">
 		<id column="iron_planUID" jdbcType="VARCHAR" property="iron_planUID"/>
-		<result column="ironNo" property="ironno" jdbcType="VARCHAR" />
-		<result column="ladleCount" property="ladlecount" jdbcType="INTEGER" />
-		<result column="tappingStart" property="tappingstart" jdbcType="TIMESTAMP" />
-		<result column="tappingEnd" property="tappingend" jdbcType="TIMESTAMP" />
-		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="ironNo" property="ironNo" jdbcType="VARCHAR" />
+		<result column="ladleCount" property="ladleCount" jdbcType="INTEGER" />
+		<result column="tappingStart" property="tappingStart" jdbcType="TIMESTAMP" />
+		<result column="tappingEnd" property="tappingEnd" jdbcType="TIMESTAMP" />
+		<result column="planStatus" property="planStatus" jdbcType="VARCHAR" />
 		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
-		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
-		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
-		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
-		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
-		<result column="stationName" property="stationname" jdbcType="VARCHAR" />
-		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
-		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="tappingTime" property="tappingTime" jdbcType="TIMESTAMP" />
+		<result column="prepareTime" property="prepareTime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="prepareStaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approveTime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approveStaff" jdbcType="VARCHAR" />
+		<result column="stationName" property="stationName" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastModifyUser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 <!--	<sql id="Example_Where_Clause" >-->
 <!--		<where >-->

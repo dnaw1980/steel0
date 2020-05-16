@@ -29,4 +29,5 @@ public interface CastPlanDAO extends iMapper<CastPlan> {
 //    int updateByPrimaryKeySelective(CastPlan record);
 //
 //    int updateByPrimaryKey(CastPlan record);
+    List<CastPlan> selectByChargeNo(@Param("chargeNo")String chargeNo);
 }

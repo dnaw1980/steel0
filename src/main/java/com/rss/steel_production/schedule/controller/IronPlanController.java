@@ -111,4 +111,11 @@ public class IronPlanController{
 		EchoClient.getInstance().cH.sendToch(message);
 		return ResultGenerator.genSuccessResult();
 	}
+	
+	@GetMapping("/getAllIronPlans")
+	public Result getAllIronPlans() {
+		String[] status = new String[1];
+		status[0] = "编制";
+		return ResultGenerator.genSuccessResult(ironPlanService.getIronListByStatus(status));
+	}
 }

@@ -3,20 +3,20 @@
 <mapper namespace="com.rss.steel_production.foundation.dao.ProcessStandardDao">
 	<resultMap id="BaseResultMap" type="com.rss.steel_production.foundation.model.ProcessStandard">
 		<id column="process_standardeUID" jdbcType="VARCHAR" property="process_standardeUID"/>
-		<result column="standardUID" property="standarduid" jdbcType="VARCHAR" />
-		<result column="itemID" property="itemid" jdbcType="VARCHAR" />
-		<result column="itemName" property="itemname" jdbcType="VARCHAR" />
-		<result column="itemType" property="itemtype" jdbcType="VARCHAR" />
-		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
+		<result column="standardUID" property="standardUID" jdbcType="VARCHAR" />
+		<result column="itemID" property="itemID" jdbcType="VARCHAR" />
+		<result column="itemName" property="itemName" jdbcType="VARCHAR" />
+		<result column="itemType" property="itemType" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelGrade" jdbcType="VARCHAR" />
 		<result column="productSpec" jdbcType="VARCHAR" property="productSpec"/>
-		<result column="measureUnit" property="measureunit" jdbcType="VARCHAR" />
-		<result column="standardValue" property="standardvalue" jdbcType="DOUBLE" />
-		<result column="lowerLimit" property="lowerlimit" jdbcType="DOUBLE" />
-		<result column="upperLimit" property="upperlimit" jdbcType="DOUBLE" />
-		<result column="validPeriod" property="validperiod" jdbcType="VARCHAR" />
-		<result column="standardStatus" property="standardstatus" jdbcType="VARCHAR" />
-		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
-		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="measureUnit" property="measureUnit" jdbcType="VARCHAR" />
+		<result column="standardValue" property="standardValue" jdbcType="DOUBLE" />
+		<result column="lowerLimit" property="lowerLimit" jdbcType="DOUBLE" />
+		<result column="upperLimit" property="upperLimit" jdbcType="DOUBLE" />
+		<result column="validPeriod" property="validPeriod" jdbcType="VARCHAR" />
+		<result column="standardStatus" property="standardStatus" jdbcType="VARCHAR" />
+		<result column="lastModifyUser" property="lastModifyUser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Example_Where_Clause" >
 		<where >
@@ -81,6 +81,9 @@
     standardValue, lowerLimit, upperLimit, validPeriod, standardStatus, lastModifyUser,
     lastModifyDate
   </sql>
+  <select id="getAllProcessStandard" resultMap="BaseResultMap">
+  	select * from process_standard
+  </select>
 	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.rss.steel_production.foundation.model.ProcessStandardExample" >
 		select
 		<if test="distinct" >
@@ -365,7 +368,4 @@
       lastModifyDate = #{lastmodifydate,jdbcType=TIMESTAMP}
     where process_standardUID = #{processStandarduid,jdbcType=VARCHAR}
   </update>
-  <select id="getAllProcessStandard" resultMap="BaseResultMap">
-  	select * from process_standard
-  </select>
 </mapper>

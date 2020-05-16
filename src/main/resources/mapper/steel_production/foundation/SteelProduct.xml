@@ -25,4 +25,13 @@
 		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
 		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
 	</resultMap>
+	<select id="getSteelProductRouter" resultMap="BaseResultMap">
+		SELECT
+			* 
+		FROM
+			`steel_product` 
+		WHERE
+			productSpec = #{productSpec, jdbcType=VARCHAR}
+			AND steelGrade = #{steelGrade, jdbcType=VARCHAR}
+	</select>
 </mapper>

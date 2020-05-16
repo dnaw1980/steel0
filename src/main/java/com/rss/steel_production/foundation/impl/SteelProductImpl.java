@@ -24,10 +24,13 @@ import com.rss.steel_production.foundation.model.SteelDevice;
 import com.rss.steel_production.foundation.model.SteelProduct;
 import com.rss.steel_production.foundation.dao.SteelProductDAO;
 import com.rss.steel_production.foundation.service.SteelProductService;
+import com.rss.steel_production.schedule.model.CastPlan;
 import com.rss.steel_production.schedule.model.ChargePlan;
 import com.rss.steel_production.schedule.model.SteelSchedule;
 import com.rss.steel_production.schedule.service.ChargePlanService;
 import com.rss.steel_production.schedule.service.SteelScheduleService;
+
+import tk.mybatis.mapper.util.StringUtil;
 
 @Service
 @Transactional
@@ -41,48 +44,70 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 	@Autowired
 	private SteelScheduleService steelScheduleService;
 
+	private String createChargeNo(String maxChargeNo) {
+		String result = "";
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		int yearNum = Integer.parseInt(sdf.format(new Date()).substring(2));
+		result = yearNum + "";
+		if(StringUtil.isEmpty(maxChargeNo)) {
+			result += "0001";
+		}else {
+			int maxChargeNoNum = Integer.parseInt(maxChargeNo.substring(2));
+			maxChargeNoNum++;
+			result += maxChargeNoNum;
+		}
+		return result;
+	}
 	@Override
 	public void autoCreate(String ironNo, String startDt) throws ParseException {
 		// 开始时间格式化
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdfS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date startDate = sdf.parse(startDt);
 		Date tempStartDate = startDate;
 		// 炉次号 同 铁次号
-		String chargeNo = ironNo;
+		String castNo = ironNo;
 		
-		// 对应的炉次信息
+		// 取最大的炉次号
+		List<String> maxChargeNos = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getMaxChargeNo");
+		String maxChargeNo = "";
+		String curreentChargeNo = "";
+		if(!maxChargeNos.isEmpty()) {
+			curreentChargeNo = maxChargeNos.get(0);
+		}
+		maxChargeNo = this.createChargeNo(curreentChargeNo);
+		// 对应的浇次信息
 		Map<String,Object> parameters=new java.util.HashMap<>();
-        parameters.put("chargeNo",chargeNo);
-		ChargePlan chargePlan = sqlSession.selectOne("com.rss.steel_production.schedule.model.ChargePlan.selectByChargeNo", parameters);
-    	// 交期区间 信息
-		String[] timeStrs = chargePlan.getTargetTime().split("_");
-		Date chargeStartDate =   sdf.parse(timeStrs[0]);
-		Date chargeEndDate =   sdf.parse(timeStrs[1]);
-		
-		// 钢种编号
-		String steelGrade = chargePlan.getSteelGrade();
+        parameters.put("castNo",castNo);
+        CastPlan castPlan = (CastPlan) sqlSession.selectList("com.rss.steel_production.schedule.dao.CastPlanDao.selectByChargeNo", parameters).get(0);
+    	// 钢种编号
+		String steelGrade = castPlan.getSteelGrade();
 		// 产品规格
-		String productSpec = chargePlan.getProductSpec();
+		String productSpec = castPlan.getProductSpec();
 		
-		Date startTempDate = chargeStartDate;
-		Date endTempDate = chargeEndDate;
 		// 工艺路线
-		String routers = chargePlan.getProcessRoute();
+		Map<String,Object> parametersSteelProeuct=new java.util.HashMap<>();
+		parametersSteelProeuct.put("productSpec",productSpec);
+		parametersSteelProeuct.put("steelGrade",steelGrade);
+		List<SteelProduct> steelProduct = sqlSession.selectList("com.rss.steel_production.foundation.dao.SteelProductDao.getSteelProductRouter", parametersSteelProeuct);
+		String routers = steelProduct.get(0).getProcessRoute();
 		String[] stationNames = routers.split("_");
 		
 		//每个工序相关计划信息
-		List<Map<String,Date>> scheduleExitGroup = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getScheduleExitGroupByStation");
-		Map<String,Date> planedScheduleMap = new HashMap<>();
-		for(Map<String,Date> stationSchedule : scheduleExitGroup) {
+		List<Map<String,Object>> scheduleExitGroup = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getScheduleExitGroupByStation");
+		Map<String,Object> planedScheduleMap = new HashMap<>();
+		for(Map<String,Object> stationSchedule : scheduleExitGroup) {
 			planedScheduleMap.put(stationSchedule.get("stationName").toString(), stationSchedule.get("exitTime"));
 		}
 		
 		// 当前所有的工位信息
 		parameters = new java.util.HashMap<>();
         parameters.put("deviceStatus","空闲");
-		List<String> steelDevices = sqlSession.selectList("com.rss.steel_production.foundation.dao.SteelDeviceDao.getSteelDeviceByStatus",parameters);
+		List<Map<String,Object>> steelDevices = sqlSession.selectList("com.rss.steel_production.foundation.dao.SteelDeviceDao.getSteelDeviceByStatus",parameters);
 		Map<String,List<String>> deviceMap = new HashMap<>();
-		for (String deviceName : steelDevices) {
+		for (Map<String,Object> deviceNameMap : steelDevices) {
+			String deviceName = deviceNameMap.get("deviceName").toString();
 			String key = deviceName.split("#")[1];
 			List<String> value = new ArrayList<>(); 
 			if(deviceMap.containsKey(key)) {
@@ -93,7 +118,7 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 		}
 		
 		// 各个工艺的标准信息
-		List<ProcessStandard> processStandards = sqlSession.selectList("com.rss.steel_production.foundation.model.ProcessStandard。getAllProcessStandard");
+		List<ProcessStandard> processStandards = sqlSession.selectList("com.rss.steel_production.foundation.dao.ProcessStandardDao.getAllProcessStandard");
 		Map<String, ProcessStandard> processStandasMap = new HashMap<>();
 		for (ProcessStandard processStandard : processStandards) {
 			String key = processStandard.getItemID();
@@ -102,7 +127,7 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 		
 		// 为每个工艺线路分配调度计划
 		for(int i = 0; i<stationNames.length; i++) {
-			String stationName = stationNames[0];
+			String stationName = stationNames[i];
 			
 			double totalMinutes = 0.0;
 			
@@ -111,15 +136,19 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			ProcessStandard processStandasProcessTime = processStandasMap.get(processStandasProcessTimeKey);
 			totalMinutes += processStandasProcessTime.getStandardValue() + processStandasProcessTime.getUpperLimit();
 			
+			String processStandasWaitTimeKey = stationName + "_waitTime";
+			ProcessStandard processStandasWaitTime = processStandasMap.get(processStandasWaitTimeKey);
+			if(processStandasWaitTime!=null) {
+				totalMinutes += processStandasWaitTime.getStandardValue() + processStandasWaitTime.getUpperLimit();
+			}
 			
 			if(i>0) {
-				String processStandasWaitTimeKey = stationName + "_waitTime";
-				ProcessStandard processStandasWaitTime = processStandasMap.get(processStandasWaitTimeKey);
-				totalMinutes += processStandasWaitTime.getStandardValue() + processStandasWaitTime.getUpperLimit();
-				
 				String processStandasTransTimeKey = stationNames[i-1] + "_" + stationName + "_transTime";
 				ProcessStandard processStandasTransTime = processStandasMap.get(processStandasTransTimeKey);
-				totalMinutes += processStandasTransTime.getStandardValue() + processStandasTransTime.getUpperLimit();
+				if(processStandasTransTime!=null) {
+					totalMinutes += processStandasTransTime.getStandardValue() + processStandasTransTime.getUpperLimit();
+				}
+
 			}
 			
 			
@@ -132,7 +161,7 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			Date tempStationEndDate = null;
 			
 			for(String station : stations) {
-				Date standExitDate = planedScheduleMap.get(station);
+				Date standExitDate = planedScheduleMap.get(station)==null? tempStartDate: sdfS.parse(planedScheduleMap.get(station).toString());
 				
 				// 分配依据 - 尽早完成
 				if("".equals(checkStation) || tempStationEndDate.before(standExitDate)) {
@@ -143,21 +172,22 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			
 			// 确定挺工位后，分配时间
 			
-			if(i==0 && tempStationEndDate.after(tempStartDate)) {
+			if(tempStationEndDate.after(tempStartDate)) {
 				tempStartDate = tempStationEndDate;
 			}
 			
 		    LocalDateTime localDateTime = LocalDateTime.ofInstant(tempStartDate.toInstant(), ZoneId.systemDefault());
-		    Long totalLongMinutes = Long.parseLong(totalMinutes  + "");
-		    localDateTime.plusMinutes(totalLongMinutes);
+		    Long totalLongMinutes = (long) totalMinutes;
+		    LocalDateTime currentDateTime = localDateTime.plusMinutes(totalLongMinutes);
 			
 			SteelSchedule steelSchedule = new SteelSchedule();
 			steelSchedule.setSteel_scheduleUID(UUIDGenerator.generate());
-			steelSchedule.setChargeNo(chargeNo);
+			steelSchedule.setCastNo(castNo);
+			steelSchedule.setChargeNo(maxChargeNo);
 			steelSchedule.setStationName(checkStation);
 			steelSchedule.setPlanEnter(tempStartDate);
 			
-			Date exitDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+			Date exitDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 			steelSchedule.setPlanExit(exitDate);
 			steelSchedule.setPlanStatus("1");
 			

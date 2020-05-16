@@ -80,7 +80,7 @@
   <select id="getSteelDeviceByStatus" resultType="java.util.HashMap">
   	SELECT distinct deviceName FROM `steel_device`
   	<if test="deviceStatus!=null">
-  		WHERE deviceStatus=${deviceStatus}
+  		WHERE deviceStatus=#{deviceStatus,jdbcType=VARCHAR}
   	</if>
   	 
   </select>

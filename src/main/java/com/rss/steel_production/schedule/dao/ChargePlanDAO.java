@@ -31,5 +31,4 @@ public interface ChargePlanDAO extends iMapper<ChargePlan> {
 
 //    int updateByPrimaryKey(ChargePlan record);
     
-    ChargePlan selectByChargeNo(@Param("chargeNo")String chargeNo);
 }

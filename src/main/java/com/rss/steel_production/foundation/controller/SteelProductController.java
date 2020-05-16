@@ -109,10 +109,10 @@ public class SteelProductController {
      * @return
      * @throws ParseException 
      */
-    @PostMapping("autoCreate")
-    public Result autoCreate(@RequestBody Map<String,Object> steelScheduleInfo) throws ParseException {
-    	String ironNo = steelScheduleInfo.get("ironNo").toString();
-    	String startDt = steelScheduleInfo.get("startDt").toString();
+    @PostMapping("/autoCreate")
+    public Result autoCreate(@RequestBody Map<String,String> steelScheduleInfo) throws ParseException {
+    	String ironNo = steelScheduleInfo.get("ironNo");
+    	String startDt = steelScheduleInfo.get("startDt");
     	steelProductService.autoCreate(ironNo, startDt);
     	return ResultGenerator.genSuccessResult();
     }

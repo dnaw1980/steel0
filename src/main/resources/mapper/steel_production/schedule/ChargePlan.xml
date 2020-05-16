@@ -3,33 +3,33 @@
 <mapper namespace="com.rss.steel_production.schedule.dao.ChargePlanDao">
 	<resultMap id="BaseResultMap" type="com.rss.steel_production.schedule.model.ChargePlan">
 		<id column="charge_planUID" jdbcType="VARCHAR" property="charge_planUID"/>
-		<result column="chargeNo" property="chargeno" jdbcType="VARCHAR" />
-		<result column="planTime" property="plantime" jdbcType="TIMESTAMP" />
-		<result column="prepareTime" property="preparetime" jdbcType="TIMESTAMP" />
-		<result column="prepareStaff" property="preparestaff" jdbcType="VARCHAR" />
-		<result column="approveTime" property="approvetime" jdbcType="TIMESTAMP" />
-		<result column="approveStaff" property="approvestaff" jdbcType="VARCHAR" />
-		<result column="orderList" property="orderlist" jdbcType="VARCHAR" />
-		<result column="steelGrade" property="steelgrade" jdbcType="VARCHAR" />
-		<result column="productSpec" property="productspec" jdbcType="VARCHAR" />
-		<result column="productLevel" property="productlevel" jdbcType="VARCHAR" />
-		<result column="technicalStandard" property="technicalstandard" jdbcType="VARCHAR" />
-		<result column="billetLength" property="billetlength" jdbcType="VARCHAR" />
-		<result column="billetWidth" property="billetwidth" jdbcType="VARCHAR" />
-		<result column="billetThick" property="billetthick" jdbcType="VARCHAR" />
-		<result column="targetWeight" property="targetweight" jdbcType="DOUBLE" />
-		<result column="targetQuantity" property="targetquantity" jdbcType="DOUBLE" />
-		<result column="targetTime" property="targettime" jdbcType="VARCHAR" />
-		<result column="processRoute" property="processroute" jdbcType="VARCHAR" />
-		<result column="assignCast" property="assigncast" jdbcType="VARCHAR" />
-		<result column="castSeq" property="castseq" jdbcType="VARCHAR" />
-		<result column="ironNo" property="ironno" jdbcType="VARCHAR" />
-		<result column="ironSeq" property="ironseq" jdbcType="VARCHAR" />
-		<result column="ironTime" property="irontime" jdbcType="TIMESTAMP" />
-		<result column="planStatus" property="planstatus" jdbcType="VARCHAR" />
+		<result column="chargeNo" property="chargeNo" jdbcType="VARCHAR" />
+		<result column="planTime" property="planTime" jdbcType="TIMESTAMP" />
+		<result column="prepareTime" property="prepareTime" jdbcType="TIMESTAMP" />
+		<result column="prepareStaff" property="prepareStaff" jdbcType="VARCHAR" />
+		<result column="approveTime" property="approveTime" jdbcType="TIMESTAMP" />
+		<result column="approveStaff" property="approveStaff" jdbcType="VARCHAR" />
+		<result column="orderList" property="orderList" jdbcType="VARCHAR" />
+		<result column="steelGrade" property="steelGrade" jdbcType="VARCHAR" />
+		<result column="productSpec" property="productSpec" jdbcType="VARCHAR" />
+		<result column="productLevel" property="productLevel" jdbcType="VARCHAR" />
+		<result column="technicalStandard" property="technicalStandard" jdbcType="VARCHAR" />
+		<result column="billetLength" property="billetLength" jdbcType="VARCHAR" />
+		<result column="billetWidth" property="billetWidth" jdbcType="VARCHAR" />
+		<result column="billetThick" property="billetThick" jdbcType="VARCHAR" />
+		<result column="targetWeight" property="targetWeight" jdbcType="DOUBLE" />
+		<result column="targetQuantity" property="targetQuantity" jdbcType="DOUBLE" />
+		<result column="targetTime" property="targetTime" jdbcType="VARCHAR" />
+		<result column="processRoute" property="processRoute" jdbcType="VARCHAR" />
+		<result column="assignCast" property="assignCast" jdbcType="VARCHAR" />
+		<result column="castSeq" property="castSeq" jdbcType="VARCHAR" />
+		<result column="ironNo" property="ironNo" jdbcType="VARCHAR" />
+		<result column="ironSeq" property="ironSeq" jdbcType="VARCHAR" />
+		<result column="ironTime" property="ironTime" jdbcType="TIMESTAMP" />
+		<result column="planStatus" property="planStatus" jdbcType="VARCHAR" />
 		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
-		<result column="lastModifyUser" property="lastmodifyuser" jdbcType="VARCHAR" />
-		<result column="lastModifyDate" property="lastmodifydate" jdbcType="TIMESTAMP" />
+		<result column="lastModifyUser" property="lastModifyUser" jdbcType="VARCHAR" />
+		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Example_Where_Clause" >
 		<where >
@@ -114,12 +114,6 @@
 		<include refid="Base_Column_List" />
 		from charge_plan
 		where charge_planUID = #{chargePlanuid,jdbcType=VARCHAR}
-	</select>
-	<select id="selectByChargeNo" resultMap="BaseResultMap">
-		select * from charge_plan
-		<if test="chargeNo != null" >
-				where chargeNo = #{chargeNo,jdbcType=VARCHAR},
-		</if>
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from charge_plan

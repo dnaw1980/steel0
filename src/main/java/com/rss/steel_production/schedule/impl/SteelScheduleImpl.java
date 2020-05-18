@@ -17,6 +17,7 @@ import com.rss.steel_production.schedule.service.CastPlanService;
 import com.rss.steel_production.schedule.service.ChargePlanService;
 import com.rss.steel_production.schedule.service.IronPlanService;
 
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -378,27 +379,52 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     private List<Map<String, Object>> timeLineInfos(List<Map<String,Object>> selectList, String orgName){
     	List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
     	// 取当前工位上对应不同炉次号的计划进场时间，取最近一条作为时间轴信息
-    	String currentChargeNo = "";
+    	String selectedChargeNo = "";
+    	String currentChargeNo = "";   
     	long currentDate = 0;
     	LocalDateTime now = LocalDateTime.now();
+    	
+    	// 上一工序的状态
+    	String preStageExit = "";
+    	
     	for(Map<String,Object> ele : selectList) {
-    		if(ele.get("stationName").toString().equals(orgName)) {
-    			Date planEnter = (Date) ele.get("planEnter");
-    			LocalDateTime checkDateTime  = planEnter.toInstant()
-    			        .atZone( ZoneId.systemDefault() )
-    			        .toLocalDateTime();
-    			long tempDate = Math.abs(ChronoUnit.SECONDS.between(now, checkDateTime));
-    			if(currentDate==0) {
-    				currentChargeNo = ele.get("chargeNo").toString();
-    			}else {
-    				if(tempDate<currentDate) {
-    					currentChargeNo = ele.get("chargeNo").toString();
-    				}
-    			}
-    		}
+
+			Date planEnter = (Date) ele.get("planEnter");
+			LocalDateTime checkDateTime  = planEnter.toInstant()
+			        .atZone( ZoneId.systemDefault() )
+			        .toLocalDateTime();
+			long tempDate = Math.abs(ChronoUnit.SECONDS.between(now, checkDateTime));
+			Boolean isCheck = false;    			
+			// 第一道工艺
+			if("".equals(currentChargeNo) || !currentChargeNo.equals(ele.get("chargeNo").toString())) {
+				isCheck = true;
+			}
+			
+			// 非一道工艺，但上一工艺有出站
+			if(currentChargeNo.equals(ele.get("chargeNo").toString()) && !StringUtils.isEmpty(preStageExit)) {
+				isCheck = true;
+			}
+			
+			currentChargeNo = ele.get("chargeNo").toString();
+			
+			// 比对，找出最近的一次计划
+			if(isCheck && ele.get("stationName").toString().equals(orgName) && ele.get("actualExit")==null) {
+				if(currentDate==0) {
+					currentDate = tempDate;
+					selectedChargeNo = currentChargeNo;
+				}else if(tempDate<currentDate){
+					currentDate = tempDate;
+					selectedChargeNo = currentChargeNo;
+				}
+			}
+			
+			preStageExit = ele.get("actualExit")==null?"":ele.get("actualExit").toString();
+    			
     	}
-    	final String  chargeNo =  currentChargeNo;
-    	result = selectList.stream().filter(o ->o.get("chargeNo").toString().equals(chargeNo)).collect(Collectors.toList());
+    	final String  chargeNo =  selectedChargeNo;
+    	if(!StringUtils.isEmpty(selectedChargeNo)) {
+        	result = selectList.stream().filter(o ->o.get("chargeNo").toString().equals(chargeNo)).collect(Collectors.toList());
+    	}
     	return result;
     }
     
@@ -410,7 +436,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	Map<String,SteelSchedule> stationNameMapSechedules = new HashMap<String,SteelSchedule>();
     	LocalDateTime now = LocalDateTime.now();
     	for(SteelSchedule schedule : optionsSchedules) {
-    		String key = schedule.getStationName();
+    		String key = schedule.getStationName() + "___" + schedule.getChargeNo();
     		if(stationNameMapSechedules.containsKey(key)) {
     			SteelSchedule value = stationNameMapSechedules.get(key);
     			
@@ -432,7 +458,7 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	
     	// 循环取得上下当前工位的计划信息
     	for(int i = 0; i<orderStationNames.length ; i++) {
-    		String chargeNo = orderStationNames[i].split("___")[0];
+    		String chargeNo = orderStationNames[i];
     		SteelSchedule schedule = new SteelSchedule();
     		if(chargeNo!=null && !"".equals(chargeNo)) {
     			schedule = stationNameMapSechedules.get(chargeNo);
@@ -603,31 +629,37 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	Map<String,Object> parameters=new java.util.HashMap<>();
         parameters.put("orgName",orgName);
     	List<Map<String,Object>> selectList = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getTimeLineInfoMapList",parameters);
-    	//时间轴信息
-    	List<Map<String, Object>> timeline = this.timeLineInfos(selectList, orgName);
-    	result.put("timeline", timeline);
     	
-    	// 前、当前、序的工位信息
-    	String[] orderStationNames = this.getOrderStationNames(timeline, orgName);
+    	if(!selectList.isEmpty()) {
+    		//时间轴信息
+        	List<Map<String, Object>> timeline = this.timeLineInfos(selectList, orgName);
+        	result.put("timeline", timeline);
+        	
+        	// 前、当前、序的工位信息
+        	String[] orderStationNames = this.getOrderStationNames(timeline, orgName);
+        	
+        	// 上下当前工序信息
+        	Map<String, Object> processInfos = this.processInfos(orgName,orderStationNames);
+        	result.putAll(processInfos);
+        	
+        	// 上下当前工艺和标准信息
+        	Map<String, Object> standardAndInfos =  this.getStandardAndInfos(orderStationNames);
+        	result.putAll(standardAndInfos);
+        	
+        	// 上下工序的任务流信息
+        	String stationChargeNos[] = new String[2];
+        	SteelSchedule lastSteelSchedule = (SteelSchedule)processInfos.get("last");
+        	if(lastSteelSchedule!=null)
+        		stationChargeNos[0] = lastSteelSchedule.getChargeNo();
+        	SteelSchedule nextSteelSchedule = (SteelSchedule)processInfos.get("next");
+        	if(nextSteelSchedule!=null)
+        		stationChargeNos[1] = nextSteelSchedule.getChargeNo();
+        	
+        	selectList = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getTimeLineInfoMapList");
+        	Map<String, Object>  lastAndNextTimeLines =  this.getLastAndNextTimeLine(selectList, stationChargeNos);
+        	result.putAll(lastAndNextTimeLines);
+    	}
     	
-    	// 上下当前工序信息
-    	Map<String, Object> processInfos = this.processInfos(orgName,orderStationNames);
-    	result.putAll(processInfos);
-    	
-    	// 上下当前工艺和标准信息
-    	Map<String, Object> standardAndInfos =  this.getStandardAndInfos(orderStationNames);
-    	result.putAll(standardAndInfos);
-    	
-    	// 上下工序的任务流信息
-    	String stationChargeNos[] = new String[2];
-    	SteelSchedule lastSteelSchedule = (SteelSchedule)processInfos.get("last");
-    	stationChargeNos[0] = lastSteelSchedule.getChargeNo();
-    	SteelSchedule nextSteelSchedule = (SteelSchedule)processInfos.get("next");
-    	stationChargeNos[1] = nextSteelSchedule.getChargeNo();
-    	
-    	selectList = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getTimeLineInfoMapList");
-    	Map<String, Object>  lastAndNextTimeLines =  this.getLastAndNextTimeLine(selectList, stationChargeNos);
-    	result.putAll(lastAndNextTimeLines);
     	return result;
     }
 }

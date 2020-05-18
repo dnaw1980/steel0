@@ -40,7 +40,6 @@
 				<if test="orgName">
 				And	stationName = #{orgName,jdbcType=VARCHAR}
 				</if>
-				  AND ( planStatus = 2 OR planStatus = 1 ) 
 			) ORDER BY 
 				chargeNo, planEnter
 	</select>
@@ -57,7 +56,7 @@
 	<select id="getOptionSchedules" resultMap="BaseResultMap">
 		select * from steel_schedule
 		<where>
-			planStatus IN ( 1, 2 )
+			planStatus IN ( 1, 2, 3 )
 		</where>
 	</select>
 	<select id="getMaxChargeNo" resultType="string">

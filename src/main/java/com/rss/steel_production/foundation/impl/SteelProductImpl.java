@@ -24,6 +24,7 @@ import com.rss.steel_production.foundation.model.SteelDevice;
 import com.rss.steel_production.foundation.model.SteelProduct;
 import com.rss.steel_production.foundation.dao.SteelProductDAO;
 import com.rss.steel_production.foundation.service.SteelProductService;
+import com.rss.steel_production.process.model.IronInfo;
 import com.rss.steel_production.schedule.model.CastPlan;
 import com.rss.steel_production.schedule.model.ChargePlan;
 import com.rss.steel_production.schedule.model.SteelSchedule;
@@ -60,14 +61,14 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 		return result;
 	}
 	@Override
-	public void autoCreate(String ironNo, String startDt) throws ParseException {
-		// 开始时间格式化
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public void autoCreate(IronInfo ironInfo) throws ParseException {
+		
+		Date tempStartDate = ironInfo.getAcquireTime();
+		// 时间格式化
 		SimpleDateFormat sdfS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date startDate = sdf.parse(startDt);
-		Date tempStartDate = startDate;
+
 		// 炉次号 同 铁次号
-		String castNo = ironNo;
+		String castNo = ironInfo.getCastNo();
 		
 		// 取最大的炉次号
 		List<String> maxChargeNos = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getMaxChargeNo");
@@ -85,6 +86,8 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 		String steelGrade = castPlan.getSteelGrade();
 		// 产品规格
 		String productSpec = castPlan.getProductSpec();
+		// 连铸设备
+		String ccDevice = castPlan.getCcDevice();
 		
 		// 工艺路线
 		Map<String,Object> parametersSteelProeuct=new java.util.HashMap<>();
@@ -160,16 +163,29 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			
 			Date tempStationEndDate = null;
 			
-			for(String station : stations) {
-				Date standExitDate = planedScheduleMap.get(station)==null? tempStartDate: sdfS.parse(planedScheduleMap.get(station).toString());
-				
-				// 分配依据 - 尽早完成
-				if("".equals(checkStation) || tempStationEndDate.before(standExitDate)) {
-					tempStationEndDate = standExitDate;
-					checkStation = station;
-				}
+			// 初始的开始时间为 第一工序上次流程最近完成的时间
+			if(tempStartDate==null) {
+				tempStartDate = sdfS.parse(planedScheduleMap.get(stationName).toString());
 			}
 			
+			// 如果当前工序是连铸，则直接使用
+			if(stationName.equals(ccDevice.split("#")[1])) {
+				checkStation = ccDevice;
+				Date standExitDate = planedScheduleMap.get(checkStation)==null? tempStartDate: sdfS.parse(planedScheduleMap.get(checkStation).toString());
+				tempStationEndDate = standExitDate;
+			}else {
+				for(String station : stations) {
+					
+					Date standExitDate = planedScheduleMap.get(station)==null? tempStartDate: sdfS.parse(planedScheduleMap.get(station).toString());
+					
+					// 分配依据 - 尽早完成
+					if("".equals(checkStation) || tempStationEndDate.before(standExitDate)) {
+						tempStationEndDate = standExitDate;
+						checkStation = station;
+					}
+				}
+			}
+					
 			// 确定挺工位后，分配时间
 			
 			if(tempStationEndDate.after(tempStartDate)) {
@@ -183,6 +199,7 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			SteelSchedule steelSchedule = new SteelSchedule();
 			steelSchedule.setSteel_scheduleUID(UUIDGenerator.generate());
 			steelSchedule.setCastNo(castNo);
+			steelSchedule.setIronNo(ironInfo.getBlastOrder());
 			steelSchedule.setChargeNo(maxChargeNo);
 			steelSchedule.setStationName(checkStation);
 			steelSchedule.setPlanEnter(tempStartDate);
@@ -195,5 +212,22 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			
 			steelScheduleService.insert(steelSchedule);
 		}
+		
+		// 自动生成 铁前的调度计划信息
+		SteelSchedule steelSchedule = new SteelSchedule();
+		steelSchedule.setSteel_scheduleUID(UUIDGenerator.generate());
+		steelSchedule.setCastNo(castNo);
+		steelSchedule.setIronNo(ironInfo.getBlastOrder());
+		steelSchedule.setChargeNo(maxChargeNo);
+		steelSchedule.setStationName("SA");
+		steelSchedule.setPlanEnter(tempStartDate);
+		steelSchedule.setActualEnter(tempStartDate);
+		steelSchedule.setActualExit(ironInfo.getOutIronTime());
+		steelSchedule.setPlanExit(ironInfo.getOutIronTime());
+		steelSchedule.setPlanStatus("3");
+		steelSchedule.setWeight(ironInfo.getNetWeight());
+		steelSchedule.setTemperature(ironInfo.getExitTemperature());
+		
+		steelScheduleService.insert(steelSchedule);
 	}
 }

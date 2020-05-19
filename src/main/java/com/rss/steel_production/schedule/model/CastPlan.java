@@ -18,6 +18,9 @@ public class CastPlan {
 	private String cast_planUID;
 	private String castNo;
 	private Date planTime;
+	private Date planStartTime;
+	private Date planEndTime;
+	private String ccDevice;
 	private Date prepareTime;
 	private String prepareStaff;
 	private Date approveTime;

@@ -64,4 +64,7 @@ public interface SteelScheduleService extends Service<SteelSchedule> {
      * @return
      */
     Map<String,Object> getProcessInfo(String orgName);
+    
+    
+    void alterBlastOrder(String blastOrder, String id);
 }

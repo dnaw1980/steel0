@@ -17,6 +17,8 @@ public class IronInfo {
     private String iron_infoUID;
 
     private String chargeNo;
+    
+    private String castNo;
 
     private String blastOrder;
 

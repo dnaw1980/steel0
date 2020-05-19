@@ -40,7 +40,9 @@
 				<if test="orgName">
 				And	stationName = #{orgName,jdbcType=VARCHAR}
 				</if>
-			) ORDER BY 
+			) 
+			AND stationName NOT in('SA') 
+			ORDER BY 
 				chargeNo, planEnter
 	</select>
 	<select id="getPlanedSteelSchedule" resultType="java.util.HashMap">
@@ -65,6 +67,9 @@
 	<select id="getScheduleExitGroupByStation" resultType="java.util.HashMap">
 		SELECT stationName, MAX(planExit) as exitTime FROM `steel_schedule` WHERE planStatus IN(1,2) GROUP BY stationName
 	</select>
+	<update id="alterBlastOrder" parameterType="com.rss.steel_production.schedule.model.SteelSchedule">
+		 update steel_schedule set ironNo=#{ironNo}  where steel_scheduleUID=#{steel_scheduleUID} 
+	</update>
 <!--	<sql id="Example_Where_Clause" >-->
 <!--		<where >-->
 <!--			<foreach collection="oredCriteria" item="criteria" separator="or" >-->

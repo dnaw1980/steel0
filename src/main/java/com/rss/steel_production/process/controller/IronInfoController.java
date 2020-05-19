@@ -6,6 +6,7 @@ import com.rss.framework.QuotesUtil;
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import com.rss.framework.UUIDGenerator;
+import com.rss.steel_production.foundation.service.SteelProductService;
 import com.rss.steel_production.process.model.IronInfo;
 import com.rss.steel_production.process.model.IronInfoTO;
 import com.rss.steel_production.process.service.IronInfoService;
@@ -14,19 +15,23 @@ import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/steel_production/process/ironInfo")
 @Api
 public class IronInfoController {
-	 @Resource
+	@Resource
 	private IronInfoService ironInfoService;
+	
+	 @Resource
+    private SteelProductService steelProductService;
 
 	@PostMapping
-	public Result add(@RequestBody IronInfo ironInfo){
+	public Result add(@RequestBody IronInfo ironInfo) throws Exception{
 		ironInfo.setIron_infoUID(UUIDGenerator.generate());
-		ironInfoService.insert(ironInfo);
+		ironInfoService.insertIronINfo(ironInfo);
 		return ResultGenerator.genSuccessResult();
 	}
 

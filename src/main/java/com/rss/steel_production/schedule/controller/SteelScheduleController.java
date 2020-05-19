@@ -174,6 +174,13 @@ public class SteelScheduleController {
         Map<String, Object> result = steelScheduleService.getProcessInfo(orgName);
         return ResultGenerator.genSuccessResult(result);
     }
+    
+    
+    @PostMapping("/alterBlastOrder")
+    public Result alterBlastOrder(@RequestParam(value = "blastOrder", required = true) String blastOrder, @RequestParam(value = "id", required = true) String id) {
+        steelScheduleService.alterBlastOrder(blastOrder,id);
+        return ResultGenerator.genSuccessResult();
+    }
 
     /**
      * 进站

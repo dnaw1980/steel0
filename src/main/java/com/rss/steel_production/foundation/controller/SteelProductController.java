@@ -1,10 +1,6 @@
 package com.rss.steel_production.foundation.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.text.ParseException;
-import java.util.ArrayList;
-
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rss.framework.Result;
@@ -104,16 +100,4 @@ public class SteelProductController {
         return ResultGenerator.genSuccessResult(pageInfo);
     }
     
-    /**
-     * 根据铁次号和开始时间自动生成调度计划信息
-     * @return
-     * @throws ParseException 
-     */
-    @PostMapping("/autoCreate")
-    public Result autoCreate(@RequestBody Map<String,String> steelScheduleInfo) throws ParseException {
-    	String ironNo = steelScheduleInfo.get("ironNo");
-    	String startDt = steelScheduleInfo.get("startDt");
-    	steelProductService.autoCreate(ironNo, startDt);
-    	return ResultGenerator.genSuccessResult();
-    }
 }

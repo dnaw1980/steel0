@@ -662,4 +662,13 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
     	
     	return result;
     }
+
+	@Override
+	public void alterBlastOrder(String blastOrder, String id) {
+		SteelSchedule steelSchedule = new SteelSchedule();
+		steelSchedule.setIronNo(blastOrder);
+		steelSchedule.setSteel_scheduleUID(id);
+		int result = sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.alterBlastOrder",steelSchedule);
+		
+	}
 }

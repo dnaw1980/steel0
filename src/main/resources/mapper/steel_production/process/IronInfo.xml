@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.rss.steel_production.process.model.IronInfo">
     <id column="iron_infoUID" jdbcType="VARCHAR" property="iron_infoUID" />
     <result column="chargeNo" jdbcType="VARCHAR" property="chargeNo" />
+    <result column="castNo" jdbcType="VARCHAR" property="castNo" />
     <result column="blastOrder" jdbcType="VARCHAR" property="blastOrder" />
     <result column="blastNo" jdbcType="VARCHAR" property="blastNo" />
     <result column="ladleNumber" jdbcType="VARCHAR" property="ladleNumber" />

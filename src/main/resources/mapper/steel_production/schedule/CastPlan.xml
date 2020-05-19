@@ -5,6 +5,9 @@
 		<id column="cast_planUID" jdbcType="VARCHAR" property="cast_planUID"/>
 		<result column="castNo" property="castNo" jdbcType="VARCHAR" />
 		<result column="planTime" property="planTime" jdbcType="TIMESTAMP" />
+		<result column="planStartTime" property="planStartTime" jdbcType="TIMESTAMP" />
+		<result column="planEndTime" property="planEndTime" jdbcType="TIMESTAMP" />
+		<result column="ccDevice" property="ccDevice" jdbcType="VARCHAR" />
 		<result column="prepareTime" property="prepareTime" jdbcType="TIMESTAMP" />
 		<result column="prepareStaff" property="prepareStaff" jdbcType="VARCHAR" />
 		<result column="approveTime" property="approveTime" jdbcType="TIMESTAMP" />

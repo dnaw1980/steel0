@@ -1,9 +1,9 @@
 package com.rss.steel_production.foundation.service;
 
 import java.text.ParseException;
-
 import com.rss.framework.Service;
 import com.rss.steel_production.foundation.model.SteelProduct;
+import com.rss.steel_production.process.model.IronInfo;
 
 public interface SteelProductService extends Service<SteelProduct>{
 
@@ -13,6 +13,6 @@ public interface SteelProductService extends Service<SteelProduct>{
 	 * @param startDt
 	 * @throws ParseException 
 	 */
-	void autoCreate(String ironNo, String startDt) throws ParseException;
+	void autoCreate(IronInfo ironInfo) throws ParseException;
 
 }

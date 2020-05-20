@@ -8,7 +8,7 @@ import com.rss.steel_production.process.service.IronInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -22,6 +22,7 @@ public class IronInfoImpl extends AbstractService<IronInfo> implements IronInfoS
 
 	@Override
 	public void insertIronINfo(IronInfo ironInfo) throws Exception {
+		ironInfo.setAcquireTime(new Date());
 		this.insert(ironInfo);
 		steelProductService.autoCreate(ironInfo);
 	}

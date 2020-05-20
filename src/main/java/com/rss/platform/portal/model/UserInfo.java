@@ -21,6 +21,7 @@ public class UserInfo {
     private String roleID;
     private String roleName;
     private String orgName;
+    private String schedule;
     private String password;
     private String userStatus;
     private String roleSet;

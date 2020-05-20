@@ -61,9 +61,23 @@
 			planStatus IN ( 1, 2, 3 )
 		</where>
 	</select>
-	<select id="getMaxChargeNo" resultType="string">
-		SELECT MAX(chargeNo) as maxChargeNo FROM `steel_schedule`
+	<select id="getSignNum" resultType="java.util.HashMap">
+		SELECT CONCAT(yearNo,deviceSign,deviceNo,LPAD(flowNo+1,5,0)) as signNum
+			FROM
+				`flow_number` 
+			WHERE
+				deviceNo =#{deviceNo}
+				AND deviceSign =#{deviceSign}
+				AND yearNo = RIGHT(YEAR(NOW()),1)
 	</select>
+	<update id="updateSignNum">
+		UPDATE `flow_number` 
+		SET flowNo = flowNo + 1 
+		WHERE
+			deviceNo =#{deviceNo}
+				AND deviceSign =#{deviceSign}
+				AND yearNo = RIGHT(YEAR(NOW()),1)
+	</update>
 	<select id="getScheduleExitGroupByStation" resultType="java.util.HashMap">
 		SELECT stationName, MAX(planExit) as exitTime FROM `steel_schedule` WHERE planStatus IN(1,2) GROUP BY stationName
 	</select>

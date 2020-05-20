@@ -45,39 +45,32 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 	@Autowired
 	private SteelScheduleService steelScheduleService;
 
-	private String createChargeNo(String maxChargeNo) {
-		String result = "";
+	private String createChargeNo(String deviceNo, String deviceSign) {
+		
+		Map<String,String> param = new HashMap<String,String>();
+		param.put("deviceNo", deviceNo);
+		param.put("deviceSign", deviceSign);
+		List<Map<String,String>> maxChargeNos = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getSignNum",param);
+		
+		String result = maxChargeNos.get(0).get("signNum");
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-		int yearNum = Integer.parseInt(sdf.format(new Date()).substring(2));
-		result = yearNum + "";
-		if(StringUtil.isEmpty(maxChargeNo)) {
-			result += "0001";
-		}else {
-			int maxChargeNoNum = Integer.parseInt(maxChargeNo.substring(2));
-			maxChargeNoNum++;
-			result += maxChargeNoNum;
-		}
+		sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.updateSignNum",param);
 		return result;
 	}
 	@Override
 	public void autoCreate(IronInfo ironInfo) throws ParseException {
 		
-		Date tempStartDate = ironInfo.getAcquireTime();
+		List<SteelSchedule> steelSchedules = new ArrayList<SteelSchedule>();
+		String bofNum = "";
+		String maxChargeNo = "";
+		
+		Date tempStartDate = ironInfo.getStartTime()==null?new Date():ironInfo.getStartTime();
 		// 时间格式化
 		SimpleDateFormat sdfS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		// 炉次号 同 铁次号
 		String castNo = ironInfo.getCastNo();
 		
-		// 取最大的炉次号
-		List<String> maxChargeNos = sqlSession.selectList("com.rss.steel_production.schedule.dao.SteelScheduleDao.getMaxChargeNo");
-		String maxChargeNo = "";
-		String curreentChargeNo = "";
-		if(!maxChargeNos.isEmpty()) {
-			curreentChargeNo = maxChargeNos.get(0);
-		}
-		maxChargeNo = this.createChargeNo(curreentChargeNo);
 		// 对应的浇次信息
 		Map<String,Object> parameters=new java.util.HashMap<>();
         parameters.put("castNo",castNo);
@@ -200,7 +193,6 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			steelSchedule.setSteel_scheduleUID(UUIDGenerator.generate());
 			steelSchedule.setCastNo(castNo);
 			steelSchedule.setIronNo(ironInfo.getBlastOrder());
-			steelSchedule.setChargeNo(maxChargeNo);
 			steelSchedule.setStationName(checkStation);
 			steelSchedule.setPlanEnter(tempStartDate);
 			
@@ -210,7 +202,9 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			
 			tempStartDate = exitDate;
 			
-			steelScheduleService.insert(steelSchedule);
+			bofNum = checkStation.split("#")[0];
+			steelSchedules.add(steelSchedule);
+			
 		}
 		
 		// 自动生成 铁前的调度计划信息
@@ -218,16 +212,22 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 		steelSchedule.setSteel_scheduleUID(UUIDGenerator.generate());
 		steelSchedule.setCastNo(castNo);
 		steelSchedule.setIronNo(ironInfo.getBlastOrder());
-		steelSchedule.setChargeNo(maxChargeNo);
 		steelSchedule.setStationName("SA");
 		steelSchedule.setPlanEnter(tempStartDate);
 		steelSchedule.setActualEnter(tempStartDate);
-		steelSchedule.setActualExit(ironInfo.getOutIronTime());
-		steelSchedule.setPlanExit(ironInfo.getOutIronTime());
+		steelSchedule.setActualExit(ironInfo.getStopTime()==null?new Date():ironInfo.getStopTime());
+		steelSchedule.setPlanExit(ironInfo.getStopTime()==null?new Date():ironInfo.getStopTime());
 		steelSchedule.setPlanStatus("3");
 		steelSchedule.setWeight(ironInfo.getNetWeight());
 		steelSchedule.setTemperature(ironInfo.getExitTemperature());
 		
-		steelScheduleService.insert(steelSchedule);
+		steelSchedules.add(steelSchedule);
+		
+		// 获取行炉的设备编号
+		maxChargeNo = this.createChargeNo(bofNum, "X");
+		for(SteelSchedule schedule : steelSchedules) {
+			schedule.setChargeNo(maxChargeNo);
+			steelScheduleService.insert(schedule);
+		}
 	}
 }

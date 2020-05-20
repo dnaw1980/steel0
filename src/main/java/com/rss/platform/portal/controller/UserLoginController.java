@@ -6,9 +6,12 @@ import com.rss.platform.portal.model.SessionInfo;
 import com.rss.platform.portal.model.UserInfo;
 import com.rss.platform.portal.service.UserLoginService;
 import io.swagger.annotations.Api;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -28,6 +31,11 @@ public class UserLoginController {
         }else{
             return ResultGenerator.genSuccessResult("登录成功",sessionInfo);
         }
+    }
+    
+    @GetMapping("/userNames")
+    public Result userNames(@RequestParam("schedule") String schedule) {
+    	return ResultGenerator.genSuccessResult(userLoginService.getUserInfoBySchedule(schedule));
     }
 
 }

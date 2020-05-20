@@ -1,17 +1,24 @@
 package com.rss.platform.portal.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.rss.platform.portal.dao.RoleInfoDAO;
 import com.rss.platform.portal.dao.UserInfoDAO;
 import com.rss.platform.portal.model.RoleInfo;
 import com.rss.platform.portal.model.SessionInfo;
 import com.rss.platform.portal.model.UserInfo;
 import com.rss.platform.portal.service.UserLoginService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Condition;
 
-import javax.annotation.Resource;
-import java.util.List;
+import tk.mybatis.mapper.entity.Condition;
 
 @Service
 @Transactional
@@ -23,6 +30,8 @@ public class UserLoginServiceImpl implements UserLoginService {
 //    private UserLoginMapper userLoginMapper;
     @Resource
     private RoleInfoDAO roleInfoMapper;
+    @Autowired
+	private SqlSessionTemplate sqlSession;
 
     @Override
     public SessionInfo userLogin(UserInfo userInfo) {
@@ -52,4 +61,12 @@ public class UserLoginServiceImpl implements UserLoginService {
             return null;
         }
     }
+
+	@Override
+	public List<String> getUserInfoBySchedule(String schedule) {
+		Map<String, String> parameters = new HashMap<String,String>();
+		parameters.put("schedule", schedule);
+		List<String> userNames = sqlSession.selectList("com.rss.platform.portal.dao.UserInfoDao.getUserInfoBySchedule", parameters);
+		return userNames;
+	}
 }

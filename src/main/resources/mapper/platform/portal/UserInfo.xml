@@ -10,9 +10,18 @@
 		<result column="roleID" jdbcType="VARCHAR" property="roleID"/>
 		<result column="roleName" jdbcType="VARCHAR" property="roleName"/>
 		<result column="orgName" jdbcType="VARCHAR" property="orgName"/>
+		<result column="schedule" jdbcType="VARCHAR" property="schedule"/>
 		<result column="password" jdbcType="VARCHAR" property="password"/>
 		<result column="userStatus" jdbcType="VARCHAR" property="userStatus"/>
 		<result column="lastModifyUser" jdbcType="VARCHAR" property="lastModifyUser"/>
 		<result column="lastModifyDate" jdbcType="TIMESTAMP" property="lastModifyDate"/>
 	</resultMap>
+	<select id="getUserInfoBySchedule" resultType="string">
+		SELECT
+			userName
+		FROM
+			`user_info` 
+		WHERE
+			SCHEDULE =#{schedule}
+	</select>
 </mapper>

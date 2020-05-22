@@ -42,8 +42,9 @@ public class TermInfoController{
 		Condition.Criteria criteria;
 		condition=new Condition(TermInfo.class);
 		criteria=condition.createCriteria();
-		criteria.andEqualTo("paraName",termInfo.getParamName());
-		criteria.andNotEqualTo("system_paramUID",termInfo.getSystem_paramUID());
+		criteria.andCondition("paramName = '" + termInfo.getParamName() + "'");
+//		criteria.andEqualTo("paraName",termInfo.getParamName());
+//		criteria.andNotEqualTo("system_paramUID",termInfo.getSystem_paramUID());
 		if (termInfoService.findByCondition(condition).size()>0)
 			return ResultGenerator.genFailResult("paraName值重复");
 		termInfoService.updateByPrimaryKey(termInfo);

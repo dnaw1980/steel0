@@ -399,4 +399,29 @@ public class SteelScheduleController {
         }
 
     }
+    
+    
+    /**
+     * 删除指定的调度计划
+     * @param param
+     * @return
+     * @throws Exception 
+     */
+    @PostMapping("/deletePlan")
+    public Result deletePlan(@RequestBody Map<String,Object> param) throws Exception {
+    	steelScheduleService.deletePlan(param);
+    	return ResultGenerator.genSuccessResult();
+    }
+    
+    /**
+     * 更新指定的调度计划
+     * @param param
+     * @return
+     * @throws Exception 
+     */
+    @PostMapping("/updatePlan")
+    public Result updatePlan(@RequestBody Map<String,Object> param) throws Exception {
+    	steelScheduleService.updatePlan(param);
+    	return ResultGenerator.genSuccessResult();
+    }
 }

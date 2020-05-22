@@ -1,9 +1,27 @@
 package com.rss.steel_production.schedule.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.rss.framework.AbstractService;
 import com.rss.framework.UUIDGenerator;
-import com.rss.framework.iMapper;
 import com.rss.steel_production.foundation.model.ProcessStandard;
 import com.rss.steel_production.foundation.model.SteelDevice;
 import com.rss.steel_production.foundation.service.ProcessStandardService;
@@ -12,28 +30,17 @@ import com.rss.steel_production.process.model.CompositionInfo;
 import com.rss.steel_production.process.model.CompositionStandard;
 import com.rss.steel_production.process.service.CompositionInfoService;
 import com.rss.steel_production.process.service.CompositionStandardService;
-import com.rss.steel_production.schedule.model.*;
+import com.rss.steel_production.schedule.dao.SteelScheduleDAO;
+import com.rss.steel_production.schedule.model.CastPlan;
+import com.rss.steel_production.schedule.model.ChargePlan;
+import com.rss.steel_production.schedule.model.SteelSchedule;
+import com.rss.steel_production.schedule.model.SteelScheduleExample;
 import com.rss.steel_production.schedule.service.CastPlanService;
 import com.rss.steel_production.schedule.service.ChargePlanService;
 import com.rss.steel_production.schedule.service.IronPlanService;
-
-import org.apache.commons.lang.StringUtils;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.rss.framework.AbstractService;
-import com.rss.steel_production.schedule.dao.SteelScheduleDAO;
 import com.rss.steel_production.schedule.service.SteelScheduleService;
 
 import tk.mybatis.mapper.entity.Condition;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -668,7 +675,69 @@ public class SteelScheduleImpl extends AbstractService<SteelSchedule> implements
 		SteelSchedule steelSchedule = new SteelSchedule();
 		steelSchedule.setIronNo(blastOrder);
 		steelSchedule.setSteel_scheduleUID(id);
-		int result = sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.alterBlastOrder",steelSchedule);
+		sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.alterBlastOrder",steelSchedule);
+		
+	}
+
+	private void updateNewerPlan(Date endDate, Date startDate) {
+		// 计算要调整的时长(分钟)
+		LocalDateTime endDateTime  = endDate.toInstant()
+		        .atZone( ZoneId.systemDefault() )
+		        .toLocalDateTime();
+		LocalDateTime startDateTime  = startDate.toInstant()
+		        .atZone( ZoneId.systemDefault() )
+		        .toLocalDateTime();
+		
+		// 比较计划时间与当前时间，取最近的那个
+		long secondsBetween = ChronoUnit.SECONDS.between(endDateTime, startDateTime);
+		
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("secondsBetween", secondsBetween);
+		param.put("planExit", endDate);
+		sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.alterPlan",param);
+	}
+	
+	@Override
+	public void deletePlan(Map<String, Object> requestParam) throws Exception {
+		// 删除指定的调度后，后续所有调度时间都必须调整
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String planEnterTimeStr = requestParam.get("planEnter").toString();
+		String planExitTimeStr = requestParam.get("planExit").toString();
+		String steel_scheduleUID = requestParam.get("id").toString();
+		Date planExit = formatter.parse(planExitTimeStr);
+		Date planEnter = formatter.parse(planEnterTimeStr);
+		
+		// 更新当前的调度计划
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("steel_scheduleUID", steel_scheduleUID);
+		sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.deletePlan",param);
+		
+		//更新所有之后的调度计划
+		this.updateNewerPlan(planExit, planEnter);
+	}
+
+	@Override
+	public void updatePlan(Map<String, Object> requestParam) throws Exception {
+		// 更新指定的调度后，后续所有调度时间都必须调整
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String startTimeStr = requestParam.get("planEnter_now").toString();
+		String endTimeStr = requestParam.get("planExit_now").toString();
+		//String startOldTimeStr = requestParam.get("planEnter_old").toString();
+		String endOldTimeStr = requestParam.get("planExit_old").toString();
+		String steel_scheduleUID = requestParam.get("id").toString();
+		Date planExitOld = formatter.parse(endOldTimeStr);
+		Date planExit = formatter.parse(endTimeStr);
+		Date planEnter = formatter.parse(startTimeStr);
+		
+		// 更新当前的调度计划
+		Map<String, Object> param = new HashMap<String,Object>();
+		param.put("steel_scheduleUID", steel_scheduleUID);
+		param.put("planEnter", planEnter);
+		param.put("planExit", planExit);
+		sqlSession.update("com.rss.steel_production.schedule.dao.SteelScheduleDao.updatePlan",param);
+		
+		//更新所有之后的调度计划
+		this.updateNewerPlan(planExit, planExitOld);
 		
 	}
 }

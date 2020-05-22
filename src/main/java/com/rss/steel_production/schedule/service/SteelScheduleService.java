@@ -67,4 +67,18 @@ public interface SteelScheduleService extends Service<SteelSchedule> {
     
     
     void alterBlastOrder(String blastOrder, String id);
+
+    /**
+     * 删除指定的调度计划
+     * @param param
+     * @throws Exception 
+     */
+	void deletePlan(Map<String, Object> param) throws Exception;
+
+	/**
+	 * 更新指定的调度计划
+	 * @param param
+	 * @throws Exception 
+	 */
+	void updatePlan(Map<String, Object> param) throws Exception;
 }

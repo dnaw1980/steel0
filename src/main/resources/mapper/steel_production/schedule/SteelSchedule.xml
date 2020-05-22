@@ -70,6 +70,22 @@
 				AND deviceSign =#{deviceSign}
 				AND yearNo = RIGHT(YEAR(NOW()),1)
 	</select>
+	<update id="deletePlan">
+		delete from steel_schedule where steel_scheduleUID = #{steel_scheduleUID}
+	</update>
+	<update id="alterPlan">
+		UPDATE steel_schedule 
+		SET 
+			planEnter = DATE_SUB( planEnter, INTERVAL + #{secondsBetween} SECOND ),
+			planExit = DATE_SUB( planExit, INTERVAL + #{secondsBetween} SECOND ) 
+		WHERE
+			planEnter >=#{planExit}
+			AND actualEnter IS NULL 
+			AND actualExit IS NULL
+	</update>
+	<update id="updatePlan">
+		update steel_schedule set planEnter=#{planEnter}, planExit=#{planExit}  where steel_scheduleUID=#{steel_scheduleUID} 
+	</update>
 	<update id="updateSignNum">
 		UPDATE `flow_number` 
 		SET flowNo = flowNo + 1 

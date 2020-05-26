@@ -1,0 +1,8 @@
+package com.rss.steel_production.schedule.dao;
+
+import com.rss.framework.iMapper;
+import com.rss.steel_production.schedule.model.TdDataBat;
+import com.rss.steel_production.schedule.model.TdSta;
+
+public interface TdDataBatDAO extends iMapper<TdDataBat> {
+}

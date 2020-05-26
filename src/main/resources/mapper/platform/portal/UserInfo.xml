@@ -21,7 +21,7 @@
 			userName
 		FROM
 			`user_info` 
-		WHERE
-			SCHEDULE =#{schedule}
+<!-- 		WHERE
+			SCHEDULE =#{schedule} -->
 	</select>
 </mapper>

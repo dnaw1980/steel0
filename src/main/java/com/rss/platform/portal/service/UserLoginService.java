@@ -8,6 +8,6 @@ import com.rss.platform.portal.model.UserInfo;
 public interface UserLoginService {
     SessionInfo userLogin(UserInfo userInfo);
 
-	List<String> getUserInfoBySchedule(String schedule);
+	List<String> getUserInfoBySchedule();
 
 }

@@ -35,7 +35,7 @@ public class UserLoginController {
     
     @GetMapping("/userNames")
     public Result userNames(@RequestParam("schedule") String schedule) {
-    	return ResultGenerator.genSuccessResult(userLoginService.getUserInfoBySchedule(schedule));
+    	return ResultGenerator.genSuccessResult(userLoginService.getUserInfoBySchedule());
     }
 
 }

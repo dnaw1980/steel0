@@ -27,6 +27,7 @@ public class CompositionInfoController {
         int pageNo=compositionInfoTO.getPageNo();
         int pageSize=compositionInfoTO.getPageSize();
         CompositionInfo model=compositionInfoTO.getCompositionInfo();
+        pageSize = pageSize==0?50:pageSize;
         PageHelper.startPage(pageNo, pageSize);
         Condition condition=new Condition(CompositionInfo.class);
         condition.setOrderByClause("acquireTime desc");

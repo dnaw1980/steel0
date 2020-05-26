@@ -290,7 +290,7 @@ public class SteelScheduleController {
         steelSchedule.setActualExit(exitStationBean.getActualExit());
         //3表示完成
         steelSchedule.setPlanStatus("3");
-
+        // TODO 需要根据录入的调度出或进站时间，自动调整该时间之后的计划进站和计划出站时间
         int rs = steelScheduleService.update(steelSchedule);
 
         if (rs == 1) {

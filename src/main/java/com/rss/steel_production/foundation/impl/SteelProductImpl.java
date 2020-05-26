@@ -172,7 +172,7 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 					Date standExitDate = planedScheduleMap.get(station)==null? tempStartDate: sdfS.parse(planedScheduleMap.get(station).toString());
 					
 					// 分配依据 - 尽早完成
-					if("".equals(checkStation) || tempStationEndDate.before(standExitDate)) {
+					if("".equals(checkStation) || tempStationEndDate.after(standExitDate)) {
 						tempStationEndDate = standExitDate;
 						checkStation = station;
 					}

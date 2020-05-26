@@ -63,10 +63,8 @@ public class UserLoginServiceImpl implements UserLoginService {
     }
 
 	@Override
-	public List<String> getUserInfoBySchedule(String schedule) {
-		Map<String, String> parameters = new HashMap<String,String>();
-		parameters.put("schedule", schedule);
-		List<String> userNames = sqlSession.selectList("com.rss.platform.portal.dao.UserInfoDao.getUserInfoBySchedule", parameters);
+	public List<String> getUserInfoBySchedule() {
+		List<String> userNames = sqlSession.selectList("com.rss.platform.portal.dao.UserInfoDao.getUserInfoBySchedule");
 		return userNames;
 	}
 }

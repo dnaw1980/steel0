@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +45,17 @@ public class TdDataController {
 
     @Autowired
     private SteelScheduleService steelScheduleService;
+
+    /**
+     * 测试生成数据
+     * @return
+     */
+    @GetMapping("/genData")
+    public Result genData() {
+        this.tdStaService.show();
+
+        return ResultGenerator.genSuccessResult("生成数据");
+    }
 
     /**
      * 根据工位名称返回生产实时数据和调度数据
@@ -134,8 +146,10 @@ public class TdDataController {
 
                 rsBean.getRealDataList().add(rd);
 
+                DecimalFormat df1 = new DecimalFormat("0.######");
+
                 //采集数据
-                if (Tools.empty(ch.getInputComTag())) {
+//                if (Tools.empty(ch.getInputComTag())) {
                     switch (ch.getDkCls()) {
 
                         case 0://开关量
@@ -143,10 +157,8 @@ public class TdDataController {
                             rd.setValue(val);
                             break;
                         case 1://模拟量
-                            rd.setValue(ch.getDatVal().toString());
-                            break;
                         case 2://累计量
-                            rd.setValue(ch.getDatVal().toString());
+                            rd.setValue(df1.format(ch.getDatVal()));
                             break;
                         case 3://日期
                             String dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
@@ -155,9 +167,9 @@ public class TdDataController {
                         default:
                             break;
                     }
-                } else {//计算数据
-
-                }
+//                } else {//计算数据
+//
+//                }
             }
 
 

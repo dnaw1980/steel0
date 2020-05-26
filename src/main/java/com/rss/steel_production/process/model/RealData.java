@@ -23,4 +23,10 @@ public class RealData {
 
     @Column( name = "dat_tm")
     private java.sql.Timestamp datTm;
+
+    /**
+     * 新数据标识
+     */
+    @Column(name = "chk_tag")
+    private Integer chkTag;
 }

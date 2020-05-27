@@ -202,7 +202,10 @@ public class SteelProductImpl extends AbstractService<SteelProduct> implements S
 			
 			tempStartDate = exitDate;
 			
-			bofNum = checkStation.split("#")[0];
+			if(checkStation.contains("BOF")) {
+				bofNum = checkStation.split("#")[0];
+			}
+			
 			steelSchedules.add(steelSchedule);
 			
 		}

@@ -104,9 +104,17 @@ public class TdDataController {
                 String temp = this.lastElement(steelSchedule.getTemperature());
                 rsBean.getRealDataList().add(new RealData("温度", temp, 1));
 
-                //温度
+                //重量
                 String weight = this.lastElement(steelSchedule.getWeight());
                 rsBean.getRealDataList().add(new RealData("重量", weight, 1));
+
+                //进站重量
+                String scrabWeight = this.lastElement(steelSchedule.getScrabWeight());
+                rsBean.getRealDataList().add(new RealData("进站重量", scrabWeight, 1));
+
+                //出站重量
+                String exitWeight = this.lastElement(steelSchedule.getExitWeight());
+                rsBean.getRealDataList().add(new RealData("出站重量", exitWeight, 1));
             }
         }
 

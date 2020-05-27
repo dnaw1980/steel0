@@ -6,10 +6,10 @@ import com.rss.framework.AbstractService;
 import com.rss.steel_production.process.dao.RealDataDAO;
 import com.rss.steel_production.process.model.RealData;
 import com.rss.steel_production.schedule.dao.TdChannelDAO;
+import com.rss.steel_production.schedule.dao.TdDataBatDAO;
+import com.rss.steel_production.schedule.dao.TdHistDataDAO;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
-import com.rss.steel_production.schedule.model.SteelSchedule;
-import com.rss.steel_production.schedule.model.TdChannel;
-import com.rss.steel_production.schedule.model.TdSta;
+import com.rss.steel_production.schedule.model.*;
 import com.rss.steel_production.schedule.service.TdStaService;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
@@ -34,6 +34,12 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
     @Resource
     private TdChannelDAO tdChannelDAO;
+
+    @Resource
+    private TdDataBatDAO tdDataBatDAO;
+
+    @Resource
+    private TdHistDataDAO tdHistDataDAO;
 
     @Resource
     private RealDataDAO realDataDAO;
@@ -76,10 +82,16 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
          */
 
         RealData rd = realDataDAO.selectByPrimaryKey(sta.getRealDataKey());
-
         if (rd.getChkTag().equals(sta.getChkTag())) {
             return;
         }
+
+        //生成数据批次
+        TdDataBat dataBat = new TdDataBat();
+        dataBat.setStaId(sta.getStaId());
+        dataBat.setDatDt(rd.getDatTm());
+
+        this.tdDataBatDAO.insertUseGeneratedKeys(dataBat);
 
         String valStr = rd.getDatVal();
         System.out.println("valStr:\n" + valStr);
@@ -150,6 +162,13 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
                     }
                 }
 
+                TdHistData histData = new TdHistData();
+                histData.setBatSn(dataBat.getBatSn());
+                histData.setChSn(ch.getChSn());
+                histData.setDatVal(ch.getDatVal());
+
+                this.tdHistDataDAO.insert(histData);
+
             } else {
                 //其它类型
 
@@ -180,6 +199,13 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
             ch.setDatDt(rd.getDatTm());
 
             this.tdChannelDAO.updateByPrimaryKeySelective(ch);
+
+            TdHistData histData = new TdHistData();
+            histData.setBatSn(dataBat.getBatSn());
+            histData.setChSn(ch.getChSn());
+            histData.setDatVal(ch.getDatVal());
+
+            this.tdHistDataDAO.insert(histData);
 
         }
 

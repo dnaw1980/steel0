@@ -11,6 +11,7 @@ import com.rss.steel_production.schedule.model.SteelSchedule;
 import com.rss.steel_production.schedule.model.TdChannel;
 import com.rss.steel_production.schedule.model.TdSta;
 import com.rss.steel_production.schedule.service.TdStaService;
+import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -54,7 +55,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
         for (TdSta sta : staList) {
 
-//            if (!sta.getStaId().equals("0157b43e-9ef6-11ea-aeba-fa163e16816f")) {
+//            if (!sta.getStaId().equals("0157b42a-9ef6-11ea-aeba-fa163e16816f")) {
 //                continue;
 //            }
             this.parseSta(sta);
@@ -109,6 +110,51 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
         System.out.println("chList size: " + chList.size());
 
         //TODO 4、先处理需要计算的值，更新到数据库。
+        /*
+        目前只处理时间类型，即dkCls 为 3 的，
+        使用当前的 ch 里面的 inputComTag 去  valMap 找对应的值 curVal，
+        如果 curVal 等于 ch里面的 inputChkVal，并且 curVal 不等于当前值。说明值变化触发。
+        将当前时间转成秒数，记录到 ch 的 datVal 里面。
+         */
+
+        Map<String, TdChannel> chMap = new HashMap<String, TdChannel>();
+        for (TdChannel ch : chList) {
+            chMap.put(ch.getComTag().toUpperCase(), ch);
+        }
+
+        for (TdChannel ch : chList) {
+            //如果是采集通道，跳过
+            if (Tools.empty(ch.getInputComTag())) {
+                continue;
+            }
+
+            if (ch.getDkCls().intValue() == 3) {
+                //如果是时间类型
+                String _str = valMap.get(ch.getInputComTag().toUpperCase());
+                if (Tools.empty(_str) || !Tools.isDigit(_str)) {
+                    System.out.println("val:" + _str + " 不是有效数字");
+                    continue;
+                }
+
+                BigDecimal curVal = new BigDecimal(_str);
+                TdChannel inputCh = chMap.get(ch.getInputComTag().toUpperCase());
+                //如果 curVal 等于 ch里面的 inputChkVal，并且 curVal 不等于当前值。说明值变化触发。
+                if (curVal.intValue() == ch.getInputChkVal().intValue()) {
+                    if( !curVal.equals(inputCh.getDatVal())) {
+                        long now = DateUtil.getDateTime().getTime();
+
+                        ch.setDatVal(new BigDecimal(now));
+                        ch.setDatDt(rd.getDatTm());
+
+                        this.tdChannelDAO.updateByPrimaryKeySelective(ch);
+                    }
+                }
+
+            } else {
+                //其它类型
+
+            }
+        }
 
         //5、处理直接采的值，更新到数据库
         for (TdChannel ch : chList) {
@@ -137,6 +183,13 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
         }
 
+        //TODO 6、更新数据时间和 chk_tag
+        {
+            sta.setChkTag(rd.getChkTag());
+            sta.setDatDt(rd.getDatTm());
+
+            this.tdStaDAO.updateByPrimaryKey(sta);
+        }
     }
 
     private List<TdChannel> listChannelForSta(TdSta sta) {

@@ -36,6 +36,8 @@ public class SteelSchedule {
 	private String remarks;
 	private String weight;
 	private String temperature;
+	private String exitWeight;
+	private String scrabWeight;
 	public String getSteel_scheduleUID() {
 		return steel_scheduleUID;
 	}

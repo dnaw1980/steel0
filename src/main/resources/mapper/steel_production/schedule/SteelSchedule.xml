@@ -23,6 +23,8 @@
 		<result column="lastModifyDate" property="lastModifyDate" jdbcType="TIMESTAMP" />
 		<result column="temperature" property="temperature" jdbcType="VARCHAR" />
 		<result column="weight" property="weight" jdbcType="VARCHAR" />
+		<result column="scrabWeight" property="scrabWeight" jdbcType="VARCHAR" />
+		<result column="exitWeight" property="exitWeight" jdbcType="VARCHAR" />
 	</resultMap>
 	<select id="getTimeLineInfoMapList" resultType="java.util.HashMap">
 		SELECT

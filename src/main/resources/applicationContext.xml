@@ -60,6 +60,7 @@
     	com.rss.steel_production.schedule.model;
     	com.rss.steel_production.process.model;
     	com.rss.steel_production.foundation.model;
+    	com.rss.steel_production.workProcedure.model;
     	com.rss.platform.portal.model
     	"/>
     <!-- 扫描sql配置文件:mapper需要的xml文件 -->
@@ -98,6 +99,7 @@
     <property name="basePackage" value="com.rss.steel_production.schedule.dao;
     															   com.rss.steel_production.process.dao;
     															   com.rss.steel_production.foundation.dao;
+    															   com.rss.steel_production.workProcedure.dao;
     															   com.rss.platform.portal.dao"/>
     <property name="properties">
       <value>
@@ -110,11 +112,19 @@
 
   </bean>
 
-  <context:component-scan base-package="com.rss.steel_production.schedule.dao;com.rss.steel_production.process.dao;com.rss.steel_production.foundation.dao;com.rss.platform.portal.dao"/>
+  <context:component-scan base-package="com.rss.steel_production.schedule.dao;
+  com.rss.steel_production.process.dao;
+  com.rss.steel_production.foundation.dao;
+  com.rss.steel_production.workProcedure.dao;
+  com.rss.platform.portal.dao"/>
 
   <!-- 扫描service包下所有使用注解的类型 -->
 <!--  <context:component-scan base-package="com.rss.platforml.service"/>-->
-  <context:component-scan base-package="com.rss.steel_production.schedule.impl;com.rss.steel_production.process.impl;com.rss.steel_production.foundation.impl;com.rss.platform.portal.impl"/>
+  <context:component-scan base-package="com.rss.steel_production.schedule.impl;
+  com.rss.steel_production.process.impl;
+  com.rss.steel_production.foundation.impl;
+  com.rss.steel_production.workProcedure.impl;
+  com.rss.platform.portal.impl"/>
 
   <!-- 配置事务管理器 -->
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

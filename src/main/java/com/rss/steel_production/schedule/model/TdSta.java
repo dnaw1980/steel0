@@ -1,5 +1,6 @@
 package com.rss.steel_production.schedule.model;
 
+import com.rss.steel_production.workProcedure.model.DpWorkProc;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,9 @@ FROM `ssm`.`td_sta`;
     @Column(name = "sta_id")
     private String staId;
 
+    @Column(name="work_proc_id")
+    private String workProcId;
+
     /**
      * 工位名称
      */
@@ -69,5 +73,7 @@ FROM `ssm`.`td_sta`;
      * 通道列表，包含实时数据
      */
     private List<TdChannel> channelList;
+
+    private DpWorkProc workProc;
 }
 

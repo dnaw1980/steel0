@@ -11,6 +11,8 @@ import com.rss.steel_production.schedule.dao.TdHistDataDAO;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.*;
 import com.rss.steel_production.schedule.service.TdStaService;
+import com.rss.steel_production.workProcedure.model.DpWorkProc;
+import com.rss.steel_production.workProcedure.service.DpWorkProcService;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -25,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
-@EnableScheduling
+//@EnableScheduling
 //@Transactional
 public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
@@ -44,7 +46,10 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     @Resource
     private RealDataDAO realDataDAO;
 
-    @Scheduled(cron = "0/5 * * * * ? ")
+    @Resource
+    private DpWorkProcService workProcService;
+
+    //    @Scheduled(cron = "0/5 * * * * ? ")
     public void show() {
         /**
          * 1、遍历 tdSta 表
@@ -69,6 +74,19 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
             //调试，只执行一次
             //return;
         }
+    }
+
+    @Override
+    public List<TdSta> showAll() {
+
+        Map<String, DpWorkProc> workProcMap = this.workProcService.showAllMap();
+
+        List<TdSta> staList = this.tdStaDAO.selectAll();
+        for (TdSta sta : staList) {
+            sta.setWorkProc(workProcMap.get(sta.getWorkProcId()));
+        }
+
+        return staList;
     }
 
     private void parseSta(TdSta sta) {
@@ -152,7 +170,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
                 TdChannel inputCh = chMap.get(ch.getInputComTag().toUpperCase());
                 //如果 curVal 等于 ch里面的 inputChkVal，并且 curVal 不等于当前值。说明值变化触发。
                 if (curVal.intValue() == ch.getInputChkVal().intValue()) {
-                    if( !curVal.equals(inputCh.getDatVal())) {
+                    if (!curVal.equals(inputCh.getDatVal())) {
                         long now = DateUtil.getDateTime().getTime();
 
                         ch.setDatVal(new BigDecimal(now));

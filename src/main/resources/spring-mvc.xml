@@ -11,16 +11,22 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
     <!--将静态资源交由默认的servlet处理-->
-    <mvc:default-servlet-handler />
+    <mvc:default-servlet-handler/>
 
     <!-- 开启SpringMVC注解模式 -->
     <mvc:annotation-driven/>
 
     <!--向容器自动注入配置-->
-    <context:annotation-config />
+    <context:annotation-config/>
 
     <!-- 扫描web相关的bean -->
-    <context:component-scan base-package="com.rss.framework.netty_client;com.rss.steel_production.schedule.controller;com.rss.steel_production.process.controller;com.rss.steel_production.foundation.controller;com.rss.platform.portal.controller"/>
+    <context:component-scan
+            base-package="com.rss.framework.netty_client;
+            com.rss.steel_production.schedule.controller;
+            com.rss.steel_production.process.controller;
+            com.rss.steel_production.foundation.controller;
+            com.rss.platform.portal.controller;
+            com.rss.steel_production.workProcedure.controller"/>
 
     <!--重要！将你的SwaggerConfig配置类注入-->
     <bean class="com.rss.framework.SwaggerConfig"/>
@@ -28,15 +34,15 @@
     <bean class="com.rss.framework.GlobalExceptionHandler"/>
 
     <!--重要！配置swagger资源不被拦截-->
-    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/" />
-    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
 
 
-<!--    &lt;!&ndash; 配置jsp 显示ViewResolver &ndash;&gt;-->
-<!--    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
-<!--        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
-<!--        <property name="prefix" value="/WEB-INF/views/"/>-->
-<!--        <property name="suffix" value=".jsp"/>-->
-<!--    </bean>-->
+    <!--    &lt;!&ndash; 配置jsp 显示ViewResolver &ndash;&gt;-->
+    <!--    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+    <!--        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+    <!--        <property name="prefix" value="/WEB-INF/views/"/>-->
+    <!--        <property name="suffix" value=".jsp"/>-->
+    <!--    </bean>-->
 
 </beans>

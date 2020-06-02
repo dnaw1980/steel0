@@ -47,7 +47,19 @@ public class TdDataController {
     private SteelScheduleService steelScheduleService;
 
     /**
+     * 查询所有工位信息
+     *
+     * @return
+     */
+    @GetMapping("/allSta")
+    public Result allSta() {
+        List<TdSta> staList = this.tdStaService.showAll();
+        return ResultGenerator.genSuccessResult(staList);
+    }
+
+    /**
      * 测试生成数据
+     *
      * @return
      */
     @GetMapping("/genData")
@@ -158,23 +170,23 @@ public class TdDataController {
 
                 //采集数据
 //                if (Tools.empty(ch.getInputComTag())) {
-                    switch (ch.getDkCls()) {
+                switch (ch.getDkCls()) {
 
-                        case 0://开关量
-                            String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
-                            rd.setValue(val);
-                            break;
-                        case 1://模拟量
-                        case 2://累计量
-                            rd.setValue(df1.format(ch.getDatVal()));
-                            break;
-                        case 3://日期
-                            String dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
-                            rd.setValue(dt);
-                            break;
-                        default:
-                            break;
-                    }
+                    case 0://开关量
+                        String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
+                        rd.setValue(val);
+                        break;
+                    case 1://模拟量
+                    case 2://累计量
+                        rd.setValue(df1.format(ch.getDatVal()));
+                        break;
+                    case 3://日期
+                        String dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
+                        rd.setValue(dt);
+                        break;
+                    default:
+                        break;
+                }
 //                } else {//计算数据
 //
 //                }

@@ -487,6 +487,24 @@ public class DateUtil {
     }
 
     /**
+     * 返回当前月份
+     *
+     * @return
+     */
+    public static int getMonth() {
+        return LocalDate.now().getMonthValue();
+    }
+
+    /**
+     * 返回当前年份
+     *
+     * @return
+     */
+    public static int getYear() {
+        return LocalDate.now().getYear();
+    }
+
+    /**
      * 给定日期月份下一个月第一天
      *
      * @param month

@@ -5,4 +5,5 @@ import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 
 public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
 
+    boolean castHasScheduleSeq(String castPlanId);
 }

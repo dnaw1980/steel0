@@ -28,20 +28,59 @@ public class DpScheduleSeq {
 );
      */
 
-    //schedule_seq_id      varchar(36) not null comment '调度序列ID',
+    /**
+     * schedule_seq_id      varchar(36) not null comment '调度序列ID',
+     */
     @Id
     @Column(name = "schedule_seq_id")
     private String scheduleSeqId;
 
-    //cast_plan_id         varchar(36) not null,
+    /**
+     * ast_plan_id         varchar(36) not null,
+     */
     @Column(name = "cast_plan_id")
     private String castPlanId;
 
-    //furnace_no           varchar(64) comment '高炉炉号',
+    /**
+     * furnace_no           varchar(64) comment '高炉炉号',
+     */
     @Column(name = "furnace_no")
     private String furnaceNo;
 
-    //charge_no            varchar(64) comment '转炉炉号',
+    /**
+     * charge_no  varchar(64) comment '转炉炉号',
+     */
     @Column(name = "charge_no")
     private String chargeNo;
+
+    /**
+     * state  tinyint not null default 0 comment '状态，-1作废，0-计划，1-下达，2-执行，3-完成',
+     */
+    @Column(name = "state")
+    private Integer state;
+
+    /**
+     * -1作废
+     */
+    public static final int STATE_FAIL = -1;
+
+    /**
+     * 0-计划
+     */
+    public static final int STATE_PLAN = 0;
+
+    /**
+     * 1-下达
+     */
+    public static final int STATE_SEND = 1;
+
+    /**
+     * 2-执行
+     */
+    public static final int STATE_EXEC = 2;
+
+    /**
+     * 3-完成
+     */
+    public static final int STATE_FINISH = 3;
 }

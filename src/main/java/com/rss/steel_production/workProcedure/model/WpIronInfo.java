@@ -23,26 +23,69 @@ public class WpIronInfo {
     @Column(name = "iron_info_sn")
     private Integer ironInfoSn;
 
-    //    schedule_seq_id      varchar(36) comment '调度序列ID',
+    /**
+     * schedule_seq_id      varchar(36) comment '调度序列ID',
+     *
+     * @return
+     */
+
     @Column(name = "schedule_seq_id")
     private String scheduleSeqId;
 
-    //    blastOrder           varchar(32) comment '铁次编号',
+    /**
+     * blastOrder           varchar(32) comment '铁次编号',
+     */
     private String blastOrder;
 
-    //    blastNo              varchar(32) comment '高炉编号',
+    /**
+     * blastNo              varchar(32) comment '高炉编号',
+     */
     private String blastNo;
 
-    //    ladleNo              varchar(32) comment '铁包号',
+    /**
+     * track                varchar(32) comment '轨道',
+     */
+    private String track;
+
+    /**
+     * carNo                varchar(32) comment '车号',
+     */
+    private String carNo;
+
+
+    /**
+     * ladleNo              varchar(32) comment '铁包号',
+     */
     private String ladleNo;
 
-    //    scrabNet             decimal(16,2) comment '废钢净量',
+    /**
+     * tareWeight           decimal(16,2) comment '皮重',
+     */
+    private BigDecimal tareWeight;
+
+    /**
+     * grossWeight          decimal(16,2) comment '毛重',
+     */
+    private BigDecimal grossWeight;
+
+    /**
+     * scrabNet             decimal(16,2) comment '废钢净量',
+     */
     private BigDecimal scrabNet;
 
-    //    netWeight            decimal(16,2) comment '铁水净重',
+    /**
+     * netWeight            decimal(16,2) comment '铁水净重',
+     */
     private BigDecimal netWeight;
 
-    //    arriveTime           datetime comment '到达时刻',
+    /**
+     * arriveTime           datetime comment '到达时刻',
+     */
     private Timestamp arriveTime;
+
+    /**
+     * registerTime         datetime comment '登记时刻',
+     */
+    private Timestamp registerTime;
 
 }

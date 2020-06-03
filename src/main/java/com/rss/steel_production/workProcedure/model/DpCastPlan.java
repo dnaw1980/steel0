@@ -1,5 +1,6 @@
 package com.rss.steel_production.workProcedure.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rss.steel_production.schedule.model.TdSta;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -75,6 +76,7 @@ public class DpCastPlan {
     public static final int STATE_FINISH = 3;
 
     //begin_dt             datetime comment '开浇时间',
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "begin_dt")
     private Timestamp beginDt;
 

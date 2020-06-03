@@ -24,9 +24,17 @@ public class TdSta {
     `td_sta`.`real_data_key`,
     `td_sta`.`schedule_station`,
     `td_sta`.`chk_tag`,
-    `td_sta`.`gmt_create`,
-    `td_sta`.`gmt_modified`
-FROM `ssm`.`td_sta`;
+
+
+   sta_id               varchar(36) not null comment '工位ID',
+   work_proc_id         varchar(36) comment '工序ID',
+   sta_name             varchar(64) not null comment '工位名称',
+   sta_no               int not null comment '工位序号',
+   state                int not null default 0 comment '状态，0-暂停，1-生产',
+   real_data_key        varchar(128) not null comment '对应采集主键, 表 real_data 中 dat_kind_id 中的值',
+   schedule_station     varchar(32) not null comment '对应调度标识 steel_schedule 表中的 stationName',
+   chk_tag              int not null default -1 comment '新数据标识，对应 real_data 中的 chk_tag',
+   dat_dt               datetime not null default CURRENT_TIMESTAMP comment '数据时间',
      */
 
     /**
@@ -36,7 +44,7 @@ FROM `ssm`.`td_sta`;
     @Column(name = "sta_id")
     private String staId;
 
-    @Column(name="work_proc_id")
+    @Column(name = "work_proc_id")
     private String workProcId;
 
     /**
@@ -44,6 +52,28 @@ FROM `ssm`.`td_sta`;
      */
     @Column(name = "sta_name")
     private String staName;
+
+    /**
+     * 工位序号
+     */
+    @Column(name = "sta_no")
+    private Integer staNo;
+
+    /**
+     * 状态，0-暂停，1-生产
+     */
+    @Column(name = "state")
+    private Integer state;
+
+    /**
+     * 1-生产
+     */
+    public static final int STATE_ON = 1;
+
+    /**
+     * 0-暂停
+     */
+    public static final int STATE_OFF = 0;
 
     /**
      * 对应采集主键, 表 real_data 中 dat_kind_id 中的值

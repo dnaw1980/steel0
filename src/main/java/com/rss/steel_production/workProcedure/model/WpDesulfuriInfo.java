@@ -40,7 +40,7 @@ public class WpDesulfuriInfo {
     private BigDecimal exitWeight;
 
     //    startStation         datetime comment '进站时刻',
-    private Timestamp softBlowEnd;
+    private Timestamp startStation;
 
     //    startFeed            datetime comment '加料开始时刻',
     private Timestamp startFeed;

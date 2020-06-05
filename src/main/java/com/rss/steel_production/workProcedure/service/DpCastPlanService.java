@@ -14,4 +14,6 @@ public interface DpCastPlanService extends Service<DpCastPlan> {
 
     List<DpCastPlan> listExec();
 
+    DpCastPlan get(String castPlanId);
+
 }

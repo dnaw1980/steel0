@@ -29,21 +29,29 @@ public class DpWorkProc {
 alter table pd_work_proc comment '工序信息';
      */
 
-    //work_proc_id         varchar(36) not null comment '工序ID',
+    /**
+     * work_proc_id         varchar(36) not null comment '工序ID',
+     */
     @Id
-    @Column(name="work_proc_id")
+    @Column(name = "work_proc_id")
     private String workProcId;
 
-    //work_proc_nm         varchar(24) not null comment '工序名称',
-    @Column(name="work_proc_nm")
+    /**
+     * work_proc_nm         varchar(24) not null comment '工序名称',
+     */
+    @Column(name = "work_proc_nm")
     private String workProcNm;
 
-    //work_proc_code       varchar(24) not null comment '工序代码',
-    @Column(name="work_proc_code")
+    /**
+     * work_proc_code       varchar(24) not null comment '工序代码',
+     */
+    @Column(name = "work_proc_code")
     private String workProcCode;
 
-    //work_cycle           int not null comment '标准作业时间（分钟）',
-    @Column(name="work_cycle")
+    /**
+     * work_cycle           int not null comment '标准作业时间（分钟）',
+     */
+    @Column(name = "work_cycle")
     private Integer workCycle;
 
 }

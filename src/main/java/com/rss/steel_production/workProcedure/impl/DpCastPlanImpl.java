@@ -126,6 +126,17 @@ public class DpCastPlanImpl extends AbstractService<DpCastPlan> implements DpCas
         return rsList;
     }
 
+    @Override
+    public DpCastPlan get(String castPlanId) {
+        DpCastPlan rs = this.dpCastPlanDAO.selectByPrimaryKey(castPlanId);
+        List<DpCastPlan> rsList = new ArrayList<DpCastPlan>(1);
+        rsList.add(rs);
+
+        this.fillCastPlan(rsList);
+
+        return rsList.get(0);
+    }
+
     /**
      * 填充浇次对应的工艺卡和工序信息
      *

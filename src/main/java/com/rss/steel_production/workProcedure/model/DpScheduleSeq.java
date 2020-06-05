@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 调度序列，<br/>
@@ -17,16 +19,6 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name = "dp_schedule_seq")
 public class DpScheduleSeq {
-    /*
-    create table dp_schedule_seq
-(
-   schedule_seq_id      varchar(36) not null comment '调度序列ID',
-   cast_plan_id         varchar(36) not null,
-   furnace_no           varchar(64) comment '高炉炉号',
-   charge_no            varchar(64) comment '转炉炉号',
-   primary key (schedule_seq_id)
-);
-     */
 
     /**
      * schedule_seq_id      varchar(36) not null comment '调度序列ID',
@@ -83,4 +75,21 @@ public class DpScheduleSeq {
      * 3-完成
      */
     public static final int STATE_FINISH = 3;
+
+    /**
+     * begin_tm             datetime comment '开始时刻，即铁水的到达时刻',
+     */
+    @Column(name = "begin_tm")
+    private Timestamp beginTm;
+
+    /**
+     * end_tm               datetime comment '完成时刻，进入连铸时刻',
+     */
+    @Column(name = "end_tm")
+    private Timestamp endTm;
+
+    /**
+     * 调度明细
+     */
+    private List<DpScheduleDetail> detailList;
 }

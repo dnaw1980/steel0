@@ -659,6 +659,21 @@ public class DateUtil {
     }
 
     /**
+     * 时间戳加 分钟
+     *
+     * @param srcDatetime 分钟
+     * @return
+     */
+    public static java.sql.Timestamp minuteAdd(java.sql.Timestamp srcDatetime, int step) {
+
+        Calendar srcCal = Calendar.getInstance();
+        srcCal.setTime(srcDatetime);
+        srcCal.add(Calendar.MINUTE, step);
+
+        return new java.sql.Timestamp(srcCal.getTime().getTime());
+    }
+
+    /**
      * @param @return    设定文件 
      * @return long    返回类型  @throws 
      * @Title: getDateUnix 

@@ -5,6 +5,7 @@ import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.model.DpCastPlan;
 import com.rss.steel_production.workProcedure.model.DpCastPlanTO;
 import com.rss.steel_production.workProcedure.model.WpIronInfo;
+import com.rss.steel_production.workProcedure.model.WpIronInfoTO;
 import com.rss.steel_production.workProcedure.service.DpCastPlanService;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.steel_production.workProcedure.service.WpIronInfoService;
@@ -13,6 +14,8 @@ import io.swagger.annotations.Api;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 铁水信息
@@ -52,5 +55,28 @@ public class WpIronController {
         return ResultGenerator.genSuccessResult(rs);
     }
 
+    /**
+     * 铁水列表
+     *
+     * @param wpIronInfoTO
+     * @return
+     */
+    @PostMapping("/list")
+    public Result list(@RequestBody WpIronInfoTO wpIronInfoTO) {
+
+        if (wpIronInfoTO == null) {
+            wpIronInfoTO = new WpIronInfoTO();
+        }
+        if (wpIronInfoTO.getPageNo() == 0) {
+            wpIronInfoTO.setPageNo(1);
+        }
+        if (wpIronInfoTO.getPageSize() == 0) {
+            wpIronInfoTO.setPageSize(20);
+        }
+
+        List<WpIronInfo> rsList = this.wpIronInfoService.list(wpIronInfoTO);
+
+        return ResultGenerator.genSuccessResult(rsList);
+    }
 
 }

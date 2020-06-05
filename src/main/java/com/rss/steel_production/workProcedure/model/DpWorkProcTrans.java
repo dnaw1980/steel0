@@ -27,7 +27,7 @@ public class DpWorkProcTrans {
     /**
      * desc_work_proc_id    varchar(36) not null comment '目标工序ID',
      */
-    @Id
+//    @Id
     @Column(name = "desc_work_proc_id")
     private String descWorkProcId;
 

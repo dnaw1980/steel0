@@ -18,6 +18,18 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Table(name = "wp_iron_info")
 public class WpIronInfo {
+    /*
+
+   track                varchar(32) comment '轨道',
+   carNo                varchar(32) comment '车号',
+   ladleNo              varchar(32) comment '铁包号',
+   tareWeight           decimal(16,2) comment '皮重',
+   grossWeight          decimal(16,2) comment '毛重',
+   scrabNet             decimal(16,2) comment '废钢净量',
+   netWeight            decimal(16,2) comment '铁水净重',
+   arriveTime           datetime comment '到达时刻',
+   registerTime         datetime comment '登记时刻',
+     */
     //    iron_info_sn         int not null auto_increment,
     @Id
     @Column(name = "iron_info_sn")

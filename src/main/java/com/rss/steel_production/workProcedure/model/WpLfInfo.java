@@ -17,11 +17,17 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wp_lf_info")
-public class WpLfInfo {
+public class WpLfInfo extends WpBase {
     //    lf_info_sn           int not null auto_increment comment 'LF精炼信息序号',
     @Id
     @Column(name = "lf_info_sn")
     private Integer lfInfoSn;
+
+    /**
+     * sta_id               varchar(36) comment '工位ID',
+     */
+    @Column(name = "sta_id")
+    private String staId;
 
     //    schedule_seq_id      varchar(36) comment '调度序列ID',
     @Column(name = "schedule_seq_id")

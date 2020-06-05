@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wp_iron_info")
-public class WpIronInfo {
+public class WpIronInfo extends WpBase {
     /*
 
    track                varchar(32) comment '轨道',
@@ -35,6 +35,12 @@ public class WpIronInfo {
     @Id
     @Column(name = "iron_info_sn")
     private Integer ironInfoSn;
+
+    /**
+     * sta_id               varchar(36) comment '工位ID',
+     */
+    @Column(name = "sta_id")
+    private String staId;
 
     /**
      * schedule_seq_id      varchar(36) comment '调度序列ID',

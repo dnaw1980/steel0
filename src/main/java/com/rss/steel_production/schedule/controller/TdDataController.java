@@ -79,121 +79,122 @@ public class TdDataController {
     @GetMapping("/realData/{stationNo}")
     public Result realData(@PathVariable(required = true) String stationNo) {
 
-        RealDataBean rsBean = new RealDataBean();
-        rsBean.setRealDataList(new ArrayList<RealData>());
-
-        /**
-         * 1、查询本工位的，有实时进站时间，没有实际出站时间的调度记录
-         * 2、查询本工位信息，查询本工位对应的通道信息（按重要级别和排序号进行排序）
-         */
-
-        {
-            Condition scheduleCondition = new Condition(SteelSchedule.class);
-            Condition.Criteria criteria = scheduleCondition.createCriteria();
-
-            criteria.andLike("stationName", "%" + stationNo + "%");
-            criteria.andIsNotNull("actualEnter");
-            criteria.andIsNull("actualExit");
-
-            List<SteelSchedule> steelScheduleList = steelScheduleService.findByCondition(scheduleCondition);
-
-            if (Tools.notEmpty(steelScheduleList)) {
-                SteelSchedule steelSchedule = steelScheduleList.get(0);
-
-                rsBean.getRealDataList().add(
-                        new RealData("炉次号", steelSchedule.getChargeNo(), 1)
-                );
-
-                rsBean.getRealDataList().add(
-                        new RealData("浇次号", steelSchedule.getCastNo(), 1)
-                );
-
-                rsBean.getRealDataList().add(
-                        new RealData("进站时间", DateUtil.dateToString(steelSchedule.getActualEnter(), DateUtil.DATETIME_FMT), 1)
-                );
-
-                //温度
-                String temp = this.lastElement(steelSchedule.getTemperature());
-                rsBean.getRealDataList().add(new RealData("温度", temp, 1));
-
-                //重量
-                String weight = this.lastElement(steelSchedule.getWeight());
-                rsBean.getRealDataList().add(new RealData("重量", weight, 1));
-
-                //进站重量
-                String scrabWeight = this.lastElement(steelSchedule.getScrabWeight());
-                rsBean.getRealDataList().add(new RealData("进站重量", scrabWeight, 1));
-
-                //出站重量
-                String exitWeight = this.lastElement(steelSchedule.getExitWeight());
-                rsBean.getRealDataList().add(new RealData("出站重量", exitWeight, 1));
-            }
-        }
-
-        //查本工位信息
-        TdSta sta = null;
-        {
-            Condition staCondition = new Condition(TdSta.class);
-            Condition.Criteria criteria = staCondition.createCriteria();
-
-            criteria.andEqualTo("scheduleStation", stationNo);
-
-            List<TdSta> staList = this.tdStaService.findByCondition(staCondition);
-
-            if (Tools.notEmpty(staList)) {
-                sta = staList.get(0);
-
-                rsBean.setDtTime(
-                        DateUtil.datetimeToString(sta.getDatDt())
-                );
-            }
-        }
-
-        //查数据通道信息
-        {
-            Condition chCondition = new Condition(TdChannel.class);
-            Condition.Criteria criteria = chCondition.createCriteria();
-            chCondition.setOrderByClause("is_important desc, order_sn asc");
-            criteria.andEqualTo("staId", sta.getStaId());
-
-            List<TdChannel> chList = this.tdChannelService.findByCondition(chCondition);
-
-            for (TdChannel ch : chList) {
-
-                RealData rd = new RealData();
-                rd.setLabel(ch.getChName());
-                rd.setShow(ch.getIsImportant());
-
-                rsBean.getRealDataList().add(rd);
-
-                DecimalFormat df1 = new DecimalFormat("0.######");
-
-                //采集数据
-//                if (Tools.empty(ch.getInputComTag())) {
-                switch (ch.getDkCls()) {
-
-                    case 0://开关量
-                        String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
-                        rd.setValue(val);
-                        break;
-                    case 1://模拟量
-                    case 2://累计量
-                        rd.setValue(df1.format(ch.getDatVal()));
-                        break;
-                    case 3://日期
-                        String dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
-                        rd.setValue(dt);
-                        break;
-                    default:
-                        break;
-                }
-//                } else {//计算数据
+        RealDataBean rsBean = this.tdStaService.realData(stationNo);
+//        RealDataBean rsBean = new RealDataBean();
+//        rsBean.setRealDataList(new ArrayList<RealData>());
 //
+//        /**
+//         * 1、查询本工位的，有实时进站时间，没有实际出站时间的调度记录
+//         * 2、查询本工位信息，查询本工位对应的通道信息（按重要级别和排序号进行排序）
+//         */
+//
+//        {
+//            Condition scheduleCondition = new Condition(SteelSchedule.class);
+//            Condition.Criteria criteria = scheduleCondition.createCriteria();
+//
+//            criteria.andLike("stationName", "%" + stationNo + "%");
+//            criteria.andIsNotNull("actualEnter");
+//            criteria.andIsNull("actualExit");
+//
+//            List<SteelSchedule> steelScheduleList = steelScheduleService.findByCondition(scheduleCondition);
+//
+//            if (Tools.notEmpty(steelScheduleList)) {
+//                SteelSchedule steelSchedule = steelScheduleList.get(0);
+//
+//                rsBean.getRealDataList().add(
+//                        new RealData("炉次号", steelSchedule.getChargeNo(), 1)
+//                );
+//
+//                rsBean.getRealDataList().add(
+//                        new RealData("浇次号", steelSchedule.getCastNo(), 1)
+//                );
+//
+//                rsBean.getRealDataList().add(
+//                        new RealData("进站时间", DateUtil.dateToString(steelSchedule.getActualEnter(), DateUtil.DATETIME_FMT), 1)
+//                );
+//
+//                //温度
+//                String temp = this.lastElement(steelSchedule.getTemperature());
+//                rsBean.getRealDataList().add(new RealData("温度", temp, 1));
+//
+//                //重量
+//                String weight = this.lastElement(steelSchedule.getWeight());
+//                rsBean.getRealDataList().add(new RealData("重量", weight, 1));
+//
+//                //进站重量
+//                String scrabWeight = this.lastElement(steelSchedule.getScrabWeight());
+//                rsBean.getRealDataList().add(new RealData("进站重量", scrabWeight, 1));
+//
+//                //出站重量
+//                String exitWeight = this.lastElement(steelSchedule.getExitWeight());
+//                rsBean.getRealDataList().add(new RealData("出站重量", exitWeight, 1));
+//            }
+//        }
+//
+//        //查本工位信息
+//        TdSta sta = null;
+//        {
+//            Condition staCondition = new Condition(TdSta.class);
+//            Condition.Criteria criteria = staCondition.createCriteria();
+//
+//            criteria.andEqualTo("scheduleStation", stationNo);
+//
+//            List<TdSta> staList = this.tdStaService.findByCondition(staCondition);
+//
+//            if (Tools.notEmpty(staList)) {
+//                sta = staList.get(0);
+//
+//                rsBean.setDtTime(
+//                        DateUtil.datetimeToString(sta.getDatDt())
+//                );
+//            }
+//        }
+//
+//        //查数据通道信息
+//        {
+//            Condition chCondition = new Condition(TdChannel.class);
+//            Condition.Criteria criteria = chCondition.createCriteria();
+//            chCondition.setOrderByClause("is_important desc, order_sn asc");
+//            criteria.andEqualTo("staId", sta.getStaId());
+//
+//            List<TdChannel> chList = this.tdChannelService.findByCondition(chCondition);
+//
+//            for (TdChannel ch : chList) {
+//
+//                RealData rd = new RealData();
+//                rd.setLabel(ch.getChName());
+//                rd.setShow(ch.getIsImportant());
+//
+//                rsBean.getRealDataList().add(rd);
+//
+//                DecimalFormat df1 = new DecimalFormat("0.######");
+//
+//                //采集数据
+////                if (Tools.empty(ch.getInputComTag())) {
+//                switch (ch.getDkCls()) {
+//
+//                    case 0://开关量
+//                        String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
+//                        rd.setValue(val);
+//                        break;
+//                    case 1://模拟量
+//                    case 2://累计量
+//                        rd.setValue(df1.format(ch.getDatVal()));
+//                        break;
+//                    case 3://日期
+//                        String dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
+//                        rd.setValue(dt);
+//                        break;
+//                    default:
+//                        break;
 //                }
-            }
-
-
-        }
+////                } else {//计算数据
+////
+////                }
+//            }
+//
+//
+//        }
 
         return ResultGenerator.genSuccessResult(rsBean);
     }
@@ -206,5 +207,7 @@ public class TdDataController {
         }
         return desc;
     }
+
+
 
 }

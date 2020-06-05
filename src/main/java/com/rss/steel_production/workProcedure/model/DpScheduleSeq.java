@@ -34,10 +34,10 @@ public class DpScheduleSeq {
     private String castPlanId;
 
     /**
-     * furnace_no           varchar(64) comment '高炉炉号',
+     * blast_no           varchar(64) comment '高炉炉号',
      */
-    @Column(name = "furnace_no")
-    private String furnaceNo;
+    @Column(name = "blast_no")
+    private String blastNo;
 
     /**
      * charge_no  varchar(64) comment '转炉炉号',

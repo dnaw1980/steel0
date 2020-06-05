@@ -17,12 +17,18 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wp_cas_info")
-public class WpCasInfo {
+public class WpCasInfo extends WpBase {
 
     //    cas_info_sn          int not null auto_increment comment 'CAS精炼信息序号',
     @Id
     @Column(name = "cas_info_sn")
     private Integer casInfoSn;
+
+    /**
+     * sta_id               varchar(36) comment '工位ID',
+     */
+    @Column(name = "sta_id")
+    private String staId;
 
     //    schedule_seq_id      varchar(36) comment '调度序列ID',
     @Column(name = "schedule_seq_id")

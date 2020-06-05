@@ -2,6 +2,13 @@ package com.rss.steel_production.workProcedure.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.rss.framework.AbstractService;
+import com.rss.steel_production.process.dao.CompositionInfoDAO;
+import com.rss.steel_production.process.dao.CompositionStandardDAO;
+import com.rss.steel_production.process.model.CompositionInfo;
+import com.rss.steel_production.process.model.CompositionStandard;
+import com.rss.steel_production.schedule.dao.TdStaDAO;
+import com.rss.steel_production.schedule.model.TdSta;
+import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.*;
 import com.rss.steel_production.workProcedure.model.*;
 import com.rss.steel_production.workProcedure.service.DpCastPlanService;
@@ -31,6 +38,9 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
     @Resource
     private DpScheduleSeqDAO dpScheduleSeqDAO;
+
+    @Resource
+    private TdStaDAO tdStaDAO;
 
     @Resource
     private DpScheduleDetailDAO dpScheduleDetailDAO;
@@ -67,6 +77,15 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
     @Resource
     private WpSlabInfoDAO wpSlabInfoDAO;
+
+    @Resource
+    private CompositionStandardDAO compositionStandardDAO;
+
+    @Resource
+    private CompositionInfoDAO compositionInfoDAO;
+
+    @Resource
+    private DpStaScDetailDAO dpStaScDetailDAO;
 
 
     @Override
@@ -326,5 +345,250 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         List<DpScheduleSeq> rs = this.perSchedulePlan(scSeqList);
         //TODO 将 rs 写入数据库
         return rs;
+    }
+
+    /**
+     * 返回给定工位的实时调度信息
+     *
+     * @param stationNames
+     * @return
+     */
+    @Override
+    public List<StaScDataBean> staWpData(List<String> stationNames) {
+        List<StaScDataBean> rsList = new ArrayList<StaScDataBean>(stationNames.size());
+        for (String sn : stationNames) {
+            log.info("sn:" + sn);
+            StaScDataBean bean = this._fillSingleWpData(sn);
+            rsList.add(bean);
+        }
+        return rsList;
+    }
+
+    /**
+     * 为每个工位添加工序、调度等信息
+     *
+     * @param stationName
+     * @return
+     */
+    private StaScDataBean _fillSingleWpData(String stationName) {
+        //通过工位号查询站点信息
+        TdSta tdSta = null;
+        {
+            Condition condition = new Condition(TdSta.class);
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleStation", stationName);
+            List<TdSta> staList = this.tdStaDAO.selectByCondition(condition);
+            if (Tools.empty(staList)) {
+                log.info("工位号不合法：" + stationName);
+                return null;
+            }
+
+            tdSta = staList.get(0);
+        }
+
+        StaScDataBean rsBean = new StaScDataBean();
+
+        //当前步骤工序的成份标准信息
+        String staType = stationName.split("#")[1]; //1#BOF 即 BOF
+        rsBean.setStand(this.listCompStand(staType));
+
+        //当前工位的工序信息
+        rsBean.setInfo(this.workProc(tdSta, staType));
+
+        DpScheduleSeq scheduleSeq = null;
+        //调度信息
+        //查调度明细，工位ID，状态为执行
+        {
+            Condition condition = new Condition(DpScheduleDetail.class);
+            Condition.Criteria criteria = condition.createCriteria();
+
+            criteria.andEqualTo("staId", tdSta.getStaId());
+            criteria.andEqualTo("state", DpScheduleDetail.STATE_EXEC);
+
+            List<DpScheduleDetail> scheduleDetails = this.dpScheduleDetailDAO.selectByCondition(condition);
+            if (Tools.notEmpty(scheduleDetails)) {
+                DpScheduleDetail detail = scheduleDetails.get(0);
+                rsBean.setScheduleDetail(detail);
+
+                //查询调度序列
+                scheduleSeq = this.dpScheduleSeqDAO.selectByPrimaryKey(detail.getScheduleSeqId());
+            }
+
+        }
+
+        //工位上当前炉次号的工艺路径
+        if (scheduleSeq != null) {
+            Condition condition = new Condition(DpStaScDetail.class);
+            condition.setOrderByClause("order_sn asc");
+            Condition.Criteria criteria = condition.createCriteria();
+
+            criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
+            List<DpStaScDetail> staScDetails = this.dpStaScDetailDAO.selectByCondition(condition);
+
+            List<String> routeList = new ArrayList<String>();
+            for (DpStaScDetail staScDetail : staScDetails) {
+                routeList.add(staScDetail.getScheduleStation());
+            }
+
+            rsBean.setRouter(routeList);
+        }
+
+        //TODO 当前步骤工序的成份化验信息
+        if (scheduleSeq != null) {
+            List<CompositionInfo> compList = this.listComp(staType, scheduleSeq.getChargeNo());
+            rsBean.setComposition(compList);
+        }
+
+        //实时数据
+
+        return rsBean;
+    }
+
+    private List<CompositionInfo> listComp(String staType, String chargeNo) {
+
+        List<String> descType = this.exechangeType(staType);
+        if (Tools.empty(descType)) {
+            return null;
+        }
+
+        List<CompositionInfo> rsList = null;
+
+        Condition condition = new Condition(CompositionInfo.class);
+        Condition.Criteria criteria1 = condition.createCriteria();
+        Condition.Criteria criteria2 = condition.createCriteria();
+
+        criteria1.andLike("chargeNo", "%" + chargeNo + "%");
+        condition.and(criteria1);
+
+        for (String type : descType) {
+            criteria2.orEqualTo("sampleType", type);
+        }
+        condition.and(criteria2);
+
+
+        rsList = this.compositionInfoDAO.selectByCondition(condition);
+        return rsList;
+    }
+
+    private List<String> exechangeType(String staType) {
+
+        List<String> descType = new ArrayList<String>();
+        switch (staType) {
+            case "KR":
+                descType.add("脱硫");
+                break;
+            case "BOF":
+                descType.add("炉前");
+                descType.add("转炉");
+                break;
+            case "CAS":
+                descType.add("CAS");
+                break;
+            case "LF":
+                descType.add("LF");
+                break;
+            case "CC":
+                descType.add("连铸");
+                break;
+        }
+
+        return descType;
+    }
+
+
+    private WpBase workProc(TdSta tdSta, String staType) {
+
+        WpBase rsObj = null;
+        switch (staType) {
+            case "KR": {
+                Condition condition = new Condition(WpDesulfuriInfo.class);
+                Condition.Criteria criteria = condition.createCriteria();
+
+                criteria.andEqualTo("staId", tdSta.getStaId());
+                List<WpDesulfuriInfo> rsList = this.wpDesulfuriInfoDAO.selectByCondition(condition);
+                if (Tools.notEmpty(rsList)) {
+                    rsObj = rsList.get(0);
+                }
+            }
+            break;
+            case "BOF": {
+                Condition condition = new Condition(WpConvererInfo.class);
+                Condition.Criteria criteria = condition.createCriteria();
+
+                criteria.andEqualTo("staId", tdSta.getStaId());
+                List<WpConvererInfo> rsList = this.wpConvererInfoDAO.selectByCondition(condition);
+                if (Tools.notEmpty(rsList)) {
+                    rsObj = rsList.get(0);
+                }
+            }
+            break;
+            case "CAS": {
+                Condition condition = new Condition(WpCasInfo.class);
+                Condition.Criteria criteria = condition.createCriteria();
+
+                criteria.andEqualTo("staId", tdSta.getStaId());
+                List<WpCasInfo> rsList = this.wpCasInfoDAO.selectByCondition(condition);
+                if (Tools.notEmpty(rsList)) {
+                    rsObj = rsList.get(0);
+                }
+            }
+            break;
+            case "LF": {
+                Condition condition = new Condition(WpLfInfo.class);
+                Condition.Criteria criteria = condition.createCriteria();
+
+                criteria.andEqualTo("staId", tdSta.getStaId());
+                List<WpLfInfo> rsList = this.wpLfInfoDAO.selectByCondition(condition);
+                if (Tools.notEmpty(rsList)) {
+                    rsObj = rsList.get(0);
+                }
+            }
+            break;
+            case "CC": {
+                if (tdSta.getStaNo().intValue() == 1) {
+                    //方坯
+                    Condition condition = new Condition(WpBilletInfo.class);
+                    Condition.Criteria criteria = condition.createCriteria();
+
+                    criteria.andEqualTo("staId", tdSta.getStaId());
+                    List<WpBilletInfo> rsList = this.wpBilletInfoDAO.selectByCondition(condition);
+                    if (Tools.notEmpty(rsList)) {
+                        rsObj = rsList.get(0);
+                    }
+                } else {
+                    //板坯
+                    Condition condition = new Condition(WpSlabInfo.class);
+                    Condition.Criteria criteria = condition.createCriteria();
+
+                    criteria.andEqualTo("staId", tdSta.getStaId());
+                    List<WpSlabInfo> rsList = this.wpSlabInfoDAO.selectByCondition(condition);
+                    if (Tools.notEmpty(rsList)) {
+                        rsObj = rsList.get(0);
+                    }
+                }
+            }
+            break;
+        }
+
+        return rsObj;
+    }
+
+    private List<CompositionStandard> listCompStand(String staType) {
+        List<String> descType = this.exechangeType(staType);
+        if (Tools.empty(descType)) {
+            return null;
+        }
+
+        List<CompositionStandard> rsList = null;
+
+        Condition condition = new Condition(CompositionStandard.class);
+        Condition.Criteria criteria = condition.createCriteria();
+
+        for (String type : descType) {
+            criteria.orEqualTo("sampleType", type);
+        }
+
+        rsList = this.compositionStandardDAO.selectByCondition(condition);
+        return rsList;
     }
 }

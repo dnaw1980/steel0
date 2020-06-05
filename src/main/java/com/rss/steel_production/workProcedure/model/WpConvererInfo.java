@@ -17,12 +17,18 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wp_converer_info")
-public class WpConvererInfo {
+public class WpConvererInfo extends WpBase {
 
     //    converer_info_sn     int not null auto_increment comment '炼钢信息序号',
     @Id
     @Column(name = "converer_info_sn")
     private Integer convererInfoSn;
+
+    /**
+     * sta_id               varchar(36) comment '工位ID',
+     */
+    @Column(name = "sta_id")
+    private String staId;
 
     //    schedule_seq_id      varchar(36) comment '调度序列ID',
     @Column(name = "schedule_seq_id")

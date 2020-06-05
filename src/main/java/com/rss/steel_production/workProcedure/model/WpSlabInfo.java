@@ -17,11 +17,17 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "wp_slab_info")
-public class WpSlabInfo {
+public class WpSlabInfo extends WpBase {
     //    slab_info_sn         int not null,
     @Id
     @Column(name = "slab_info_sn")
     private Integer slabInfoSn;
+
+    /**
+     * sta_id               varchar(36) comment '工位ID',
+     */
+    @Column(name = "sta_id")
+    private String staId;
 
     //    schedule_seq_id      varchar(36) comment '调度序列ID',
     @Column(name = "schedule_seq_id")

@@ -1,7 +1,9 @@
 package com.rss.steel_production.workProcedure.service;
 
 import com.rss.framework.Service;
+import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -39,4 +41,12 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
      * @return
      */
     List<DpScheduleSeq> execSchedulePlan(List<DpScheduleSeq> scSeqList);
+
+    /**
+     * 返回给定工位的实时调度信息
+     *
+     * @param stationNames
+     * @return
+     */
+    List<StaScDataBean> staWpData(List<String> stationNames);
 }

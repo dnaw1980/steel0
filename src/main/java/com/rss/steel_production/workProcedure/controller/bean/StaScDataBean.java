@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.List;
 
 @Data
@@ -41,6 +42,15 @@ public class StaScDataBean {
      */
     private RealDataBean realData;
 
+    /**
+     * blast_no           varchar(64) comment '高炉炉号',
+     */
+    private String blastNo;
+
+    /**
+     * charge_no  varchar(64) comment '转炉炉号',
+     */
+    private String chargeNo;
     /**
      * 调度信息
      */

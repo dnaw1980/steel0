@@ -6,8 +6,10 @@ import com.rss.steel_production.process.dao.CompositionInfoDAO;
 import com.rss.steel_production.process.dao.CompositionStandardDAO;
 import com.rss.steel_production.process.model.CompositionInfo;
 import com.rss.steel_production.process.model.CompositionStandard;
+import com.rss.steel_production.schedule.controller.bean.RealDataBean;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.TdSta;
+import com.rss.steel_production.schedule.service.TdStaService;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.*;
 import com.rss.steel_production.workProcedure.model.*;
@@ -16,6 +18,7 @@ import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Condition;
@@ -86,6 +89,9 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
     @Resource
     private DpStaScDetailDAO dpStaScDetailDAO;
+
+    @Autowired
+    private TdStaService tdStaService;
 
 
     @Override
@@ -418,6 +424,9 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
         //工位上当前炉次号的工艺路径
         if (scheduleSeq != null) {
+            rsBean.setBlastNo(scheduleSeq.getBlastNo());
+            rsBean.setChargeNo(scheduleSeq.getChargeNo());
+
             Condition condition = new Condition(DpStaScDetail.class);
             condition.setOrderByClause("order_sn asc");
             Condition.Criteria criteria = condition.createCriteria();
@@ -440,6 +449,8 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         }
 
         //实时数据
+        RealDataBean rd = this.tdStaService.realData(stationName);
+        rsBean.setRealData(rd);
 
         return rsBean;
     }

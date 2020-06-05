@@ -1,5 +1,6 @@
 package com.rss.steel_production.workProcedure.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -93,11 +94,13 @@ public class WpIronInfo {
     /**
      * arriveTime           datetime comment '到达时刻',
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Timestamp arriveTime;
 
     /**
      * registerTime         datetime comment '登记时刻',
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Timestamp registerTime;
 
 }

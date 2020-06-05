@@ -22,9 +22,8 @@ public class DpCastWpEndTm {
     /**
      * 浇次ID
      */
-    @Id
     @Column(name = "cast_plan_id")
-    private Integer castPlanId;
+    private String castPlanId;
 
     /**
      * 工序ID

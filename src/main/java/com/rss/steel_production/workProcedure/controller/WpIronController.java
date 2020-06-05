@@ -56,6 +56,29 @@ public class WpIronController {
     }
 
     /**
+     * 修改铁水信息
+     *
+     * @param wpIronInfo
+     * @return
+     */
+    @PostMapping("/update")
+    public Result update(@RequestBody WpIronInfo wpIronInfo) {
+
+        if (wpIronInfo == null) {
+            return ResultGenerator.genFailResult("铁水信息为空");
+        }
+
+        int ironSn = wpIronInfo.getIronInfoSn();
+        int row = this.wpIronInfoService.update(wpIronInfo);
+        if (row == 0) {
+            return ResultGenerator.genFailResult("未修改信息信息！");
+        }
+        WpIronInfo rs = this.wpIronInfoService.findById(String.valueOf(ironSn));
+
+        return ResultGenerator.genSuccessResult(rs);
+    }
+
+    /**
      * 铁水列表
      *
      * @param wpIronInfoTO

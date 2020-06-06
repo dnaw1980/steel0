@@ -5,6 +5,7 @@ import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
+import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.DpStaScDetail;
 import com.rss.steel_production.workProcedure.model.DpTechCard;
@@ -146,18 +147,20 @@ public class DpScheduleController {
     public Result perEnterSc(@PathVariable(required = true) String stationName) {
         /*
         查 dp_schedule_seq
-        state 小于3的（应该是1或2）
+        state 1, //小于3的（应该是1或2）
 
         查看每个调度对应本工位的明细，时间差最小的那个，排第一位
          */
-        Condition condition = new Condition(DpScheduleSeq.class);
+        Condition condition = new Condition(DpStaScDetail.class);
+        condition.setOrderByClause("detail_state desc, plan_begin desc");
+
         Condition.Criteria criteria = condition.createCriteria();
-        criteria.andLessThan("state", DpScheduleSeq.STATE_FINISH);
-        criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FAIL);
+        criteria.andEqualTo("scheduleStation", stationName);
+        criteria.andLessThan("detailState", DpScheduleDetail.STATE_EXEC);
 
-        List<DpScheduleSeq> rsList = this.dpScheduleSeqService.findByCondition(condition);
+        List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
 
-        return ResultGenerator.genSuccessResult(rsList);
+        return ResultGenerator.genSuccessResult(staScDetailList);
     }
 
     /**

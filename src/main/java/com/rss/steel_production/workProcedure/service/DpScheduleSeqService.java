@@ -1,6 +1,7 @@
 package com.rss.steel_production.workProcedure.service;
 
 import com.rss.framework.Service;
+import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,4 +50,21 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
      * @return
      */
     List<StaScDataBean> staWpData(List<String> stationNames);
+
+    /**
+     * 进站操作，忽略出站时间
+     *
+     * @param enterStaBean
+     * @return
+     */
+    String enterSta(EnterExitStaBean enterStaBean);
+
+    /**
+     * 出站操作，忽略进站时间
+     *
+     * @param exitStaBean
+     * @return
+     */
+    String exitSta(EnterExitStaBean exitStaBean);
+
 }

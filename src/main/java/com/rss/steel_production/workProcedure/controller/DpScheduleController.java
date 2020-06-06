@@ -2,6 +2,7 @@ package com.rss.steel_production.workProcedure.controller;
 
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
+import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.DpTechCard;
@@ -54,6 +55,37 @@ public class DpScheduleController {
         return ResultGenerator.genSuccessResult(this.dpScheduleSeqService.staWpData(stationNames));
     }
 
+    /**
+     * 进站时，忽略出站时间
+     *
+     * @param enterStaBean
+     * @return
+     */
+    @PostMapping("/enterSta")
+    public Result enterSta(@RequestBody EnterExitStaBean enterStaBean) {
+        enterStaBean.setActualExit(null);
+        /*
+
+         */
+        String rs = this.dpScheduleSeqService.enterSta(enterStaBean);
+        return ResultGenerator.genSuccessResult(rs);
+    }
+
+    /**
+     * 出站时，忽略进站时间
+     *
+     * @param exitStaBean
+     * @return
+     */
+    @PostMapping("/exitSta")
+    public Result exitSta(@RequestBody EnterExitStaBean exitStaBean) {
+        exitStaBean.setActualEnter(null);
+        /*
+
+         */
+        String rs = this.dpScheduleSeqService.exitSta(exitStaBean);
+        return ResultGenerator.genSuccessResult(rs);
+    }
 
     /**
      * 为即将进入的工位，查询可用的调度信息

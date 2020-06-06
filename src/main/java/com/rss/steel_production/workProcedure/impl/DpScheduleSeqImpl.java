@@ -10,6 +10,7 @@ import com.rss.steel_production.schedule.controller.bean.RealDataBean;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.TdSta;
 import com.rss.steel_production.schedule.service.TdStaService;
+import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.*;
 import com.rss.steel_production.workProcedure.model.*;
@@ -47,6 +48,9 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
     @Resource
     private DpScheduleDetailDAO dpScheduleDetailDAO;
+
+    @Resource
+    private DpWorkProcDAO dpWorkProcDAO;
 
     @Resource
     private DpWorkProcTransDAO dpWorkProcTransDAO;
@@ -368,6 +372,249 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
             rsList.add(bean);
         }
         return rsList;
+    }
+
+    /**
+     * 进站操作，忽略出站时间
+     *
+     * @param enterStaBean
+     * @return
+     */
+    @Override
+    public String enterSta(EnterExitStaBean enterStaBean) {
+        //TODO
+        /*
+        1、根据调度ID，查询对应的调度明细，按 order_sn 排序。
+        2、根据站点名，查询站点信息。通过站点信息和调度ID查询对应的调度明细。
+        3、如果有对应的调度明细。
+            3.1、遍历之前查出来的调度明细，把当前站点以前的明细全标记为完成状态。如果当前站点有在进行的调度明细，标记为完成，记录出站时间。
+            3.2、记录当前工位的进站时间，将温度、重量记录到对应的工序信息中，完成。
+        4、如果没有对应的调度明细，根据本工位的 workProcId 和 调度ID 查找sta_sc_detail 本工位类型的调度明细。
+            4.1、如果找到了，查找对应的明细信息，替换明细对应的工位信息。进入3.1、3.2操作。
+            4.2、如果没找到，说明计划中没有，如果当前站点有在进行的调度明细，标记为完成，记录出站时间。
+                添加新的调度明细，状态为2，顺序暂时定为0，添加工序信息。
+         */
+        //1、根据调度ID，查询对应的调度明细，按 order_sn 排序。
+        List<DpScheduleDetail> detailList = null;
+        {
+            Condition condition = new Condition(DpScheduleDetail.class);
+            condition.setOrderByClause("order_sn asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", enterStaBean.getScheduleId());
+            detailList = this.dpScheduleDetailDAO.selectByCondition(condition);
+        }
+
+        //2、根据站点名，查询站点信息。通过站点信息和调度ID查询对应的调度明细。
+        TdSta currSta = null;
+        {
+            Condition condition = new Condition(TdSta.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleStation", enterStaBean.getStationName());
+
+            List<TdSta> tsList = this.tdStaDAO.selectByCondition(condition);
+            if (Tools.empty(tsList)) {
+                return "没有对应的工位！";
+            }
+            currSta = tsList.get(0);
+        }
+
+        //通过站点信息和调度ID查询对应的调度明细。
+        DpStaScDetail staScDetail = null;
+        {
+            Condition condition = new Condition(DpStaScDetail.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", enterStaBean.getScheduleId());
+            criteria.andEqualTo("staId", currSta.getStaId());
+
+            List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+            if (Tools.notEmpty(staScDetailList)) {
+                staScDetail = staScDetailList.get(0);
+            }
+        }
+
+        /*
+        3、如果有对应的调度明细。
+            3.1、遍历之前查出来的调度明细，把当前站点以前的明细全标记为完成状态。如果当前站点有在进行的调度明细，标记为完成，记录出站时间。
+            3.2、记录当前工位的进站时间，将温度、重量记录到对应的工序信息中，完成。
+         */
+        if (staScDetail != null) {
+            this.do3(enterStaBean, detailList, currSta, staScDetail);
+        } else {
+            /*
+            4、如果没有对应的调度明细，根据本工位的 workProcId 和 调度ID 查找sta_sc_detail 本工位类型的调度明细。
+             */
+
+            Condition condition = new Condition(DpStaScDetail.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("workProcId", currSta.getWorkProcId());
+            criteria.andEqualTo("scheduleSeqId", enterStaBean.getScheduleId());
+
+            List<DpStaScDetail> ssdList = this.dpStaScDetailDAO.selectByCondition(condition);
+
+            if (Tools.notEmpty(ssdList)) {
+                //  4.1、如果找到了，查找对应的明细信息，替换明细对应的工位信息。进入3.1、3.2操作。
+                DpScheduleDetail detail = this.dpScheduleDetailDAO.selectByPrimaryKey(ssdList.get(0).getScheduleDetailSn());
+                detail.setStaId(currSta.getStaId());
+                this.dpScheduleDetailDAO.updateByPrimaryKey(detail);
+
+                //重新查 detailList
+                Condition detailCondy = new Condition(DpScheduleDetail.class);
+                detailCondy.setOrderByClause("order_sn asc");
+
+                Condition.Criteria detailCri = detailCondy.createCriteria();
+                detailCri.andEqualTo("scheduleSeqId", enterStaBean.getScheduleId());
+                detailList = this.dpScheduleDetailDAO.selectByCondition(detailCondy);
+
+                //TODO 做3.1，3.2
+                this.do3(enterStaBean, detailList, currSta, staScDetail);
+
+            } else {
+                //  4.2、如果没找到，说明计划中没有，如果当前站点有在进行的调度明细，标记为完成，记录出站时间。
+
+                Condition _detailCondy = new Condition(DpScheduleDetail.class);
+
+                Condition.Criteria _detailCri = condition.createCriteria();
+                _detailCri.andEqualTo("state", DpScheduleDetail.STATE_EXEC);
+                _detailCri.andEqualTo("staId", currSta.getStaId());
+
+                List<DpScheduleDetail> _detailList = this.dpScheduleDetailDAO.selectByCondition(_detailCondy);
+                if (Tools.notEmpty(_detailList)) {
+                    DpScheduleDetail _currDetiail = _detailList.get(0);
+                    _currDetiail.setState(DpScheduleDetail.STATE_FINISH);
+                    _currDetiail.setActEnd(DateUtil.getDateTime());
+                    this.dpScheduleDetailDAO.updateByPrimaryKey(_currDetiail);
+                }
+
+                //  添加新的调度明细，状态为2，顺序暂时定为0，添加工序信息。
+                DpScheduleDetail detail = new DpScheduleDetail();
+                detail.setScheduleSeqId(enterStaBean.getScheduleId());
+                detail.setStaId(currSta.getStaId());
+                detail.setState(DpScheduleDetail.STATE_EXEC);
+                //TODO 需要找到 当前调度之前正在 执行的工位，找到顺序号，添加，后面的顺序号顺延
+                detail.setOrderSn(0);
+                detail.setActBegin(enterStaBean.getActualEnter());
+                // 重新计算计划出站时间
+                DpWorkProc wp = this.dpWorkProcDAO.selectByPrimaryKey(currSta.getWorkProcId());
+                Timestamp endPlan = DateUtil.minuteAdd(enterStaBean.getActualEnter(), wp.getWorkCycle());
+                detail.setPlanEnd(endPlan);
+                this.dpScheduleDetailDAO.insertUseGeneratedKeys(detail);
+
+                //TODO 添加工序信息
+                this.putWorkProcInfo(currSta, detail, enterStaBean);
+            }
+
+        }
+        return "进站成功";
+    }
+
+    private void do3(final EnterExitStaBean enterStaBean,
+                     final List<DpScheduleDetail> detailList,
+                     final TdSta currSta,
+                     final DpStaScDetail staScDetail) {
+        //3.1、遍历之前查出来的调度明细，把当前站点以前的明细全标记为完成状态。
+        for (DpScheduleDetail detail : detailList) {
+            if (detail.getStaId().equals(currSta.getStaId())) {
+                //如果当前站点有在进行的调度明细，标记为完成，记录出站时间。
+                //查询当前站点正在进行的明细
+                {
+                    Condition condition = new Condition(DpScheduleDetail.class);
+
+                    Condition.Criteria criteria = condition.createCriteria();
+                    criteria.andEqualTo("state", DpScheduleDetail.STATE_EXEC);
+                    criteria.andEqualTo("staId", currSta.getStaId());
+
+                    List<DpScheduleDetail> _detailList = this.dpScheduleDetailDAO.selectByCondition(condition);
+                    if (Tools.notEmpty(_detailList)) {
+                        DpScheduleDetail _currDetiail = _detailList.get(0);
+                        _currDetiail.setState(DpScheduleDetail.STATE_FINISH);
+                        _currDetiail.setActEnd(DateUtil.getDateTime());
+                        this.dpScheduleDetailDAO.updateByPrimaryKey(_currDetiail);
+                    }
+                }
+                break;
+            }
+            //其它的标记为完成
+            {
+                detail.setState(DpScheduleDetail.STATE_FINISH);
+                detail.setActEnd(DateUtil.getDateTime());
+                this.dpScheduleDetailDAO.updateByPrimaryKey(detail);
+            }
+        }
+
+            /*
+        3.2、记录当前工位的进站时间，将温度、重量记录到对应的工序信息中，完成。
+         */
+        Integer detailSn = staScDetail.getScheduleDetailSn();
+        DpScheduleDetail _currDetail = this.dpScheduleDetailDAO.selectByPrimaryKey(detailSn);
+        _currDetail.setActBegin(enterStaBean.getActualEnter());
+        _currDetail.setState(DpScheduleDetail.STATE_EXEC);
+        // 重新计算计划出站时间
+        DpWorkProc wp = this.dpWorkProcDAO.selectByPrimaryKey(currSta.getWorkProcId());
+        Timestamp endPlan = DateUtil.minuteAdd(enterStaBean.getActualEnter(), wp.getWorkCycle());
+        _currDetail.setPlanEnd(endPlan);
+        this.dpScheduleDetailDAO.updateByPrimaryKey(_currDetail);
+
+        //TODO 添加工序信息
+        this.putWorkProcInfo(currSta, _currDetail, enterStaBean);
+    }
+
+    private void putWorkProcInfo(TdSta sta, DpScheduleDetail detail, EnterExitStaBean enterStaBean) {
+
+    }
+
+    /**
+     * 出站操作，忽略进站时间
+     *
+     * @param exitStaBean
+     * @return
+     */
+    @Override
+    public String exitSta(EnterExitStaBean exitStaBean) {
+        //TODO
+        //2、根据站点名，查询站点信息。通过站点信息和调度ID查询对应的调度明细。
+        TdSta currSta = null;
+        {
+            Condition condition = new Condition(TdSta.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleStation", exitStaBean.getStationName());
+
+            List<TdSta> tsList = this.tdStaDAO.selectByCondition(condition);
+            if (Tools.empty(tsList)) {
+                return "没有对应的工位！";
+            }
+            currSta = tsList.get(0);
+        }
+        DpStaScDetail staScDetail = null;
+        {
+            Condition condition = new Condition(DpStaScDetail.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", exitStaBean.getScheduleId());
+            criteria.andEqualTo("staId", currSta.getStaId());
+
+            List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+            if (Tools.empty(staScDetailList)) {
+                return "没有对应的站点信息";
+            }
+
+            staScDetail = staScDetailList.get(0);
+        }
+
+        DpScheduleDetail scheduleDetail = this.dpScheduleDetailDAO.selectByPrimaryKey(staScDetail.getScheduleDetailSn());
+
+        scheduleDetail.setActEnd(exitStaBean.getActualExit());
+        scheduleDetail.setState(DpScheduleDetail.STATE_FINISH);
+
+        this.dpScheduleDetailDAO.updateByPrimaryKey(scheduleDetail);
+
+        //TODO 更新工序信息
+
+        return "出站成功";
     }
 
     /**

@@ -4,6 +4,7 @@ import com.rss.framework.Service;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
+import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
@@ -66,5 +67,12 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
      * @return
      */
     String exitSta(EnterExitStaBean exitStaBean);
+
+    /**
+     * 实时甘特图
+     *
+     * @return
+     */
+    DpGanttBean realGantt();
 
 }

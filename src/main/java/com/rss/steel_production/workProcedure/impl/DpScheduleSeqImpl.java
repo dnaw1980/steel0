@@ -14,6 +14,9 @@ import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.*;
 import com.rss.steel_production.workProcedure.model.*;
+import com.rss.steel_production.workProcedure.model.gantt.Charge;
+import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
+import com.rss.steel_production.workProcedure.model.gantt.Router;
 import com.rss.steel_production.workProcedure.service.DpCastPlanService;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.tools.DateUtil;
@@ -615,6 +618,111 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         //TODO 更新工序信息
 
         return "出站成功";
+    }
+
+    /**
+     * 实时甘特图
+     *
+     * @return
+     */
+    @Override
+    public DpGanttBean realGantt() {
+
+        /*
+        1、查工序信息表，生成工序名List
+        2、查询状态为1,2的调度信息，遍历调度信息，用调度ID查，sta_sc_detail
+        生成Router
+         */
+
+        DpGanttBean rsBean = new DpGanttBean();
+
+        //  1、查工序信息表，生成工序名List
+        List<DpWorkProc> workProcList = this.dpWorkProcDAO.selectAll();
+        List<String> wpName = new ArrayList<String>();
+        Map<String, String> wpMap = new HashMap<String, String>();
+        for (DpWorkProc wp : workProcList) {
+            wpName.add(wp.getWorkProcNm());
+            wpMap.put(wp.getWorkProcId(), wp.getWorkProcNm());
+        }
+        rsBean.setRouterNames(wpName);
+
+
+        //2、查询状态为1的调度信息，
+        List<DpScheduleSeq> scheduleSeqList = null;
+        {
+            Condition condition = new Condition(DpScheduleSeq.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andGreaterThan("state", DpScheduleSeq.STATE_PLAN);
+            criteria.andLessThan("state", DpScheduleSeq.STATE_FINISH);
+
+            scheduleSeqList = this.dpScheduleSeqDAO.selectByCondition(condition);
+        }
+
+        if (Tools.empty(scheduleSeqList)) {
+            return rsBean;
+        }
+
+        List<Charge> chargeList = new ArrayList<Charge>(scheduleSeqList.size());
+        rsBean.setCharges(chargeList);
+        for (DpScheduleSeq scheduleSeq : scheduleSeqList) {
+//            遍历调度信息，用调度ID查，sta_sc_detail
+//                    生成Router
+            Charge charge = new Charge();
+            charge.setName(""
+                    + (scheduleSeq.getBlastNo() == null ? "" : scheduleSeq.getBlastNo())
+                    + ","
+                    + (scheduleSeq.getChargeNo() == null ? "" : scheduleSeq.getChargeNo())
+            );
+
+            Condition condition = new Condition(DpStaScDetail.class);
+            condition.setOrderByClause("order_sn asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
+
+            List<DpStaScDetail> detailList = this.dpStaScDetailDAO.selectByCondition(condition);
+
+            List<Router> routerList = new ArrayList<Router>(detailList.size());
+            charge.setRouters(routerList);
+
+            int i = 0;
+            for (DpStaScDetail detail : detailList) {
+
+                Router router = new Router();
+                routerList.add(router);
+
+                Timestamp beginTm = detail.getActBegin() != null ? detail.getActBegin() : detail.getPlanBegin();
+                if (i == 0) {
+                    charge.setBeginTime(beginTm);
+                }
+
+                router.setBeginTime(beginTm);
+                Timestamp endTm = detail.getActEnd() != null ? detail.getActEnd() : detail.getPlanEnd();
+
+                charge.setEndTime(endTm);
+                router.setEndTime(endTm);
+
+                router.setName(wpMap.get(detail.getWorkProcId()));
+
+                //状态
+                int state = detail.getDetailState();
+                if (state == 2) {
+                    router.setState(0);
+                } else if (state < 2) {
+                    router.setState(-1);
+                } else {
+                    router.setState(1);
+                }
+
+                i++;
+            }
+
+            chargeList.add(charge);
+        }
+
+
+        return rsBean;
     }
 
     /**

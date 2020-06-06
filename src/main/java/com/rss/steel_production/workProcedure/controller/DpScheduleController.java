@@ -9,6 +9,7 @@ import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.DpStaScDetail;
 import com.rss.steel_production.workProcedure.model.DpTechCard;
+import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.steel_production.workProcedure.service.DpTechCardService;
 import com.rss.tools.Tools;
@@ -292,7 +293,8 @@ public class DpScheduleController {
          }
          */
 
-        return ResultGenerator.genSuccessResult("");
+        DpGanttBean rs = this.dpScheduleSeqService.realGantt();
+        return ResultGenerator.genSuccessResult(rs);
     }
 
 

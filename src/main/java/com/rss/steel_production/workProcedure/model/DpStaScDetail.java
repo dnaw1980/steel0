@@ -32,6 +32,18 @@ public class DpStaScDetail {
     private String scheduleSeqId;
 
     /**
+     * 高炉炉次
+     */
+    @Column(name = "blast_no")
+    private String blastNo;
+
+    /**
+     * 转炉炉次
+     */
+    @Column(name = "charge_no")
+    private String chargeNo;
+
+    /**
      * sta_id               varchar(36) comment '工位ID',
      */
     @Column(name = "sta_id")

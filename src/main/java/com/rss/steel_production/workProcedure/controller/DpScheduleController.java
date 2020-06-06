@@ -4,16 +4,20 @@ import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
+import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
+import com.rss.steel_production.workProcedure.model.DpStaScDetail;
 import com.rss.steel_production.workProcedure.model.DpTechCard;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.steel_production.workProcedure.service.DpTechCardService;
+import com.rss.tools.Tools;
 import io.swagger.annotations.Api;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -30,6 +34,9 @@ public class DpScheduleController {
 
     @Autowired
     private DpScheduleSeqService dpScheduleSeqService;
+
+    @Resource
+    private DpStaScDetailDAO dpStaScDetailDAO;
 
 
     /**
@@ -85,6 +92,48 @@ public class DpScheduleController {
          */
         String rs = this.dpScheduleSeqService.exitSta(exitStaBean);
         return ResultGenerator.genSuccessResult(rs);
+    }
+
+    /**
+     * 按工位查当前调度的时间轴
+     *
+     * @param stationName
+     * @return
+     */
+    @GetMapping("/timeAxis/{stationName}")
+    public Result timeAxis(@PathVariable(required = true) String stationName) {
+        /*
+        1、查当前工位状态为2的 detail
+        2、取调度号，再查一遍
+         */
+
+        DpStaScDetail staScDetail = null;
+        {
+            Condition condition = new Condition(DpStaScDetail.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleStation", stationName);
+
+            List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+            if (Tools.notEmpty(staScDetailList)) {
+                staScDetail = staScDetailList.get(0);
+            } else {
+                return ResultGenerator.genFailResult("当前工位没有调度作业");
+            }
+        }
+
+        List<DpStaScDetail> staScDetailList = null;
+        {
+            Condition condition = new Condition(DpStaScDetail.class);
+            condition.setOrderByClause("order_sn asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", staScDetail.getScheduleSeqId());
+
+            staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+
+        }
+        return ResultGenerator.genSuccessResult(staScDetailList);
     }
 
     /**

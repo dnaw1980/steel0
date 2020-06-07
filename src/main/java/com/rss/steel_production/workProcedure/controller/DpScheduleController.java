@@ -115,6 +115,7 @@ public class DpScheduleController {
 
             Condition.Criteria criteria = condition.createCriteria();
             criteria.andEqualTo("scheduleStation", stationName);
+            criteria.andEqualTo("detailState", DpScheduleDetail.STATE_EXEC);
 
             List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
             if (Tools.notEmpty(staScDetailList)) {

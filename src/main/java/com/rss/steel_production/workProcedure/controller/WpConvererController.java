@@ -6,6 +6,7 @@ import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.dao.DpScheduleSeqDAO;
 import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
 import com.rss.steel_production.workProcedure.dao.WpConvererInfoDAO;
+import com.rss.steel_production.workProcedure.dao.WpConvererSteelScrapInfoDAO;
 import com.rss.steel_production.workProcedure.model.*;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.tools.DateUtil;
@@ -37,11 +38,40 @@ public class WpConvererController {
     private WpConvererInfoDAO wpConvererInfoDAO;
 
     @Resource
+    private WpConvererSteelScrapInfoDAO wpConvererSteelScrapInfoDAO;
+
+    @Resource
     private DpScheduleSeqDAO dpScheduleSeqDAO;
 
     @Autowired
     private DpScheduleSeqService pScheduleSeqService;
 
+    /**
+     * 修改废钢信息
+     *
+     * @param steelScrapInfo
+     * @return
+     */
+    @PostMapping("/steelAdd")
+    public Result steelAdd(@RequestBody WpConvererSteelScrapInfo steelScrapInfo) {
+
+        if (steelScrapInfo == null) {
+            return ResultGenerator.genFailResult("废钢信息为空");
+        }
+
+        steelScrapInfo.setTankSteelRegTm(DateUtil.getDateTime());
+//        WpConvererInfo desc = new WpConvererInfo();
+//        ConvererCpHelper.copyInfo(desc, steelScrapInfo);
+
+        int rs = this.wpConvererSteelScrapInfoDAO.insertUseGeneratedKeys(steelScrapInfo);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("登记信息成功！");
+        } else {
+            return ResultGenerator.genSuccessResult("登记信息失败！");
+        }
+
+    }
 
     /**
      * 修改废钢信息
@@ -57,12 +87,20 @@ public class WpConvererController {
         }
 
         steelScrapInfo.setTankSteelRegTm(DateUtil.getDateTime());
-        WpConvererInfo desc = new WpConvererInfo();
-        ConvererCpHelper.copyInfo(desc, steelScrapInfo);
+//        WpConvererInfo desc = new WpConvererInfo();
+//        ConvererCpHelper.copyInfo(desc, steelScrapInfo);
 
         //
 
-        int rs = this.wpConvererInfoDAO.updateByPrimaryKeySelective(desc);
+        int rs = this.wpConvererSteelScrapInfoDAO.updateByPrimaryKeySelective(steelScrapInfo);
+
+        //修改对应转炉的工序信息
+        if (steelScrapInfo.getConvererInfoSn() != null) {
+            WpConvererInfo convererInfo = new WpConvererInfo();
+            ConvererCpHelper.copyInfo(convererInfo, steelScrapInfo);
+
+            this.wpConvererInfoDAO.updateByPrimaryKeySelective(convererInfo);
+        }
 
         if (rs == 1) {
             return ResultGenerator.genSuccessResult("登记信息成功！");
@@ -76,57 +114,24 @@ public class WpConvererController {
     private DpStaScDetailDAO dpStaScDetailDAO;
 
     /**
-     * 铁水列表
+     * 废钢列表
      *
-     * @param stationName
      * @return
      */
-    @GetMapping("/steelList/{stationName}")
-    public Result steelList(@PathVariable(required = true) String stationName) {
+    @GetMapping("/steelList/{pageNum}")
+    public Result steelList(@PathVariable(required = true) int pageNum) {
 
         //查该转炉工位对应的未完成的调度明细
-        List<DpStaScDetail> ssDetailList = null;
+        List<WpConvererSteelScrapInfo> steelScrapList = null;
         {
-            Condition condition = new Condition(DpStaScDetail.class);
+            Condition condition = new Condition(WpConvererSteelScrapInfo.class);
+            condition.setOrderByClause("tankSteelRegTm desc");
+            PageHelper.startPage(pageNum, 20);
 
-            Condition.Criteria criteria = condition.createCriteria();
-            criteria.andEqualTo("scheduleStation", stationName);
-            criteria.andLessThan("detailState", DpScheduleDetail.STATE_FINISH);
-
-            ssDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+            steelScrapList = this.wpConvererSteelScrapInfoDAO.selectByCondition(condition);
         }
 
-        List<Integer> snList = new ArrayList<Integer>(ssDetailList.size());
-        for (DpStaScDetail detail : ssDetailList) {
-            snList.add(detail.getWpSn());
-        }
-
-        Condition condition = new Condition(WpConvererInfo.class);
-        condition.setOrderByClause("tankSteelRegTm desc");
-//        PageHelper.startPage(1, 20);
-        Condition.Criteria criteria = condition.createCriteria();
-        criteria.andIn("convererInfoSn", snList);
-
-        //TODO 查询条件暂时为空
-
-        List<WpConvererInfo> convererList = this.wpConvererInfoDAO.selectByCondition(condition);
-        List<WpConvererSteelScrapInfo> rsList = new ArrayList<WpConvererSteelScrapInfo>();
-
-        for (WpConvererInfo src : convererList) {
-            if (src.getScheduleSeqId() == null) {
-                continue;
-            }
-            WpConvererSteelScrapInfo desc = new WpConvererSteelScrapInfo();
-            ConvererCpHelper.copyInfo(desc, src);
-
-            DpScheduleSeq scheduleSeq = this.dpScheduleSeqDAO.selectByPrimaryKey(src.getScheduleSeqId());
-            desc.setBlastNo(scheduleSeq.getBlastNo());
-            desc.setChargeNo(scheduleSeq.getChargeNo());
-            desc.setScheduleSeqId(src.getScheduleSeqId());
-            rsList.add(desc);
-        }
-
-        return ResultGenerator.genSuccessResult(rsList);
+        return ResultGenerator.genSuccessResult(steelScrapList);
     }
 
 }

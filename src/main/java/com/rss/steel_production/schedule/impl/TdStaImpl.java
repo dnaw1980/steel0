@@ -14,8 +14,10 @@ import com.rss.steel_production.schedule.dao.TdHistDataDAO;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.*;
 import com.rss.steel_production.schedule.service.*;
+import com.rss.steel_production.workProcedure.dao.DpStaScheduleTmDAO;
+import com.rss.steel_production.workProcedure.model.DpStaScheduleTm;
 import com.rss.steel_production.workProcedure.model.DpWorkProc;
-import com.rss.steel_production.workProcedure.service.DpWorkProcService;
+import com.rss.steel_production.workProcedure.service.*;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,9 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     private TdHistDataDAO tdHistDataDAO;
 
     @Resource
+    private DpStaScheduleTmDAO dpStaScheduleTmDAO;
+
+    @Resource
     private RealDataDAO realDataDAO;
 
     @Resource
@@ -69,6 +74,24 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
     @Autowired
     private SteelScheduleService steelScheduleService;
+
+    @Autowired
+    private WpDesulfuriInfoService wpDesulfuriInfoService;
+
+    @Autowired
+    private WpConvererInfoService wpConvererInfoService;
+
+    @Autowired
+    private WpCasInfoService wpCasInfoService;
+
+    @Autowired
+    private WpLfInfoService wpLfInfoService;
+
+    @Autowired
+    private WpBilletInfoService wpBilletInfoService;
+
+    @Autowired
+    private WpSlabInfoService wpSlabInfoService;
 
     //    @Scheduled(cron = "0/5 * * * * ? ")
     public void show() {
@@ -91,6 +114,67 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 //                continue;
 //            }
             this.parseSta(sta);
+
+            /* TODO
+            生成实时数据后，要生成工序数据。
+            1、查询站点的实时数据。
+            2、查询站点类型，
+            3、根据站点类型和站点ID及实时数据信息，调用对应类型的工序数据解析方法。
+
+             */
+            //1、查询站点的实时数据。
+            sta.setChannelList(this.listChannelForSta(sta));
+
+            //2、查询站点类型，
+            DpStaScheduleTm dpStaScheduleTm = null;
+            {
+                Condition condy = new Condition(DpStaScheduleTm.class);
+                Condition.Criteria criteria = condy.createCriteria();
+
+                criteria.andEqualTo("staId", sta.getStaId());
+                List<DpStaScheduleTm> ssTmList = this.dpStaScheduleTmDAO.selectByCondition(condy);
+                if (Tools.notEmpty(ssTmList)) {
+                    dpStaScheduleTm = ssTmList.get(0);
+                }
+            }
+
+            if (dpStaScheduleTm != null) {
+                Map<String, TdChannel> channelMap = new HashMap<String, TdChannel>();
+                for (TdChannel ch : sta.getChannelList()) {
+                    channelMap.put(ch.getComTag(), ch);
+                }
+
+                switch (dpStaScheduleTm.getWorkProcCode()) {
+                    case "KR": {
+                        this.wpDesulfuriInfoService.synWpData(sta, channelMap);
+                    }
+                    break;
+
+                    case "BOF": {
+                        this.wpConvererInfoService.synWpData(sta, channelMap);
+                    }
+                    break;
+
+                    case "CAS": {
+                        this.wpCasInfoService.synWpData(sta, channelMap);
+                    }
+                    break;
+
+                    case "LF": {
+                        this.wpLfInfoService.synWpData(sta, channelMap);
+                    }
+                    break;
+                    case "CC": {
+                        if (dpStaScheduleTm.getStaNo().intValue() == 1) {
+                            this.wpBilletInfoService.synWpData(sta, channelMap);
+                        } else {
+                            this.wpSlabInfoService.synWpData(sta, channelMap);
+                        }
+
+                    }
+                    break;
+                }
+            }
 
             //调试，只执行一次
             //return;

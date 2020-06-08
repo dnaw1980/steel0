@@ -6,7 +6,7 @@ import com.rss.steel_production.workProcedure.model.WpIronInfoTO;
 
 import java.util.List;
 
-public interface WpIronInfoService extends Service<WpIronInfo> {
+public interface WpIronInfoService extends Service<WpIronInfo>, WpBaseService {
 
     /**
      * 注册铁水信息，生成一条调度计划

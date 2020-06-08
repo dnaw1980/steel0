@@ -60,8 +60,8 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     @Resource
     private DpWorkProcService workProcService;
 
-    @Autowired
-    private TdStaService tdStaService;
+//    @Autowired
+//    private TdStaService tdStaService;
 
     @Autowired
     private TdChannelService tdChannelService;
@@ -75,10 +75,10 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     @Autowired
     private SteelScheduleService steelScheduleService;
 
-    @Autowired
+    @Resource
     private WpDesulfuriInfoService wpDesulfuriInfoService;
 
-    @Autowired
+    @Resource
     private WpConvererInfoService wpConvererInfoService;
 
     @Autowired
@@ -271,7 +271,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
             criteria.andEqualTo("scheduleStation", stationNo);
 
-            List<TdSta> staList = this.tdStaService.findByCondition(staCondition);
+            List<TdSta> staList = this.tdStaDAO.selectByCondition(staCondition);
 
             if (Tools.notEmpty(staList)) {
                 sta = staList.get(0);
@@ -368,7 +368,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
             e.printStackTrace();
         }
 
-        System.out.println(map.size());
+//        System.out.println(map.size());
 
         //要重新生成目标MAP，key都要转成大写，因为 板柸从数据库转来的都是大写的。
         Map<String, String> valMap = new HashMap<String, String>();

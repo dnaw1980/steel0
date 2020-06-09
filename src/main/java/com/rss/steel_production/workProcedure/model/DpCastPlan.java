@@ -81,6 +81,7 @@ public class DpCastPlan {
     private Timestamp beginDt;
 
     //end_dt               datetime comment '完成时间',
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "end_dt")
     private Timestamp endDt;
 

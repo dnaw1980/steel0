@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,13 @@ public class RealData {
 
     private int show = 0;
 
+    private int dkCls = -1;
+
+    private int realVal = 0;
+
+    public RealData(String label, String value, int show) {
+        this.label = label;
+        this.value = value;
+        this.show = show;
+    }
 }

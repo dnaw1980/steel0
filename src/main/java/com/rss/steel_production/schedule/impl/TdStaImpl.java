@@ -308,6 +308,8 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
                     case 0://开关量
                         String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
                         rd.setValue(val);
+                        rd.setDkCls(0);
+                        rd.setRealVal(ch.getDatVal().intValue());
                         break;
                     case 1://模拟量
                     case 2://累计量

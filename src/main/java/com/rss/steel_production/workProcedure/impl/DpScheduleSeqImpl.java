@@ -144,19 +144,20 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         List<DpTechRoute> routeList = dpCastPlan.getDpTechCard().getTechRouteList();
 
         //TODO 工序及开始时间，应该查最后一个开始时间，而不是最早开始时间, end_tm
-        List<DpStaScheduleTm> staScheduleTmList = this.dpStaScheduleTmDAO.selectAll();
+//        List<DpStaScheduleTm> staScheduleTmList = this.dpStaScheduleTmDAO.selectAll();
 
         //工序MAP
-        Map<String, List<DpStaScheduleTm>> workProcMap = new HashMap<String, List<DpStaScheduleTm>>();
-
-        for (DpStaScheduleTm staScheduleTm : staScheduleTmList) {
-            List<DpStaScheduleTm> list = workProcMap.get(staScheduleTm.getWorkProcId());
-            if (list == null) {
-                list = new ArrayList<DpStaScheduleTm>();
-                workProcMap.put(staScheduleTm.getWorkProcId(), list);
-            }
-            list.add(staScheduleTm);
-        }
+//        Map<String, List<DpStaScheduleTm>> workProcMap = new HashMap<String, List<DpStaScheduleTm>>();
+        // key 是工序ID，value 是每个工序对应的工位
+        Map<String, List<DpStaScheduleTm>> workProcMap = genWorkProcMap();
+//        for (DpStaScheduleTm staScheduleTm : staScheduleTmList) {
+//            List<DpStaScheduleTm> list = workProcMap.get(staScheduleTm.getWorkProcId());
+//            if (list == null) {
+//                list = new ArrayList<DpStaScheduleTm>();
+//                workProcMap.put(staScheduleTm.getWorkProcId(), list);
+//            }
+//            list.add(staScheduleTm);
+//        }
 
         DpScheduleSeq scheduleSeq = new DpScheduleSeq();
         scheduleSeq.setCastPlanId(castPlanId);
@@ -615,6 +616,14 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
         this.dpScheduleDetailDAO.updateByPrimaryKey(scheduleDetail);
 
+        //如果是CC，表示最后一个，将调度设置成完成 3
+        DpScheduleSeq seq = this.showScheduleSeq(scheduleDetail.getScheduleSeqId());
+        if (seq.getDetailList().get(seq.getDetailList().size() - 1).getScheduleDetailSn().intValue() == scheduleDetail.getScheduleDetailSn().intValue()) {
+            seq.setState(DpScheduleSeq.STATE_FINISH);
+            seq.setEndTm(exitStaBean.getActualExit());
+            this.dpScheduleSeqDAO.updateByPrimaryKey(seq);
+        }
+
         //TODO 更新工序信息
 
         return "出站成功";
@@ -723,6 +732,448 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
 
 
         return rsBean;
+    }
+
+    /**
+     * 调度明细调整，一回只能调整一个。
+     * 如果 scheduleDetailSn为空 则表示新增
+     * 如果 orderSn 为 -1 表示删除
+     * 如果 planBegin 为空，则自动调整时间，否则强制调整时间
+     *
+     * @param dpScheduleDetail
+     * @return
+     */
+    @Override
+    public String changeScheduleDetail(DpScheduleDetail dpScheduleDetail) {
+        /*
+        1、判断输入参数的合法性。
+        2、将参数写入数据库。
+        3、重新调整数据库中的调度明细，当遇到参数同一个明细时，才开始进行修改。要注意参数时需要修改的内容。
+         */
+
+        //开始明细的主键
+        Integer beginDetailSn = 0;
+        //开始明细，如果开始明细为 null 表示，删除操作。如果不为空，需要判断相关属性。
+        DpScheduleDetail beginDetail = null;
+        /*
+        1、判断输入参数的合法性。
+         */
+
+        //查询明细对应的调序。
+        if (Tools.empty(dpScheduleDetail.getScheduleSeqId())) {
+            return "调度明细对应的调度ID为空！";
+        }
+
+        final DpScheduleSeq descScheduleSeq = this.showScheduleSeq(dpScheduleDetail.getScheduleSeqId());
+
+        if (dpScheduleDetail.getScheduleDetailSn() == null
+                || dpScheduleDetail.getScheduleDetailSn().intValue() == 0) {
+            /*新增明细*/
+            //遍历 descScheduleSeq 找到 orderSn 相等的那个，就是要插入的位置
+            boolean finded = false;
+            for (DpScheduleDetail posDetail : descScheduleSeq.getDetailList()) {
+
+                if (finded) {
+                    posDetail.setOrderSn(posDetail.getOrderSn().intValue() + 1);
+                    this.dpScheduleDetailDAO.updateByPrimaryKey(posDetail);
+                    continue;
+                }
+
+                if (posDetail.getOrderSn().intValue() < dpScheduleDetail.getOrderSn().intValue()) {
+                    continue;
+                }
+
+                this.dpScheduleDetailDAO.insertUseGeneratedKeys(dpScheduleDetail);
+                beginDetailSn = dpScheduleDetail.getScheduleDetailSn().intValue();
+                beginDetail = dpScheduleDetail;
+
+                //当前这个序号也是增1
+                posDetail.setOrderSn(posDetail.getOrderSn().intValue() + 1);
+                this.dpScheduleDetailDAO.updateByPrimaryKey(posDetail);
+            }
+
+        } else {
+            //先查询明细，看是否已经执行。
+            DpScheduleDetail tmpDetail = this.dpScheduleDetailDAO.selectByPrimaryKey(dpScheduleDetail.getScheduleDetailSn());
+            if (tmpDetail.getState().intValue() >= DpScheduleDetail.STATE_EXEC) {
+                return "当前工序已经执行或完成，不能删除。可以让当前工位执行出站操作，或下个工位直接进站！";
+            }
+
+            if (dpScheduleDetail.getState() != null && dpScheduleDetail.getState().intValue() == DpScheduleDetail.STATE_FAIL) {
+                /*删除明细*/
+                //删除前需要找到被删除明细后面的工序，做为开始明细。
+
+                DpScheduleDetail nextDetail = null;
+                boolean hasFind = false;
+                for (DpScheduleDetail posDetail : descScheduleSeq.getDetailList()) {
+                    if (hasFind) {
+                        nextDetail = posDetail;
+                        break;
+                    }
+
+                    if (posDetail.getScheduleDetailSn().intValue() == dpScheduleDetail.getScheduleDetailSn().intValue()) {
+                        hasFind = true;
+                    }
+                }
+
+                //如果被删除的是最后一个工序，就找到下一个调度的第一个未开始工序做为开始工序。
+                if (nextDetail == null) {
+                    //说明没找到，查调度序列，按开始时间升序，查状态不为 3 的
+
+                    Condition condition = new Condition(DpScheduleSeq.class);
+                    condition.setOrderByClause("begin_tm asc");
+
+                    Condition.Criteria criteria = condition.createCriteria();
+                    criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FAIL);
+                    criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FINISH);
+
+                    List<DpScheduleSeq> seqList = this.dpScheduleSeqDAO.selectByCondition(condition);
+                    //descScheduleSeq
+                    boolean found = false;
+                    for (DpScheduleSeq posSeq : seqList) {
+                        if (found) {
+                            //todo 查明细
+                            DpScheduleSeq _seq = this.showScheduleSeq(posSeq.getScheduleSeqId());
+
+                            //判断内层是否找到。
+                            boolean _f = false;
+                            for (DpScheduleDetail detail : _seq.getDetailList()) {
+                                if (detail.getState().intValue() == DpScheduleDetail.STATE_PLAN
+                                        || detail.getState().intValue() == DpScheduleDetail.STATE_SEND) {
+                                    //找到
+                                    nextDetail = detail;
+                                    _f = true;
+                                    break;
+                                }
+                            }
+
+                            //找到，跳出
+                            if (_f) {
+                                break;
+                            }
+                        } else {
+                            if (descScheduleSeq.getScheduleSeqId().equals(posSeq.getScheduleSeqId())) {
+                                found = true;
+                            }
+                        }
+                    }
+                }
+
+                //执行删除，就是修改为作废
+                this.dpScheduleDetailDAO.updateByPrimaryKey(dpScheduleDetail);
+
+                beginDetailSn = nextDetail.getScheduleDetailSn();
+            } else {
+                //调整工序
+                this.dpScheduleDetailDAO.updateByPrimaryKeySelective(dpScheduleDetail);
+                beginDetail = dpScheduleDetail;
+                beginDetailSn = dpScheduleDetail.getScheduleDetailSn();
+            }
+        }
+
+        /*
+        TODO
+        3、重新调整数据库中的调度明细，当遇到参数同一个明细时(beginDetailSn, beginDetail)，
+        才开始进行修改。要注意参数时需要修改的内容。
+         */
+        /*
+        先查询各个有效工位最早开始时间，就是每个工位当前调度明细（状态为2）的计划结束时间。dp_sta_schedule_tm
+        遍历未完成的调度，依次更新每个工位的最早开始时间。
+        当遇到参数工位时，开始重新计算。
+        */
+        //TODO 工序及开始时间，应该查最后一个开始时间，而不是最早开始时间, end_tm
+
+        //先查询各个有效工位最早开始时间，就是每个工位当前调度明细（状态为2）的计划结束时间。dp_sta_schedule_tm
+        // key 是工序ID，value 是每个工序对应的工位
+        Map<String, List<DpStaScheduleTm>> workProcMap = genWorkProcMap();
+
+        //遍历未完成的调度，依次更新每个工位的最早开始时间。
+        List<DpScheduleSeq> seqList = null;
+        {
+            Condition condition = new Condition(DpScheduleSeq.class);
+            condition.setOrderByClause("begin_tm asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FAIL);
+            criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FINISH);
+
+            seqList = this.dpScheduleSeqDAO.selectByCondition(condition);
+        }
+
+        if (Tools.empty(seqList)) {
+            return "没有有效的可调度炉次";
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //准备工序运输时间表
+        List<DpWorkProcTrans> transList = this.dpWorkProcTransDAO.selectAll();
+        //是否找到目标
+        boolean found = false;
+        for (DpScheduleSeq _seq : seqList) {
+            this.fillScDetail(_seq);
+int i = 0;
+            DpStaScDetail lastDtl = null;
+            for (DpStaScDetail _dtl : _seq.getScDetailList()) {
+                if (_dtl.getScheduleDetailSn().intValue() == DpScheduleDetail.STATE_FAIL
+                        || _dtl.getScheduleDetailSn().intValue() == DpScheduleDetail.STATE_EXEC
+                        || _dtl.getScheduleDetailSn().intValue() == DpScheduleDetail.STATE_FINISH
+                ) {
+                    continue;
+                }
+                System.out.println(i++);
+                //取工位信息
+                // key 是工序ID，value 是每个工序对应的工位 workProcMap
+                if (!found) {
+                    System.out.println("没找到");
+                    //没找到，判断一下，是不是这个
+                    if (!_dtl.getScheduleDetailSn().equals(beginDetailSn)) {
+                        //没找到，不是
+                        List<DpStaScheduleTm> tmList = workProcMap.get(_dtl.getWorkProcId());
+                        tmList.get(_dtl.getStaNo() - 1).setBeginTm(_dtl.getPlanEnd());
+//                        System.out.println(tmList.get(_dtl.getStaNo() - 1).getBeginTm());
+//                        //开始明细的主键
+//                        Integer beginDetailSn = 0;
+//                        //开始明细，如果开始明细为 null 表示，删除操作。如果不为空，需要判断相关属性。
+//                        DpScheduleDetail beginDetail = null;
+
+                        System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
+                        if(lastDtl != null) {
+                            System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
+                        }
+
+                    } else {
+                        //找到了
+                        found = true;
+
+                        //判断 beginDetail 是否为空。如果为空，按普通调整。
+                        System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
+                        if(lastDtl != null) {
+                            System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
+                        }
+                        if (beginDetail == null) {
+                            //按普通调整
+                            //取当前工位
+                            List<DpStaScheduleTm> tmList = workProcMap.get(_dtl.getWorkProcId());
+                            DpStaScheduleTm _tm = tmList.get(_dtl.getStaNo() - 1);
+                            //取开始时间，肯定不对，应该考虑上道工序的完成时间。
+
+                            DpScheduleDetail dsd = new DpScheduleDetail();
+                            dsd.setScheduleDetailSn(_dtl.getScheduleDetailSn());
+
+                            if(lastDtl != null){
+                                //TODO 取运输时间
+
+                                if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                                    dsd.setPlanBegin(lastDtl.getPlanEnd());
+                                }
+                            } else {
+                                //设置本工序的开始时间为工位开始时间。
+                                dsd.setPlanBegin(_tm.getBeginTm());
+                            }
+
+                            if (lastDtl != null) {
+
+                                for (DpWorkProcTrans trans : transList) {
+                                    if (trans.getSrcWorkProcId().equals(lastDtl.getWorkProcId())
+                                            && trans.getDescWorkProcId().equals(_dtl.getWorkProcId())
+                                    ) {
+                                        dsd.setPlanBegin(DateUtil.minuteAdd(dsd.getPlanBegin(), trans.getTransCycle()));
+                                    }
+
+                                }
+                            }
+
+                            //加上加工时间，设置本工序结束时间。
+                            dsd.setPlanEnd(DateUtil.minuteAdd(dsd.getPlanBegin(), _tm.getWorkCycle().intValue()));
+                            
+                            _dtl.setPlanBegin(dsd.getPlanBegin());
+                            _dtl.setPlanEnd(dsd.getPlanEnd());
+                            //更新为工位的开始时间
+                            _tm.setBeginTm(dsd.getPlanEnd());
+
+                            //写数据库
+                            this.dpScheduleDetailDAO.updateByPrimaryKeySelective(dsd);
+                            //结束
+                        } else {
+
+                            List<DpStaScheduleTm> tmList = workProcMap.get(_dtl.getWorkProcId());
+                            //如果不为空，计算结束时间
+                            if (beginDetail != null) {
+                                //先判断工位，如果工们为空，要分配一个工位
+                                if (Tools.empty(beginDetail.getStaId())) {
+
+                                    //比较早的那个工位
+                                    DpStaScheduleTm beginTm = null;
+                                    for (DpStaScheduleTm tm : tmList) {
+                                        if (beginTm == null) {
+                                            beginTm = tm;
+                                        } else {
+                                            if (beginTm.getBeginTm().after(tm.getBeginTm())) {
+                                                beginTm = tm;
+                                            }
+                                        }
+                                    }
+
+                                    beginDetail.setStaId(beginTm.getStaId());
+                                    _dtl.setStaId(beginTm.getStaId());
+                                    _dtl.setStaNo(beginTm.getStaNo());
+
+                                }
+                                DpStaScheduleTm _tm = tmList.get(_dtl.getStaNo() - 1);
+
+                                //再判断开始时间
+                               if (beginDetail.getPlanBegin() == null) {
+
+                                    if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                                        beginDetail.setPlanBegin(lastDtl.getPlanEnd());
+                                    }  else {
+                                        beginDetail.setPlanBegin(_tm.getBeginTm());
+                                    }
+                                }
+
+
+
+                                beginDetail.setPlanEnd(
+                                        DateUtil.minuteAdd(
+                                                beginDetail.getPlanBegin(), _tm.getWorkCycle().intValue()
+                                        )
+                                );
+
+                                _tm.setBeginTm(beginDetail.getPlanEnd());
+                            } else {
+                                //beginDetail.getPlanBegin() 为空
+                            }
+                            this.dpScheduleDetailDAO.updateByPrimaryKeySelective(beginDetail);
+
+                        }
+                    }
+
+                } else {
+                    System.out.println("找到了");
+                    System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
+                    if(lastDtl != null) {
+                        System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
+                    }
+
+                    //跟上面的按普通调整是一样的。
+                    //取当前工位
+                    List<DpStaScheduleTm> tmList = workProcMap.get(_dtl.getWorkProcId());
+                    DpStaScheduleTm _tm = tmList.get(_dtl.getStaNo() - 1);
+                    //取开始时间，肯定不对，应该考虑上道工序的完成时间。
+
+                    DpScheduleDetail dsd = new DpScheduleDetail();
+                    dsd.setScheduleDetailSn(_dtl.getScheduleDetailSn());
+
+                    //设置本工序的开始时间为工位开始时间。
+//                    dsd.setPlanBegin(_tm.getBeginTm());
+
+                    if(lastDtl != null){
+                        //TODO 取运输时间
+
+                        if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                            dsd.setPlanBegin(lastDtl.getPlanEnd());
+                        } else {
+                            dsd.setPlanBegin(_tm.getBeginTm());
+                        }
+                    } else {
+                        //设置本工序的开始时间为工位开始时间。
+                        dsd.setPlanBegin(_tm.getBeginTm());
+                    }
+
+                    if (lastDtl != null) {
+
+                        for (DpWorkProcTrans trans : transList) {
+                            if (trans.getSrcWorkProcId().equals(lastDtl.getWorkProcId())
+                                    && trans.getDescWorkProcId().equals(_dtl.getWorkProcId())
+                            ) {
+                                dsd.setPlanBegin(DateUtil.minuteAdd(dsd.getPlanBegin(), trans.getTransCycle()));
+                            }
+
+                        }
+                    }
+
+                    //加上加工时间，设置本工序结束时间。
+                    dsd.setPlanEnd(DateUtil.minuteAdd(dsd.getPlanBegin(), _tm.getWorkCycle().intValue()));
+
+
+
+                    _dtl.setPlanBegin(dsd.getPlanBegin());
+                    _dtl.setPlanEnd(dsd.getPlanEnd());
+                    //更新为工位的开始时间
+                    _tm.setBeginTm(dsd.getPlanEnd());
+
+                    //写数据库
+                    this.dpScheduleDetailDAO.updateByPrimaryKeySelective(dsd);
+                    //结束
+
+                }
+
+                lastDtl = _dtl;
+            }
+        }
+
+        return null;
+    }
+
+    private Map<String, List<DpStaScheduleTm>> genWorkProcMap() {
+        //从 add 方法复制过来的
+        List<DpStaScheduleTm> staScheduleTmList = this.dpStaScheduleTmDAO.selectAll();
+
+        //工序MAP
+        Map<String, List<DpStaScheduleTm>> workProcMap = new HashMap<String, List<DpStaScheduleTm>>();
+
+        for (DpStaScheduleTm staScheduleTm : staScheduleTmList) {
+            List<DpStaScheduleTm> list = workProcMap.get(staScheduleTm.getWorkProcId());
+            if (list == null) {
+                list = new ArrayList<DpStaScheduleTm>();
+                workProcMap.put(staScheduleTm.getWorkProcId(), list);
+            }
+            list.add(staScheduleTm);
+        }
+        //复制完
+        return workProcMap;
+    }
+
+    /**
+     * 通过调度ID查询调度序列，并且带明细列表
+     *
+     * @param scheduleSeqId
+     * @return
+     */
+    @Override
+    public DpScheduleSeq showScheduleSeq(String scheduleSeqId) {
+        if (Tools.empty(scheduleSeqId)) {
+            return null;
+        }
+
+        DpScheduleSeq scheduleSeq = this.dpScheduleSeqDAO.selectByPrimaryKey(scheduleSeqId);
+        if (scheduleSeq == null) {
+            return null;
+        }
+
+        this.fillDetail(scheduleSeq);
+        return scheduleSeq;
+    }
+
+    private void fillDetail(DpScheduleSeq scheduleSeq) {
+        Condition condition = new Condition(DpScheduleDetail.class);
+        condition.setOrderByClause("order_sn asc");
+
+        Condition.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
+
+        scheduleSeq.setDetailList(this.dpScheduleDetailDAO.selectByCondition(condition));
+    }
+
+    private void fillScDetail(DpScheduleSeq scheduleSeq) {
+        Condition condition = new Condition(DpStaScDetail.class);
+        condition.setOrderByClause("order_sn asc");
+
+        Condition.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
+
+        scheduleSeq.setScDetailList(this.dpStaScDetailDAO.selectByCondition(condition));
     }
 
     /**

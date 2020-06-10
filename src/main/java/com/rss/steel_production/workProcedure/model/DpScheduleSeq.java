@@ -92,4 +92,9 @@ public class DpScheduleSeq {
      * 调度明细
      */
     private List<DpScheduleDetail> detailList;
+
+    /**
+     * 带工位信息的调度明细
+     */
+    private List<DpStaScDetail> scDetailList;
 }

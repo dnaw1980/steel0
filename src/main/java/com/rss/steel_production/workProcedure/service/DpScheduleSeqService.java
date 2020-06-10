@@ -3,9 +3,9 @@ package com.rss.steel_production.workProcedure.service;
 import com.rss.framework.Service;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
+import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -75,4 +75,22 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
      */
     DpGanttBean realGantt();
 
+    /**
+     * 调度明细调整，一回只能调整一个。
+     * 如果 scheduleDetailSn为空 则表示新增
+     * 如果 orderSn 为 -1 表示删除
+     * 如果 planBegin 为空，则自动调整时间，否则强制调整时间
+     *
+     * @param dpScheduleDetail
+     * @return
+     */
+    String changeScheduleDetail(DpScheduleDetail dpScheduleDetail);
+
+
+    /**
+     * 通过调度ID查询调度序列，并且带明细列表
+     * @param scheduleSeqId
+     * @return
+     */
+    DpScheduleSeq showScheduleSeq(String scheduleSeqId);
 }

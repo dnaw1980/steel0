@@ -54,6 +54,12 @@ public class DpScheduleController {
         return ResultGenerator.genSuccessResult(rs);
     }
 
+    /**
+     * 工位的工序数据
+     *
+     * @param stationNames
+     * @return
+     */
     @PostMapping("/staWpData")
     public Result staWpData(@RequestBody List<String> stationNames) {
 
@@ -163,6 +169,22 @@ public class DpScheduleController {
         List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
 
         return ResultGenerator.genSuccessResult(staScDetailList);
+    }
+
+    @PostMapping("changeScheduleDetail")
+    public Result changeScheduleDetail(@RequestBody DpScheduleDetail dpScheduleDetail) {
+        String rs = null;
+        try {
+            this.dpScheduleSeqService.changeScheduleDetail(dpScheduleDetail);
+        }catch (Exception e){
+            log.error("更新调度明细错误", e);
+        }
+
+        if (Tools.empty(rs)) {
+            return ResultGenerator.genSuccessResult("调整成功");
+        } else {
+            return ResultGenerator.genFailResult(rs);
+        }
     }
 
     /**

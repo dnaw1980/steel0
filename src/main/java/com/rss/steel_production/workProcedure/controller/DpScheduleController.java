@@ -5,12 +5,10 @@ import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.ScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
+import com.rss.steel_production.workProcedure.dao.DpCastPlanDAO;
 import com.rss.steel_production.workProcedure.dao.DpScheduleSeqDAO;
 import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
-import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
-import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
-import com.rss.steel_production.workProcedure.model.DpStaScDetail;
-import com.rss.steel_production.workProcedure.model.DpTechCard;
+import com.rss.steel_production.workProcedure.model.*;
 import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.steel_production.workProcedure.service.DpTechCardService;
@@ -44,6 +42,9 @@ public class DpScheduleController {
 
     @Resource
     private DpScheduleSeqDAO scheduleSeqDAO;
+
+    @Resource
+    private DpCastPlanDAO dpCastPlanDAO;
 
 
     /**
@@ -391,6 +392,8 @@ public class DpScheduleController {
             rs = this.scheduleSeqDAO.selectByCondition(condition);
 
             for (DpScheduleSeq seq : rs) {
+                DpCastPlan castPlan = this.dpCastPlanDAO.selectByPrimaryKey(seq.getCastPlanId());
+                seq.setCastPlan(castPlan);
                 this.dpScheduleSeqService.fillScDetail(seq);
             }
 

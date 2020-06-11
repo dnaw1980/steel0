@@ -138,4 +138,8 @@ public class DpStaScDetail {
     @Column(name = "dat_dt")
     private java.sql.Timestamp datDt;
 
+    //cast_no              varchar(36) not null comment '浇次号',
+    @Column(name = "cast_no")
+    private String castNo;
+
 }

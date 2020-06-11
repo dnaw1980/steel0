@@ -14,7 +14,10 @@ import com.rss.steel_production.schedule.dao.TdHistDataDAO;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.*;
 import com.rss.steel_production.schedule.service.*;
+import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
 import com.rss.steel_production.workProcedure.dao.DpStaScheduleTmDAO;
+import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
+import com.rss.steel_production.workProcedure.model.DpStaScDetail;
 import com.rss.steel_production.workProcedure.model.DpStaScheduleTm;
 import com.rss.steel_production.workProcedure.model.DpWorkProc;
 import com.rss.steel_production.workProcedure.service.*;
@@ -55,6 +58,9 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     private DpStaScheduleTmDAO dpStaScheduleTmDAO;
 
     @Resource
+    private DpStaScDetailDAO staScDetailDAO;
+
+    @Resource
     private RealDataDAO realDataDAO;
 
     @Resource
@@ -92,6 +98,9 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
     @Autowired
     private WpSlabInfoService wpSlabInfoService;
+
+    private static long BASE_TIME = DateUtil.getDateTime("2020-01-01 00:00:00").getTime();
+
 
     //    @Scheduled(cron = "0/5 * * * * ? ")
     public void show() {
@@ -211,6 +220,150 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
      */
     @Override
     public RealDataBean realData(String stationNo) {
+
+        RealDataBean rsBean = new RealDataBean();
+        rsBean.setRealDataList(new ArrayList<com.rss.steel_production.schedule.controller.bean.RealData>());
+
+        /**
+         * 1、查询本工位的，有实时进站时间，没有实际出站时间的调度记录
+         * 2、查询本工位信息，查询本工位对应的通道信息（按重要级别和排序号进行排序）
+         */
+
+        {
+            Condition scheduleCondition = new Condition(DpStaScDetail.class);
+            Condition.Criteria criteria = scheduleCondition.createCriteria();
+
+            criteria.andEqualTo("scheduleStation", stationNo);
+            criteria.andEqualTo("detailState", DpScheduleDetail.STATE_EXEC);
+//            criteria.andIsNotNull("actualEnter");
+//            criteria.andIsNull("actualExit");
+
+            List<DpStaScDetail> steelScheduleList = this.staScDetailDAO.selectByCondition(scheduleCondition);
+
+            if (Tools.notEmpty(steelScheduleList)) {
+                DpStaScDetail steelSchedule = steelScheduleList.get(0);
+
+                rsBean.getRealDataList().add(
+                        new com.rss.steel_production.schedule.controller.bean.RealData("高炉炉次",
+                                steelSchedule.getBlastNo(),
+                                1)
+                );
+
+                rsBean.getRealDataList().add(
+                        new com.rss.steel_production.schedule.controller.bean.RealData("转炉炉次",
+                                steelSchedule.getChargeNo(),
+                                1)
+                );
+
+                rsBean.getRealDataList().add(
+                        new com.rss.steel_production.schedule.controller.bean.RealData("浇次号",
+                                steelSchedule.getCastNo(), 1)
+                );
+
+                rsBean.getRealDataList().add(
+                        new com.rss.steel_production.schedule.controller.bean.RealData("进站时间",
+                                DateUtil.dateToString(steelSchedule.getActBegin(), DateUtil.DATETIME_FMT), 1)
+                );
+
+                //温度
+//                String temp = this.lastElement(steelSchedule.getTemperature());
+//                rsBean.getRealDataList().add(new com.rss.steel_production.schedule.controller.bean.RealData("温度", temp, 1));
+
+                //重量
+//                String weight = this.lastElement(steelSchedule.getWeight());
+//                rsBean.getRealDataList().add(new com.rss.steel_production.schedule.controller.bean.RealData("重量", weight, 1));
+
+                //进站重量
+//                String scrabWeight = this.lastElement(steelSchedule.getScrabWeight());
+//                rsBean.getRealDataList().add(new com.rss.steel_production.schedule.controller.bean.RealData("进站重量", scrabWeight, 1));
+
+                //出站重量
+//                String exitWeight = this.lastElement(steelSchedule.getExitWeight());
+//                rsBean.getRealDataList().add(new com.rss.steel_production.schedule.controller.bean.RealData("出站重量", exitWeight, 1));
+            }
+        }
+
+        //查本工位信息
+        TdSta sta = null;
+        {
+            Condition staCondition = new Condition(TdSta.class);
+            Condition.Criteria criteria = staCondition.createCriteria();
+
+            criteria.andEqualTo("scheduleStation", stationNo);
+
+            List<TdSta> staList = this.tdStaDAO.selectByCondition(staCondition);
+
+            if (Tools.notEmpty(staList)) {
+                sta = staList.get(0);
+
+                rsBean.setDtTime(
+                        DateUtil.datetimeToString(sta.getDatDt())
+                );
+            }
+        }
+
+        //查数据通道信息
+        {
+            Condition chCondition = new Condition(TdChannel.class);
+            Condition.Criteria criteria = chCondition.createCriteria();
+            chCondition.setOrderByClause("is_important desc, order_sn asc");
+            criteria.andEqualTo("staId", sta.getStaId());
+
+            List<TdChannel> chList = this.tdChannelService.findByCondition(chCondition);
+
+            for (TdChannel ch : chList) {
+
+                com.rss.steel_production.schedule.controller.bean.RealData rd = new com.rss.steel_production.schedule.controller.bean.RealData();
+                rd.setLabel(ch.getChName());
+                rd.setShow(ch.getIsImportant());
+
+                rsBean.getRealDataList().add(rd);
+
+                DecimalFormat df1 = new DecimalFormat("0.######");
+
+                //采集数据
+//                if (Tools.empty(ch.getInputComTag())) {
+                switch (ch.getDkCls()) {
+
+                    case 0://开关量
+                        String val = ch.getDatVal().intValue() == 1 ? ch.getSw1Stat() : ch.getSw0Stat();
+                        rd.setValue(val);
+                        rd.setDkCls(0);
+                        rd.setRealVal(ch.getDatVal().intValue());
+                        break;
+                    case 1://模拟量
+                    case 2://累计量
+                        rd.setValue(df1.format(ch.getDatVal()));
+                        break;
+                    case 3://日期
+                        String dt = "";
+                        if (ch.getDatVal().longValue() > BASE_TIME) {
+                            dt = DateUtil.datetimeToString(DateUtil.getDateTime(ch.getDatVal().longValue()));
+                        }
+                        rd.setValue(dt);
+                        break;
+                    default:
+                        break;
+                }
+//                } else {//计算数据
+//
+//                }
+            }
+
+
+        }
+
+        return rsBean;
+
+    }
+
+    /**
+     * 查询站点实时数据
+     *
+     * @param stationNo
+     * @return
+     */
+    public RealDataBean realDataBak(String stationNo) {
 
         RealDataBean rsBean = new RealDataBean();
         rsBean.setRealDataList(new ArrayList<com.rss.steel_production.schedule.controller.bean.RealData>());

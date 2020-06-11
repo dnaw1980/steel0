@@ -110,9 +110,9 @@ public class WpIronInfo extends WpBase {
     private Timestamp arriveTime;
 
     /**
-     * "desc"               int comment '去向0-未定，1-炼钢，2-铸铁',
+     * "direction"               int comment '去向0-未定，1-炼钢，2-铸铁',
      */
-    private Integer desc;
+    private Integer direction = DESC_NONE;
 
     /**
      * 去向0-未定

@@ -1,8 +1,8 @@
 
 #修改铁水工序信息表
-ALTER TABLE `ssm`.`wp_iron_info` 
+ALTER TABLE `ssm`.`wp_iron_info`
 DROP COLUMN `blastOrder`,
-ADD COLUMN `desc` INT NULL COMMENT '去向0-未定，1-炼钢，2-铸铁' AFTER `arriveTime`,
+ADD COLUMN `direction` INT NULL COMMENT '去向0-未定，1-炼钢，2-铸铁' AFTER `arriveTime`,
 CHANGE COLUMN `track` `track` VARCHAR(32) NULL DEFAULT NULL COMMENT '轨道' AFTER `blastNo`,
 CHANGE COLUMN `carNo` `carNo` VARCHAR(32) NULL DEFAULT NULL COMMENT '车号' AFTER `track`,
 CHANGE COLUMN `tareWeight` `tareWeight` DECIMAL(16,2) NULL DEFAULT NULL COMMENT '皮重' AFTER `ladleNo`,
@@ -17,3 +17,13 @@ ALTER TABLE `ssm`.`wp_iron_info`
 ADD COLUMN `grossWeight` DECIMAL(16,2) NULL COMMENT '铁水毛重' AFTER `netWeight`,
 CHANGE COLUMN `scrabGrossWeight` `scrabGrossWeight` DECIMAL(16,2) NULL DEFAULT NULL COMMENT '废钢毛重，为废钢净重与皮重的和' AFTER `scrabNet`,
 CHANGE COLUMN `netWeight` `netWeight` DECIMAL(16,2) NULL DEFAULT NULL COMMENT '铁水净重，为铁水毛重减去皮重' ;
+
+##################################################3
+ALTER TABLE `ssm`.`wp_iron_info`
+CHANGE COLUMN `direction` `direction` INT(11) UNSIGNED NULL DEFAULT 0 COMMENT '去向0-未定，1-炼钢，2-铸铁' ;
+
+#####################################################
+
+ALTER TABLE `ssm`.`wp_iron_info`
+CHANGE COLUMN `direction` `direction` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '去向0-未定，1-炼钢，2-铸铁' ;
+

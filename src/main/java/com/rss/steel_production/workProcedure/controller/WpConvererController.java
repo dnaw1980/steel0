@@ -115,17 +115,31 @@ public class WpConvererController {
 
     /**
      * 废钢列表
-     *
+     * @param pageNum 页号
+     * @param isRef 是否关联，0否，1是，没有全部
      * @return
      */
     @GetMapping("/steelList/{pageNum}")
-    public Result steelList(@PathVariable(required = true) int pageNum) {
+    public Result steelList(@PathVariable(required = true) int pageNum, @RequestAttribute Integer isRef) {
 
         //查该转炉工位对应的未完成的调度明细
         List<WpConvererSteelScrapInfo> steelScrapList = null;
         {
             Condition condition = new Condition(WpConvererSteelScrapInfo.class);
             condition.setOrderByClause("tankSteelRegTm desc");
+
+            if (isRef != null) {
+
+                Condition.Criteria criteria = condition.createCriteria();
+                if(isRef.intValue() == 0){
+                    //查未关联的
+                    criteria.andIsNull("scheduleSeqId");
+                } else {
+                    //查已经关联的
+                    criteria.andIsNotNull("scheduleSeqId");
+                }
+            }
+
             PageHelper.startPage(pageNum, 20);
 
             steelScrapList = this.wpConvererSteelScrapInfoDAO.selectByCondition(condition);

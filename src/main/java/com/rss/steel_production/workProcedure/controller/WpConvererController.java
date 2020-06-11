@@ -4,13 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.ScrapRefConvererBean;
-import com.rss.steel_production.workProcedure.dao.DpScheduleSeqDAO;
-import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
-import com.rss.steel_production.workProcedure.dao.WpConvererInfoDAO;
-import com.rss.steel_production.workProcedure.dao.WpConvererSteelScrapInfoDAO;
-import com.rss.steel_production.workProcedure.model.ConvererCpHelper;
-import com.rss.steel_production.workProcedure.model.WpConvererInfo;
-import com.rss.steel_production.workProcedure.model.WpConvererSteelScrapInfo;
+import com.rss.steel_production.workProcedure.dao.*;
+import com.rss.steel_production.workProcedure.model.*;
 import com.rss.steel_production.workProcedure.service.DpScheduleSeqService;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
@@ -45,6 +40,9 @@ public class WpConvererController {
 
     @Resource
     private DpScheduleSeqDAO dpScheduleSeqDAO;
+
+    @Resource
+    private ScrapRefSchduleDAO scrapRefSchduleDAO;
 
     @Autowired
     private DpScheduleSeqService pScheduleSeqService;
@@ -208,5 +206,33 @@ public class WpConvererController {
         } else {
             return ResultGenerator.genFailResult("关联失败");
         }
+    }
+
+
+    /**
+     * 查需要关联废钢的调度列表
+     *
+     * @param isNotRef 是否只查未关联的。0-查所有的，1-查未关联的。
+     * @return
+     */
+    @GetMapping("/scrapSchduleList/{isNotRef}")
+    public Result scrapSchduleList(@PathVariable(required = true) int isNotRef) {
+        List<ScrapRefSchdule> rsList = null;
+
+        Condition condition = new Condition(ScrapRefSchdule.class);
+
+        Condition.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("workProcId", DpWorkProc.BOF);
+
+        if (isNotRef == 1) {
+            criteria.andIsNotNull("steelScrapInfoSn");
+        }
+
+        criteria.andGreaterThanOrEqualTo("state", DpScheduleDetail.STATE_SEND);
+        criteria.andLessThanOrEqualTo("state", DpScheduleDetail.STATE_EXEC);
+
+        rsList = this.scrapRefSchduleDAO.selectByCondition(condition);
+
+        return ResultGenerator.genSuccessResult(rsList);
     }
 }

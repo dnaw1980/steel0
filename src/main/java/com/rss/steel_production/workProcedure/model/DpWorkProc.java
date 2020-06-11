@@ -16,6 +16,37 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name = "dp_work_proc")
 public class DpWorkProc {
+
+    /**
+     * 脱硫
+     */
+    public static final String KR = "32d082fe-a4aa-11ea-aeba-fa163e16816f";
+
+    /**
+     * 转炉
+     */
+    public static final String BOF = "382b3216-a4aa-11ea-aeba-fa163e16816f";
+
+    /**
+     * CAS
+     */
+    public static final String CAS = "3c2aef45-a4aa-11ea-aeba-fa163e16816f";
+
+    /**
+     * LF
+     */
+    public static final String LF = "4111f6ce-a4aa-11ea-aeba-fa163e16816f";
+
+    /**
+     * RH
+     */
+    public static final String RH = "459c0ee1-a4aa-11ea-aeba-fa163e16816f";
+
+    /**
+     * 连铸
+     */
+    public static final String CC = "4a1ca91a-a4aa-11ea-aeba-fa163e16816f";
+
     /*
     create table pd_work_proc
 (

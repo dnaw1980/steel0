@@ -986,7 +986,7 @@ int i = 0;
 
                             //加上加工时间，设置本工序结束时间。
                             dsd.setPlanEnd(DateUtil.minuteAdd(dsd.getPlanBegin(), _tm.getWorkCycle().intValue()));
-                            
+
                             _dtl.setPlanBegin(dsd.getPlanBegin());
                             _dtl.setPlanEnd(dsd.getPlanEnd());
                             //更新为工位的开始时间
@@ -1156,7 +1156,8 @@ int i = 0;
         return scheduleSeq;
     }
 
-    private void fillDetail(DpScheduleSeq scheduleSeq) {
+    @Override
+    public void fillDetail(DpScheduleSeq scheduleSeq) {
         Condition condition = new Condition(DpScheduleDetail.class);
         condition.setOrderByClause("order_sn asc");
 
@@ -1166,7 +1167,8 @@ int i = 0;
         scheduleSeq.setDetailList(this.dpScheduleDetailDAO.selectByCondition(condition));
     }
 
-    private void fillScDetail(DpScheduleSeq scheduleSeq) {
+    @Override
+    public void fillScDetail(DpScheduleSeq scheduleSeq) {
         Condition condition = new Condition(DpStaScDetail.class);
         condition.setOrderByClause("order_sn asc");
 

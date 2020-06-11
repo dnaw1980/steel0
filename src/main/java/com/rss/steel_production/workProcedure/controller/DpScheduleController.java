@@ -3,7 +3,9 @@ package com.rss.steel_production.workProcedure.controller;
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
+import com.rss.steel_production.workProcedure.controller.bean.ScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
+import com.rss.steel_production.workProcedure.dao.DpScheduleSeqDAO;
 import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
 import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
@@ -39,6 +41,9 @@ public class DpScheduleController {
 
     @Resource
     private DpStaScDetailDAO dpStaScDetailDAO;
+
+    @Resource
+    private DpScheduleSeqDAO scheduleSeqDAO;
 
 
     /**
@@ -176,7 +181,7 @@ public class DpScheduleController {
         String rs = null;
         try {
             this.dpScheduleSeqService.changeScheduleDetail(dpScheduleDetail);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("更新调度明细错误", e);
         }
 
@@ -321,4 +326,82 @@ public class DpScheduleController {
     }
 
 
+    @PostMapping("scheduleList")
+    public Result scheduleList(@RequestBody ScheduleSeqBean scheduleSeq) {
+
+        if (scheduleSeq == null) {
+            return ResultGenerator.genFailResult("查询条件不能为空，至少是 {} 这个空对象!");
+        }
+
+        List<DpScheduleSeq> rs = null;
+        try {
+
+            Condition condition = new Condition(DpScheduleSeq.class);
+            condition.setOrderByClause("begin_tm asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+
+            if (Tools.notEmpty(scheduleSeq.getScheduleSeqId())) {
+                criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
+            } else {
+                //高炉号
+                if (Tools.notEmpty(scheduleSeq.getBlastNo())) {
+                    criteria.andEqualTo("blastNo", scheduleSeq.getBlastNo());
+                }
+
+                //转炉号
+                if (Tools.notEmpty(scheduleSeq.getChargeNo())) {
+                    criteria.andEqualTo("chargeNo", scheduleSeq.getChargeNo());
+                }
+
+                //浇次号
+                if (Tools.notEmpty(scheduleSeq.getCastPlanId())) {
+                    criteria.andEqualTo("castPlanId", scheduleSeq.getCastPlanId());
+                }
+
+                //状态
+                if (scheduleSeq.getState() != null) {
+                    criteria.andEqualTo("state", scheduleSeq.getState());
+                } else {
+                    criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FAIL);
+                }
+
+                //开始时间头
+                if (scheduleSeq.getBeginTmL() != null) {
+                    criteria.andGreaterThanOrEqualTo("beginTm", scheduleSeq.getBeginTmL());
+                }
+
+                //开始时间尾
+                if (scheduleSeq.getBeginTmH() != null) {
+                    criteria.andLessThan("beginTm", scheduleSeq.getBeginTmH());
+                }
+
+                //结束时间头
+                if (scheduleSeq.getEndTmL() != null) {
+                    criteria.andGreaterThanOrEqualTo("endTm", scheduleSeq.getEndTmL());
+                }
+
+                //结束时间尾
+                if (scheduleSeq.getEndTmH() != null) {
+                    criteria.andLessThan("endTm", scheduleSeq.getEndTmH());
+                }
+
+            }
+
+            rs = this.scheduleSeqDAO.selectByCondition(condition);
+
+            for (DpScheduleSeq seq : rs) {
+                this.dpScheduleSeqService.fillScDetail(seq);
+            }
+
+        } catch (Exception e) {
+            log.error("查询调度记录错误", e);
+        }
+
+        if (Tools.empty(rs)) {
+            return ResultGenerator.genFailResult("没有相关调度信息");
+        } else {
+            return ResultGenerator.genSuccessResult(rs);
+        }
+    }
 }

@@ -6,6 +6,7 @@ import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
+import tk.mybatis.mapper.entity.Condition;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -89,8 +90,15 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
 
     /**
      * 通过调度ID查询调度序列，并且带明细列表
+     *
      * @param scheduleSeqId
      * @return
      */
     DpScheduleSeq showScheduleSeq(String scheduleSeqId);
+
+
+    void fillDetail(DpScheduleSeq scheduleSeq);
+
+
+    void fillScDetail(DpScheduleSeq scheduleSeq);
 }

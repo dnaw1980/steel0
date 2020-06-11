@@ -2,10 +2,7 @@ package com.rss.steel_production.workProcedure.controller;
 
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
-import com.rss.steel_production.workProcedure.controller.bean.ConfirmScheduleSeqBean;
-import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
-import com.rss.steel_production.workProcedure.controller.bean.ScheduleSeqBean;
-import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
+import com.rss.steel_production.workProcedure.controller.bean.*;
 import com.rss.steel_production.workProcedure.dao.DpCastPlanDAO;
 import com.rss.steel_production.workProcedure.dao.DpScheduleSeqDAO;
 import com.rss.steel_production.workProcedure.dao.DpStaScDetailDAO;
@@ -477,6 +474,36 @@ public class DpScheduleController {
             return ResultGenerator.genSuccessResult("执行作废" + (rs ? "成功" : "失败"));
         } else {
             return ResultGenerator.genSuccessResult("执行下达" + (rs ? "成功" : "失败"));
+        }
+    }
+
+    @PostMapping("chSeqNo")
+    public Result chSeqNo(@RequestBody changeScheduleSeqNoBean chBean) {
+        if (chBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (Tools.empty(chBean.getScheduleSeqId())) {
+            return ResultGenerator.genFailResult("调度ID参数为空");
+        }
+
+        DpScheduleSeq descScSeq = new DpScheduleSeq();
+        descScSeq.setScheduleSeqId(chBean.getScheduleSeqId());
+
+        if (Tools.notEmpty(chBean.getBlastNo())) {
+            descScSeq.setBlastNo(chBean.getBlastNo());
+        }
+
+        if (Tools.notEmpty(chBean.getChargeNo())) {
+            descScSeq.setChargeNo(chBean.getChargeNo());
+        }
+
+        int rs = this.scheduleSeqDAO.updateByPrimaryKeySelective(descScSeq);
+
+        if (rs == 1) {
+            return ResultGenerator.genSuccessResult("修改炉次号成功！");
+        } else {
+            return ResultGenerator.genFailResult("修改炉次号失败！");
         }
     }
 }

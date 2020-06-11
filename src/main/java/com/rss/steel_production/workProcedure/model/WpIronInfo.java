@@ -21,14 +21,20 @@ import java.sql.Timestamp;
 public class WpIronInfo extends WpBase {
     /*
 
+   iron_info_sn         int not null auto_increment,
+   schedule_seq_id      varchar(36) comment '调度序列ID',
+   sta_id               varchar(36) comment '工位ID',
+   blastNo              varchar(32) comment '高炉炉次',
    track                varchar(32) comment '轨道',
    carNo                varchar(32) comment '车号',
-   ladleNo              varchar(32) comment '铁包号',
+   ladleNo              varchar(32) comment '罐号',
    tareWeight           decimal(16,2) comment '皮重',
-   grossWeight          decimal(16,2) comment '毛重',
-   scrabNet             decimal(16,2) comment '废钢净量',
-   netWeight            decimal(16,2) comment '铁水净重',
+   scrabNet             decimal(16,2) comment '废钢净重',
+   scrabGrossWeight     decimal(16,2) comment '废钢毛重，为废钢净重与皮重的和',
+   netWeight            decimal(16,2) comment '铁水净重，为铁水毛重减去皮重',
+   grossWeight          decimal(16,2) comment '铁水毛重含废钢',
    arriveTime           datetime comment '到达时刻',
+   "desc"               int comment '去向0-未定，1-炼钢，2-铸铁',
    registerTime         datetime comment '登记时刻',
      */
     //    iron_info_sn         int not null auto_increment,
@@ -52,12 +58,7 @@ public class WpIronInfo extends WpBase {
     private String scheduleSeqId;
 
     /**
-     * blastOrder           varchar(32) comment '铁次编号',
-     */
-    private String blastOrder;
-
-    /**
-     * blastNo              varchar(32) comment '高炉编号',
+     * blastNo              varchar(32) comment '高炉炉次',
      */
     private String blastNo;
 
@@ -73,7 +74,7 @@ public class WpIronInfo extends WpBase {
 
 
     /**
-     * ladleNo              varchar(32) comment '铁包号',
+     * ladleNo              varchar(32) comment '罐号',
      */
     private String ladleNo;
 
@@ -83,25 +84,51 @@ public class WpIronInfo extends WpBase {
     private BigDecimal tareWeight;
 
     /**
-     * grossWeight          decimal(16,2) comment '毛重',
-     */
-    private BigDecimal grossWeight;
-
-    /**
-     * scrabNet             decimal(16,2) comment '废钢净量',
+     * scrabNet             decimal(16,2) comment '废钢净重',
      */
     private BigDecimal scrabNet;
 
     /**
-     * netWeight            decimal(16,2) comment '铁水净重',
+     * scrabGrossWeight     decimal(16,2) comment '废钢毛重，为废钢净重与皮重的和',
+     */
+    private BigDecimal scrabGrossWeight;
+
+    /**
+     * netWeight            decimal(16,2) comment '铁水净重，为铁水毛重减去皮重',
      */
     private BigDecimal netWeight;
+
+    /**
+     * grossWeight          decimal(16,2) comment '铁水毛重含废钢',
+     */
+    private BigDecimal grossWeight;
 
     /**
      * arriveTime           datetime comment '到达时刻',
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Timestamp arriveTime;
+
+    /**
+     * "desc"               int comment '去向0-未定，1-炼钢，2-铸铁',
+     */
+    private Integer desc;
+
+    /**
+     * 去向0-未定
+     */
+    public final static int DESC_NONE = 0;
+
+    /**
+     * 去向1-炼钢
+     */
+    public final static int DESC_STEEL = 1;
+
+    /**
+     * 去向2-铸铁
+     */
+    public final static int DESC_IRON = 2;
+
 
     /**
      * registerTime         datetime comment '登记时刻',

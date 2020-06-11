@@ -90,6 +90,9 @@ public class WpIronInfoImpl extends AbstractService<WpIronInfo> implements WpIro
         DpScheduleSeq dpScheduleSeq = this.dpScheduleSeqService.add(_descCast.getCastPlanId(), wpIronInfo.getArriveTime() == null ? DateUtil.getDateTime() : wpIronInfo.getArriveTime());
         wpIronInfo.setScheduleSeqId(dpScheduleSeq.getScheduleSeqId());
 
+        if (wpIronInfo.getRegisterTime() == null) {
+            wpIronInfo.setRegisterTime(DateUtil.getDateTime());
+        }
         this.wpIronInfoDAO.insertUseGeneratedKeys(wpIronInfo);
 
         return wpIronInfo;

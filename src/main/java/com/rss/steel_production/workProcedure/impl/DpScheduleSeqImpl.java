@@ -10,6 +10,7 @@ import com.rss.steel_production.schedule.controller.bean.RealDataBean;
 import com.rss.steel_production.schedule.dao.TdStaDAO;
 import com.rss.steel_production.schedule.model.TdSta;
 import com.rss.steel_production.schedule.service.TdStaService;
+import com.rss.steel_production.workProcedure.controller.bean.ConfirmScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.dao.*;
@@ -30,6 +31,7 @@ import tk.mybatis.mapper.entity.Condition;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -562,11 +564,55 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         _currDetail.setPlanEnd(endPlan);
         this.dpScheduleDetailDAO.updateByPrimaryKey(_currDetail);
 
+
         //TODO 添加工序信息
         this.putWorkProcInfo(currSta, _currDetail, enterStaBean);
     }
 
     private void putWorkProcInfo(TdSta sta, DpScheduleDetail detail, EnterExitStaBean enterStaBean) {
+        /*
+        1、判断是不是转炉，如果是转炉，生成炉次
+        2、查看 调度信息，看看炉次是不是为 null 如果不为空，则跳过操作。
+
+         */
+        DpScheduleSeq scheduleSeq = this.dpScheduleSeqDAO.selectByPrimaryKey(detail.getScheduleSeqId());
+
+        final String BOF_WP_ID = "382b3216-a4aa-11ea-aeba-fa163e16816f";
+        if (sta.getWorkProcId().equals(BOF_WP_ID)
+                && Tools.empty(scheduleSeq.getChargeNo())) {
+            //说明是转炉，要查 sta_sc_detail 找这个炉子的最大转炉号
+
+            Condition condition = new Condition(DpStaScDetail.class);
+            condition.setOrderByClause("chargeNo desc");
+            PageHelper.startPage(1, 1);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleStation", sta.getScheduleStation());
+            criteria.andIsNotNull("chargeNo");
+
+            List<DpStaScDetail> staDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
+
+            String chargeNo = "";
+            if (Tools.empty(staDetailList)) {
+                chargeNo = "0X" + sta.getStaNo() + "00001";
+
+            } else {
+
+                String num = staDetailList.get(0).getChargeNo().substring(3);
+                int n = Integer.parseInt(num);
+                n++;
+
+                DecimalFormat df1 = new DecimalFormat("00000");
+                chargeNo = "0X" + sta.getStaNo() + df1.format(n);
+            }
+
+            DpScheduleSeq descSeq = new DpScheduleSeq();
+            descSeq.setScheduleSeqId(detail.getScheduleSeqId());
+            descSeq.setChargeNo(chargeNo);
+
+            this.dpScheduleSeqDAO.updateByPrimaryKeySelective(descSeq);
+
+        }
 
     }
 
@@ -912,7 +958,7 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         boolean found = false;
         for (DpScheduleSeq _seq : seqList) {
             this.fillScDetail(_seq);
-int i = 0;
+            int i = 0;
             DpStaScDetail lastDtl = null;
             for (DpStaScDetail _dtl : _seq.getScDetailList()) {
                 if (_dtl.getScheduleDetailSn().intValue() == DpScheduleDetail.STATE_FAIL
@@ -937,8 +983,8 @@ int i = 0;
 //                        //开始明细，如果开始明细为 null 表示，删除操作。如果不为空，需要判断相关属性。
 //                        DpScheduleDetail beginDetail = null;
 
-                        System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
-                        if(lastDtl != null) {
+                        System.out.println("_dtl begin:" + _dtl.getPlanBegin() + "\tend:" + _dtl.getPlanEnd());
+                        if (lastDtl != null) {
                             System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
                         }
 
@@ -947,8 +993,8 @@ int i = 0;
                         found = true;
 
                         //判断 beginDetail 是否为空。如果为空，按普通调整。
-                        System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
-                        if(lastDtl != null) {
+                        System.out.println("_dtl begin:" + _dtl.getPlanBegin() + "\tend:" + _dtl.getPlanEnd());
+                        if (lastDtl != null) {
                             System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
                         }
                         if (beginDetail == null) {
@@ -961,10 +1007,10 @@ int i = 0;
                             DpScheduleDetail dsd = new DpScheduleDetail();
                             dsd.setScheduleDetailSn(_dtl.getScheduleDetailSn());
 
-                            if(lastDtl != null){
+                            if (lastDtl != null) {
                                 //TODO 取运输时间
 
-                                if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                                if (lastDtl.getPlanEnd().after(_tm.getBeginTm())) {
                                     dsd.setPlanBegin(lastDtl.getPlanEnd());
                                 }
                             } else {
@@ -1023,15 +1069,14 @@ int i = 0;
                                 DpStaScheduleTm _tm = tmList.get(_dtl.getStaNo() - 1);
 
                                 //再判断开始时间
-                               if (beginDetail.getPlanBegin() == null) {
+                                if (beginDetail.getPlanBegin() == null) {
 
-                                    if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                                    if (lastDtl.getPlanEnd().after(_tm.getBeginTm())) {
                                         beginDetail.setPlanBegin(lastDtl.getPlanEnd());
-                                    }  else {
+                                    } else {
                                         beginDetail.setPlanBegin(_tm.getBeginTm());
                                     }
                                 }
-
 
 
                                 beginDetail.setPlanEnd(
@@ -1051,8 +1096,8 @@ int i = 0;
 
                 } else {
                     System.out.println("找到了");
-                    System.out.println("_dtl begin:"+_dtl.getPlanBegin() + "\tend:"+_dtl.getPlanEnd());
-                    if(lastDtl != null) {
+                    System.out.println("_dtl begin:" + _dtl.getPlanBegin() + "\tend:" + _dtl.getPlanEnd());
+                    if (lastDtl != null) {
                         System.out.println("lastDtl begin:" + lastDtl.getPlanBegin() + "\tend:" + lastDtl.getPlanEnd());
                     }
 
@@ -1068,10 +1113,10 @@ int i = 0;
                     //设置本工序的开始时间为工位开始时间。
 //                    dsd.setPlanBegin(_tm.getBeginTm());
 
-                    if(lastDtl != null){
+                    if (lastDtl != null) {
                         //TODO 取运输时间
 
-                        if(lastDtl.getPlanEnd().after(_tm.getBeginTm())){
+                        if (lastDtl.getPlanEnd().after(_tm.getBeginTm())) {
                             dsd.setPlanBegin(lastDtl.getPlanEnd());
                         } else {
                             dsd.setPlanBegin(_tm.getBeginTm());
@@ -1095,7 +1140,6 @@ int i = 0;
 
                     //加上加工时间，设置本工序结束时间。
                     dsd.setPlanEnd(DateUtil.minuteAdd(dsd.getPlanBegin(), _tm.getWorkCycle().intValue()));
-
 
 
                     _dtl.setPlanBegin(dsd.getPlanBegin());
@@ -1176,6 +1220,83 @@ int i = 0;
         criteria.andEqualTo("scheduleSeqId", scheduleSeq.getScheduleSeqId());
 
         scheduleSeq.setScDetailList(this.dpStaScDetailDAO.selectByCondition(condition));
+    }
+
+    /**
+     * 确定调度计划的下达或作废
+     *
+     * @param scheduleSeq
+     * @param confirmBean
+     * @return
+     */
+    @Override
+    public boolean confirmSeq(DpScheduleSeq scheduleSeq, ConfirmScheduleSeqBean confirmBean) {
+        /*
+        3、执行变更。
+        4、如果是作废操作，要查询后面的一个可执行的调度明细，调整调度计划。
+         */
+        /*
+        查询调度下面的调度明细
+         */
+        this.fillDetail(scheduleSeq);
+
+        //修改调度状态
+        scheduleSeq.setState(confirmBean.getState());
+        this.dpScheduleSeqDAO.updateByPrimaryKey(scheduleSeq);
+
+        //修改明细状态
+        for (DpScheduleDetail dtl : scheduleSeq.getDetailList()) {
+            int state = dtl.getState().intValue();
+            //如果是执行或完成，就跳过
+            if (state == DpScheduleDetail.STATE_FINISH
+                    || state == DpScheduleDetail.STATE_EXEC) {
+                continue;
+            }
+
+            //修改
+            dtl.setState(confirmBean.getState());
+            this.dpScheduleDetailDAO.updateByPrimaryKey(dtl);
+        }
+
+        //4、如果是作废操作，要查询后面的一个可执行的调度明细，调整调度计划。
+        List<DpScheduleSeq> seqList = null;
+        if (confirmBean.getState().intValue() == DpScheduleDetail.STATE_FAIL) {
+
+            Condition condition = new Condition(DpScheduleSeq.class);
+            condition.setOrderByClause("begin_tm asc");
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FAIL);
+            criteria.andNotEqualTo("state", DpScheduleSeq.STATE_FINISH);
+
+            seqList = this.dpScheduleSeqDAO.selectByCondition(condition);
+        } else {
+            seqList = new ArrayList<DpScheduleSeq>(1);
+            seqList.add(scheduleSeq);
+        }
+        DpScheduleDetail descDetail = null;
+        for (DpScheduleSeq seq : seqList) {
+            this.fillDetail(seq);
+
+            for (DpScheduleDetail dtl : seq.getDetailList()) {
+                int stt = dtl.getState();
+                if (stt == DpScheduleDetail.STATE_PLAN
+                        || stt == DpScheduleDetail.STATE_SEND) {
+                    descDetail = dtl;
+                    break;
+                }
+            }
+
+            if (descDetail != null) {
+                break;
+            }
+        }
+
+        if (descDetail != null) {
+            this.changeScheduleDetail(descDetail);
+        }
+
+        return true;
     }
 
     /**

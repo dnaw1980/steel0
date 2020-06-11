@@ -1,11 +1,13 @@
 package com.rss.steel_production.workProcedure.service;
 
 import com.rss.framework.Service;
+import com.rss.steel_production.workProcedure.controller.bean.ConfirmScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
 import com.rss.steel_production.workProcedure.model.DpScheduleDetail;
 import com.rss.steel_production.workProcedure.model.DpScheduleSeq;
 import com.rss.steel_production.workProcedure.model.gantt.DpGanttBean;
+import org.springframework.web.bind.annotation.RequestBody;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.sql.Timestamp;
@@ -96,9 +98,23 @@ public interface DpScheduleSeqService extends Service<DpScheduleSeq> {
      */
     DpScheduleSeq showScheduleSeq(String scheduleSeqId);
 
-
+    /**
+     * 为调度添加调度明细
+     * @param scheduleSeq
+     */
     void fillDetail(DpScheduleSeq scheduleSeq);
 
-
+    /**
+     * 为调度添加带工位信息的明细
+     * @param scheduleSeq
+     */
     void fillScDetail(DpScheduleSeq scheduleSeq);
+
+    /**
+     * 确定调度计划的下达或作废
+     *
+     * @param confirmBean
+     * @return
+     */
+    boolean confirmSeq(DpScheduleSeq scheduleSeq, ConfirmScheduleSeqBean confirmBean);
 }

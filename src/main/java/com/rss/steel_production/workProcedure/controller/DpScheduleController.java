@@ -2,6 +2,7 @@ package com.rss.steel_production.workProcedure.controller;
 
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
+import com.rss.steel_production.workProcedure.controller.bean.ConfirmScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.EnterExitStaBean;
 import com.rss.steel_production.workProcedure.controller.bean.ScheduleSeqBean;
 import com.rss.steel_production.workProcedure.controller.bean.StaScDataBean;
@@ -327,6 +328,12 @@ public class DpScheduleController {
     }
 
 
+    /**
+     * 查询调度列表
+     *
+     * @param scheduleSeq
+     * @return
+     */
     @PostMapping("scheduleList")
     public Result scheduleList(@RequestBody ScheduleSeqBean scheduleSeq) {
 
@@ -405,6 +412,71 @@ public class DpScheduleController {
             return ResultGenerator.genFailResult("没有相关调度信息");
         } else {
             return ResultGenerator.genSuccessResult(rs);
+        }
+    }
+
+    /**
+     * 确定调度计划的下达或作废
+     *
+     * @param confirmBean
+     * @return
+     */
+    @PostMapping("confirmSeq")
+    public Result confirmSeq(@RequestBody ConfirmScheduleSeqBean confirmBean) {
+        if (confirmBean == null) {
+            return ResultGenerator.genFailResult("参数为空");
+        }
+
+        if (Tools.empty(confirmBean.getScheduleSeqId())) {
+            return ResultGenerator.genFailResult("调度ID参数为空");
+        }
+
+        if (confirmBean.getState() == null) {
+            return ResultGenerator.genFailResult("变更状态为空");
+        }
+
+        if (confirmBean.getState().intValue() != 1
+                && confirmBean.getState().intValue() != -1) {
+            return ResultGenerator.genFailResult("变更状态为：" + confirmBean.getState() + ",不合法！");
+        }
+
+        /*
+        1、查询数据库中的调度对象。
+        2、根据数据库中的调度对象状态判断能否执行。
+        3、执行变更。
+        4、如果是作废操作，要查询后面的一个可执行的调度明细，调整调度计划。
+         */
+
+        //1、查询数据库中的调度对象。
+        DpScheduleSeq scheduleSeq = this.scheduleSeqDAO.selectByPrimaryKey(confirmBean.getScheduleSeqId());
+
+        int stateI = scheduleSeq.getState().intValue();
+
+        //2、根据数据库中的调度对象状态判断能否执行。
+        if (stateI == DpScheduleSeq.STATE_FINISH) {
+            return ResultGenerator.genFailResult("该调度已经完成，不能变更！");
+        }
+
+        if (confirmBean.getState().intValue() == -1) {
+            if (stateI == DpScheduleSeq.STATE_FAIL) {
+                return ResultGenerator.genFailResult("该调度已经作废，不需要变更！");
+            }
+        } else {
+            if (stateI == DpScheduleSeq.STATE_SEND) {
+                return ResultGenerator.genFailResult("该调度已经下达，不需要变更！");
+            }
+
+            if (stateI == DpScheduleSeq.STATE_EXEC) {
+                return ResultGenerator.genFailResult("该调度已经执行，不需要变更！");
+            }
+        }
+
+        boolean rs = this.dpScheduleSeqService.confirmSeq(scheduleSeq, confirmBean);
+
+        if (confirmBean.getState().intValue() == -1) {
+            return ResultGenerator.genSuccessResult("执行作废" + (rs ? "成功" : "失败"));
+        } else {
+            return ResultGenerator.genSuccessResult("执行下达" + (rs ? "成功" : "失败"));
         }
     }
 }

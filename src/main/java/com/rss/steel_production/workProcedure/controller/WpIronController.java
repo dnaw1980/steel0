@@ -79,7 +79,13 @@ public class WpIronController {
             return ResultGenerator.genFailResult("铁水序号为空");
         }
 
-        String rs = this.wpIronInfoService.confirmDirect(ironDirectionBean);
+        String rs = null;
+        try {
+            rs = this.wpIronInfoService.confirmDirect(ironDirectionBean);
+        } catch (Exception e) {
+            log.error("错误", e);
+            rs = e.getMessage();
+        }
 
         if (Tools.empty(rs)) {
             if (ironDirectionBean.getDirection() == WpIronInfo.DESC_STEEL) {

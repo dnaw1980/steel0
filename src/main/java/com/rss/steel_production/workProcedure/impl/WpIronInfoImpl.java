@@ -147,6 +147,7 @@ public class WpIronInfoImpl extends AbstractService<WpIronInfo> implements WpIro
 
         DpScheduleSeq scheduleSeq = this.autoGenScheduleSeq(ironInfo);
         ironInfo.setScheduleSeqId(scheduleSeq.getScheduleSeqId());
+        ironInfo.setDirection(ironDirectionBean.getDirection());
 
         this.wpIronInfoDAO.updateByPrimaryKey(ironInfo);
 

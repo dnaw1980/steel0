@@ -1,6 +1,7 @@
 package com.rss.steel_production.workProcedure.service;
 
 import com.rss.framework.Service;
+import com.rss.steel_production.workProcedure.controller.bean.IronDirectionBean;
 import com.rss.steel_production.workProcedure.model.WpIronInfo;
 import com.rss.steel_production.workProcedure.model.WpIronInfoTO;
 
@@ -23,4 +24,12 @@ public interface WpIronInfoService extends Service<WpIronInfo>, WpBaseService {
      * @return
      */
     List<WpIronInfo> list(WpIronInfoTO wpIronInfoTO);
+
+    /**
+     * 铁水去向确认
+     *
+     * @param ironDirectionBean
+     * @return
+     */
+    String confirmDirect(IronDirectionBean ironDirectionBean);
 }

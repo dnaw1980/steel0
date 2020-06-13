@@ -3,8 +3,6 @@ package com.rss.steel_production.schedule.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rss.framework.AbstractService;
-import com.rss.framework.Result;
-import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.process.dao.RealDataDAO;
 import com.rss.steel_production.process.model.RealData;
 import com.rss.steel_production.schedule.controller.bean.RealDataBean;
@@ -23,12 +21,12 @@ import com.rss.steel_production.workProcedure.model.DpWorkProc;
 import com.rss.steel_production.workProcedure.service.*;
 import com.rss.tools.DateUtil;
 import com.rss.tools.Tools;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
@@ -39,8 +37,14 @@ import java.util.*;
 
 @Service
 //@EnableScheduling
-//@Transactional
+@Transactional
 public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
+
+    static Logger log;
+
+    static {
+        log = Logger.getLogger(TdStaImpl.class.getName());
+    }
 
     @Resource
     private TdStaDAO tdStaDAO;
@@ -102,7 +106,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
     private static long BASE_TIME = DateUtil.getDateTime("2020-01-01 00:00:00").getTime();
 
 
-    //    @Scheduled(cron = "0/5 * * * * ? ")
+//    @Scheduled(cron = "0/5 * * * * ? ")
     public void show() {
         /**
          * 1、遍历 tdSta 表
@@ -510,9 +514,9 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
         this.tdDataBatDAO.insertUseGeneratedKeys(dataBat);
 
         String valStr = rd.getDatVal();
-        System.out.println("valStr:\n" + valStr);
+        log.error("valStr:\n" + valStr);
         valStr = "{" + valStr.substring(1, valStr.length() - 1) + "}";
-        System.out.println("valStr:\n" + valStr);
+        log.error("valStr:\n" + valStr);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> map = null;
@@ -520,10 +524,12 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
             map = mapper.readValue(valStr, new TypeReference<Map<String, String>>() {
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("解析错误", e);
+            return;
+//            e.printStackTrace();
         }
 
-//        System.out.println(map.size());
+//        log.error(map.size());
 
         //要重新生成目标MAP，key都要转成大写，因为 板柸从数据库转来的都是大写的。
         Map<String, String> valMap = new HashMap<String, String>();
@@ -535,7 +541,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
 
         //3、查询 stSta 对应的 channel 信息，生成Map，key 与real_data 里面的串生成的Map 一致。
         List<TdChannel> chList = listChannelForSta(sta);
-        System.out.println("chList size: " + chList.size());
+        log.error("chList size: " + chList.size());
 
         //TODO 4、先处理需要计算的值，更新到数据库。
         /*
@@ -560,7 +566,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
                 //如果是时间类型
                 String _str = valMap.get(ch.getInputComTag().toUpperCase());
                 if (Tools.empty(_str) || !Tools.isDigit(_str)) {
-                    System.out.println("val:" + _str + " 不是有效数字");
+                    log.error("val:" + _str + " 不是有效数字");
                     continue;
                 }
 
@@ -602,7 +608,7 @@ public class TdStaImpl extends AbstractService<TdSta> implements TdStaService {
             String val = valMap.get(ch.getComTag().toUpperCase());
 
             if (Tools.notEmpty(val) && !Tools.isDigit(val)) {
-                System.out.println("val:" + val + " 不是有效数字");
+                log.error("val:" + val + " 不是有效数字");
                 continue;
             }
 

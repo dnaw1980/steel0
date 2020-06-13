@@ -194,6 +194,24 @@ public class WpConvererController {
             return ResultGenerator.genFailResult("没有对应的调度信息或工序信息");
         }
 
+        //判断，这个调度是否关联了其它的废钢信息，如果关联的，清空。
+        {
+            Condition condition = new Condition(WpConvererSteelScrapInfo.class);
+
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("scheduleSeqId", srcBean.getScheduleSeqId());
+
+            List<WpConvererSteelScrapInfo> convererSteelScrapInfoList = this.wpConvererSteelScrapInfoDAO.selectByCondition(condition);
+            if (Tools.notEmpty(convererSteelScrapInfoList)) {
+                for (WpConvererSteelScrapInfo info : convererSteelScrapInfoList) {
+                    info.setConvererInfoSn(null);
+                    info.setScheduleSeqId(null);
+
+                    this.wpConvererSteelScrapInfoDAO.updateByPrimaryKey(info);
+                }
+            }
+        }
+
         WpConvererSteelScrapInfo css = new WpConvererSteelScrapInfo();
         css.setScheduleSeqId(srcBean.getScheduleSeqId());
         css.setConvererInfoSn(infoSn);

@@ -2,6 +2,7 @@ package com.rss.steel_production.workProcedure.controller;
 
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
+import com.rss.steel_production.workProcedure.controller.bean.IronDirectionBean;
 import com.rss.steel_production.workProcedure.model.DpCastPlan;
 import com.rss.steel_production.workProcedure.model.DpCastPlanTO;
 import com.rss.steel_production.workProcedure.model.WpIronInfo;
@@ -53,6 +54,42 @@ public class WpIronController {
         WpIronInfo rs = this.wpIronInfoService.regIronInfo(wpIronInfo);
 
         return ResultGenerator.genSuccessResult(rs);
+    }
+
+    /**
+     * 铁水去向确认
+     *
+     * @param ironDirectionBean
+     * @return
+     */
+    @PostMapping("/confirmDirect")
+    public Result confirmDirect(@RequestBody IronDirectionBean ironDirectionBean) {
+
+        if (ironDirectionBean == null) {
+            return ResultGenerator.genFailResult("铁水信息为空");
+        }
+
+        if (ironDirectionBean.getDirection() == null
+                || ironDirectionBean.getDirection().intValue() == WpIronInfo.DESC_NONE) {
+            return ResultGenerator.genFailResult("铁水去向为空");
+        }
+
+        if (ironDirectionBean.getIronInfoSn() == null
+                || ironDirectionBean.getIronInfoSn().intValue() == 0) {
+            return ResultGenerator.genFailResult("铁水序号为空");
+        }
+
+        String rs = this.wpIronInfoService.confirmDirect(ironDirectionBean);
+
+        if (Tools.empty(rs)) {
+            if (ironDirectionBean.getDirection() == WpIronInfo.DESC_STEEL) {
+                return ResultGenerator.genSuccessResult("已经为铁水分配炼钢调度计划！");
+            } else {
+                return ResultGenerator.genSuccessResult("已经为铁水分配去铸铁！");
+            }
+        } else {
+            return ResultGenerator.genFailResult(rs);
+        }
     }
 
     /**

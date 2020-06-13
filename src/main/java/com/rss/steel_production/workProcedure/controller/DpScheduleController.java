@@ -1,5 +1,7 @@
 package com.rss.steel_production.workProcedure.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rss.framework.Result;
 import com.rss.framework.ResultGenerator;
 import com.rss.steel_production.workProcedure.controller.bean.*;
@@ -19,6 +21,7 @@ import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -168,7 +171,8 @@ public class DpScheduleController {
 
         Condition.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("scheduleStation", stationName);
-        criteria.andLessThan("detailState", DpScheduleDetail.STATE_EXEC);
+//        criteria.andLessThan("detailState", DpScheduleDetail.STATE_EXEC);
+        criteria.andEqualTo("detailState", DpScheduleDetail.STATE_SEND);
 
         List<DpStaScDetail> staScDetailList = this.dpStaScDetailDAO.selectByCondition(condition);
 
@@ -177,11 +181,23 @@ public class DpScheduleController {
 
     @PostMapping("changeScheduleDetail")
     public Result changeScheduleDetail(@RequestBody DpScheduleDetail dpScheduleDetail) {
+
+        //调试
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            String json = mapper.writeValueAsString(dpScheduleDetail);
+            System.out.println(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
         String rs = null;
         try {
             this.dpScheduleSeqService.changeScheduleDetail(dpScheduleDetail);
         } catch (Exception e) {
             log.error("更新调度明细错误", e);
+            return ResultGenerator.genFailResult("更新调度明细错误");
         }
 
         if (Tools.empty(rs)) {
@@ -399,6 +415,16 @@ public class DpScheduleController {
                 DpCastPlan castPlan = this.dpCastPlanDAO.selectByPrimaryKey(seq.getCastPlanId());
                 seq.setCastPlan(castPlan);
                 this.dpScheduleSeqService.fillScDetail(seq);
+
+                List<DpStaScDetail> dtlList = new ArrayList<DpStaScDetail>();
+                for (DpStaScDetail dtl : seq.getScDetailList()) {
+                    if (dtl.getDetailState().intValue() != DpScheduleDetail.STATE_FAIL) {
+                        dtlList.add(dtl);
+                    }
+                }
+
+                seq.setScDetailList(dtlList);
+
             }
 
         } catch (Exception e) {

@@ -801,9 +801,22 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
         Integer beginDetailSn = 0;
         //开始明细，如果开始明细为 null 表示，删除操作。如果不为空，需要判断相关属性。
         DpScheduleDetail beginDetail = null;
+
+        DpStaScheduleTm currSta = null;
+        {
+            Condition condition = new Condition(DpStaScheduleTm.class);
+            Condition.Criteria criteria = condition.createCriteria();
+            criteria.andNotEqualTo("staId", dpScheduleDetail.getStaId());
+
+            List<DpStaScheduleTm> sstList = this.dpStaScheduleTmDAO.selectByCondition(condition);
+            if (Tools.notEmpty(sstList)) {
+                currSta = sstList.get(0);
+            }
+        }
         /*
         1、判断输入参数的合法性。
          */
+
 
         //查询明细对应的调序。
         if (Tools.empty(dpScheduleDetail.getScheduleSeqId())) {
@@ -829,7 +842,21 @@ public class DpScheduleSeqImpl extends AbstractService<DpScheduleSeq> implements
                     continue;
                 }
 
+                finded = true;
+
+                //TODO 判断结束时间是否为空，如果为空，计算结束时间。
+                if (dpScheduleDetail.getPlanEnd() == null) {
+                    if (currSta == null) {
+                        return "新增工序没有指定工位";
+                    }
+                    dpScheduleDetail.setPlanEnd(
+                            DateUtil.minuteAdd(dpScheduleDetail.getPlanBegin(), currSta.getWorkCycle())
+                    );
+
+                }
+
                 this.dpScheduleDetailDAO.insertUseGeneratedKeys(dpScheduleDetail);
+
                 beginDetailSn = dpScheduleDetail.getScheduleDetailSn().intValue();
                 beginDetail = dpScheduleDetail;
 
